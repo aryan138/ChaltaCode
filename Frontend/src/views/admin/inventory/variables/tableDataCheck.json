@@ -1,0 +1,123 @@
+[
+  {
+    "product_id": "12AB21",
+    "name": "hat",
+    "price": "200 Rs",
+    "stock": 200
+  },
+  {
+    "product_id": "13CD22",
+    "name": "t-shirt",
+    "price": "500 Rs",
+    "stock": 150
+  },
+  {
+    "product_id": "14EF23",
+    "name": "jeans",
+    "price": "1200 Rs",
+    "stock": 100
+  },
+  {
+    "product_id": "15GH24",
+    "name": "jacket",
+    "price": "2500 Rs",
+    "stock": 50
+  },
+  {
+    "product_id": "16IJ25",
+    "name": "shoes",
+    "price": "1800 Rs",
+    "stock": 75
+  },
+  {
+    "product_id": "17KL26",
+    "name": "sunglasses",
+    "price": "800 Rs",
+    "stock": 120
+  },
+  {
+    "product_id": "18MN27",
+    "name": "watch",
+    "price": "3000 Rs",
+    "stock": 40
+  },
+  {
+    "product_id": "19OP28",
+    "name": "belt",
+    "price": "400 Rs",
+    "stock": 200
+  },
+  {
+    "product_id": "20QR29",
+    "name": "wallet",
+    "price": "600 Rs",
+    "stock": 180
+  },
+  {
+    "product_id": "21ST30",
+    "name": "backpack",
+    "price": "1500 Rs",
+    "stock": 90
+  },
+  {
+    "product_id": "22UV31",
+    "name": "gloves",
+    "price": "300 Rs",
+    "stock": 220
+  },
+  {
+    "product_id": "23WX32",
+    "name": "scarf",
+    "price": "350 Rs",
+    "stock": 160
+  },
+  {
+    "product_id": "24YZ33",
+    "name": "cap",
+    "price": "150 Rs",
+    "stock": 230
+  },
+  {
+    "product_id": "25AB34",
+    "name": "hoodie",
+    "price": "800 Rs",
+    "stock": 110
+  },
+  {
+    "product_id": "26CD35",
+    "name": "shorts",
+    "price": "600 Rs",
+    "stock": 130
+  },
+  {
+    "product_id": "27EF36",
+    "name": "socks",
+    "price": "100 Rs",
+    "stock": 300
+  },
+  {
+    "product_id": "28GH37",
+    "name": "tie",
+    "price": "250 Rs",
+    "stock": 190
+  },
+  {
+    "product_id": "29IJ38",
+    "name": "bracelet",
+    "price": "450 Rs",
+    "stock": 140
+  },
+  {
+    "product_id": "30KL39",
+    "name": "earrings",
+    "price": "350 Rs",
+    "stock": 160
+  },
+  {
+    "product_id": "31MN40",
+    "name": "ring",
+    "price": "700 Rs",
+    "stock": 170
+  }
+]
+

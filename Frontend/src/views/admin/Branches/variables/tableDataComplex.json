@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Marketplace",
+    "location": "New York",
+    "managedBy": "John Doe"
+  },
+  {
+    "name": "E-Commerce Hub",
+    "location": "San Francisco",
+    "managedBy": "Alice Smith"
+  },
+  {
+    "name": "Tech Plaza",
+    "location": "Los Angeles",
+    "managedBy": "Michael Johnson"
+  },
+  {
+    "name": "Retail Central",
+    "location": "Chicago",
+    "managedBy": "Emma Brown"
+  }
+]

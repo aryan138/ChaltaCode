@@ -1,152 +1,3 @@
-// import { useState } from "react";
-// import InputField from "components/fields/InputField";
-// import { FcGoogle } from "react-icons/fc";
-// import { Link } from "react-router-dom";
-
-// export default function SignUp() {
-//   const [role, setRole] = useState("user");
-
-//   const handleRoleChange = (event) => {
-//     setRole(event.target.value);
-//   };
-
-//   return (
-//     <div className="mt-3 mb-10 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10 lg:items-center lg:justify-start">
-//       <div className="top-0 w-full max-w-full flex-col items-center md:pl-4 lg:pl-0 xl:max-w-[420px]">
-//         {/* Role Selection */}
-//         <div className="mb-4">
-//           <select
-//             id="role"
-//             value={role}
-//             onChange={handleRoleChange}
-//             className="w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-gray-700 dark:border-gray-600 dark:bg-navy-800 dark:text-white"
-//           >
-//             <option value="user">User</option>
-//             <option value="admin">Admin</option>
-//           </select>
-//         </div>
-
-//         {/* Conditional Form Rendering */}
-//         {role === "user" ? (
-//           <div>
-//             <h4 className="mb-2.5 text-3xl font-bold text-navy-700 dark:text-white">
-//               User Sign Up
-//             </h4>
-//             <p className="mb-0 ml-1 text-base text-gray-600">
-//               Enter your details to sign up!
-//             </p>
-//             <InputField
-//               variant="auth"
-//               extra="mb-3"
-//               label="Username"
-//               placeholder="john_doe"
-//               id="username"
-//               type="text"
-//             />
-//             <InputField
-//               variant="auth"
-//               extra="mb-3"
-//               label="Email"
-//               placeholder="mail@simmmple.com"
-//               id="email"
-//               type="text"
-//             />
-//             <InputField
-//               variant="auth"
-//               extra="mb-3"
-//               label="Password"
-//               placeholder="Min. 8 characters"
-//               id="password"
-//               type="password"
-//             />
-//             <InputField
-//               variant="auth"
-//               extra="mb-3"
-//               label="Admin Reference"
-//               placeholder="Admin ID"
-//               id="admin_ref"
-//               type="text"
-//             />
-//             <InputField
-//               variant="auth"
-//               extra="mb-3"
-//               label="Branch ID"
-//               placeholder="Branch ID"
-//               id="branch_id"
-//               type="text"
-//             />
-//             <Link to={'/admin'}>
-//               <button className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
-//                 Sign Up
-//               </button>
-//             </Link>
-//             <div className="mt-4">
-//               <span className="text-sm font-medium text-navy-700 dark:text-gray-600">
-//                 Already have an account?
-//               </span>
-//               <Link to={'/auth/sign-in'}
-//                 className="ml-1 text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
-//               >
-//                 sign in
-//               </Link>
-//             </div>
-//           </div>
-//         ) : (
-//           <div>
-//             <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
-//               Admin Sign Up
-//             </h4>
-//             <p className="mb-9 ml-1 text-base text-gray-600">
-//               Enter your details to create an admin account!
-//             </p>
-            
-//             <InputField
-//               variant="auth"
-//               extra="mb-3"
-//               label="Username"
-//               placeholder="admin_username"
-//               id="username"
-//               type="text"
-//             />
-//             <InputField
-//               variant="auth"
-//               extra="mb-3"
-//               label="Email"
-//               placeholder="admin@mail.com"
-//               id="email"
-//               type="text"
-//             />
-//             <InputField
-//               variant="auth"
-//               extra="mb-3"
-//               label="Password"
-//               placeholder="Min. 8 characters"
-//               id="password"
-//               type="password"
-//             />
-//             <Link to={'/admin/dashboard'}>
-//               <button className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
-//                 Sign Up
-//               </button>
-//             </Link>
-//             <div className="mt-4">
-//               <span className="text-sm font-medium text-navy-700 dark:text-gray-600">
-//                 Already have an account?
-//               </span>
-//               <Link to={'/auth/sign-in'}
-//                 className="ml-1 text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
-//               >
-//                 sign in
-//               </Link>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-
 
 
 import { useState } from "react";
@@ -154,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import InputField from "components/fields/InputField";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // Zod schemas for user and admin
@@ -195,31 +46,13 @@ export default function SignUp() {
   };
 
   const handleSignUpForUser = async (data) => {
-    try {
-      const response = await axios.post("http://localhost:3000/user/register", data);
-      console.log(response.data);
-      if (response.data.success) {
-        navigate('/admin');
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+    alert(data);
+    navigate('/admin/dashboard/default');
   };
 
   const handleSignUpForAdmin = async (data) => {
-    try {
-      const response = await axios.post("http://localhost:3000/admin/register", data);
-      console.log(response.data);
-      if (response.data.success) {
-        navigate('/admin/dashboard');
-      } else {
-        alert(response.data.message);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+    alert(data);
+    navigate('/admin/dashboard/default');
   };
 
   return (

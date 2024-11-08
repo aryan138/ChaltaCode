@@ -8,6 +8,7 @@ import DataTables from "views/admin/tables";
 import RTLDefault from "views/rtl/default";
 import Inventory from "views/admin/inventory";
 import Invoice from "views/admin/invoice";
+import Branches from "views/admin/Branches/Branches.jsx";
 
 // Auth Imports
 import SignIn from "views/auth/SignIn";
@@ -30,6 +31,14 @@ const routes = [
     icon: <MdHome className="h-6 w-6" />,
     component: <MainDashboard />,
   },
+  {
+    name: "Branches",
+    layout: "/admin",
+    path: "branches",
+    icon: <MdHome className="h-6 w-6" />,
+    component: <Branches/>,
+  },
+  
   {
     name: "Order Tables",
     layout: "/admin",

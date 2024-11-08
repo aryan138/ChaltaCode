@@ -55,21 +55,21 @@ export const columnsDataColumns = [
   },
 ];
 
-export  const columnsDataComplex = [
+export const columnsDataComplex = [
   {
-    Header: "BRANCH NAME",
+    Header: "NAME",
     accessor: "name",
   },
   {
-    Header: "LOCATION",
-    accessor: "location",
+    Header: "STATUS",
+    accessor: "status",
   },
   {
-    Header: "MANAGED BY",
-    accessor: "managedBy",
+    Header: "DATE",
+    accessor: "date",
   },
   {
-    Header: "MORE",
-    accessor: "more",
+    Header: "PROGRESS",
+    accessor: "progress",
   },
 ];

@@ -26,18 +26,32 @@ const App = () => {
 
   const handleDataUpdate = async (newData) => {
     try {
-      if (newData && newData.length > 0) {
-        // If new data is provided, post it to the create API
-        await axios.post("http://localhost:3000/products/create", newData);  // Post data to the API
-        setProducts((prevData) => [...prevData, ...newData]);  // Update state with new products
-      } else {
-        // If no new data is provided, fetch all products from the getAll API
-        const response = await axios.get("http://localhost:3000/products/getAll");
-        setProducts(response.data);  // Update state with fetched products
-      }
+      // Update the product by sending the product ID in the URL
+      await axios.put(
+        `http://localhost:3000/products/update/${editingProduct.product_id}`,  // Send product_id in URL
+        {
+          name: editingProduct.name,
+          price: editingProduct.price,
+          stock: editingProduct.stock,
+        }
+      );
+      
+      // Update the product list after successful update
+      setProducts((prevData) =>
+        prevData.map((product) =>
+          product.product_id === editingProduct.product_id
+            ? editingProduct
+            : product
+        )
+      );
+  
+      // Close the modal and reset the editing state
+      setEditModalOpen(false);
+      setEditingProduct(null);
     } catch (error) {
-      console.error("Error handling product update:", error);
+      console.error("Error saving product:", error);
     }
+  
   };
   
 
@@ -62,7 +76,7 @@ const App = () => {
   // Save edited product
   const handleSave = async () => {
     try {
-      await axios.put(`http://localhost:3000/products/${editingProduct.product_id}`, editingProduct);  // Put data to update the product
+      await axios.put(`http://localhost:3000/products/update/${editingProduct.product_id}`, editingProduct);  // Put data to update the product
       setProducts((prevData) =>
         prevData.map((product) =>
           product.product_id === editingProduct.product_id

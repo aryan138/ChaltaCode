@@ -13,14 +13,6 @@ const userSchema = z.object({
   user_username: z.string().min(1, "Username is required"),
   user_email: z.string().email("Invalid email address"),
   user_password: z.string().min(8, "Password must be at least 8 characters"),
-  admin_ref: z.string().min(1, "Admin Reference is required"),
-  branch_id: z.union([
-    z.string().length(24, "Branch ID must be a 24-character hex string"),
-    z.instanceof(Uint8Array).refine((arr) => arr.length === 12, {
-      message: "Branch ID must be a 12-byte Uint8Array",
-    }),
-    z.number().int("Branch ID must be an integer"),
-  ]),
 });
 
 const adminSchema = z.object({
@@ -46,13 +38,31 @@ export default function SignUp() {
   };
 
   const handleSignUpForUser = async (data) => {
-    alert(data);
-    navigate('/admin/dashboard/default');
+    try {
+      const response = await axios.post("http://localhost:3000/user/register", data,
+        {
+          withCredentials: true, // Required to include cookies in requests
+        }
+      );
+      if (response.data.success) {
+        navigate("/admin");
+      }
+    } catch (error) {
+      console.log("error");
+      alert(error.response.data.error);
+    }
   };
 
   const handleSignUpForAdmin = async (data) => {
-    alert(data);
-    navigate('/admin/dashboard/default');
+    try {
+      const response = await axios.post("http://localhost:3000/admin/sign-in", data);
+      if (response.data.success) {
+        navigate("/admin-dashboard");
+      } 
+    } catch (error) {
+      // alert(error.message);
+      alert(error.response.data.error);
+    }
   };
 
   return (
@@ -105,26 +115,6 @@ export default function SignUp() {
             {userForm.formState.errors.user_password && (
               <p className="text-red-500 text-sm">
                 {userForm.formState.errors.user_password.message}
-              </p>
-            )}
-            <InputField
-              label="Admin Reference"
-              placeholder="Enter admin reference"
-              {...userForm.register("admin_ref")}
-            />
-            {userForm.formState.errors.admin_ref && (
-              <p className="text-red-500 text-sm">
-                {userForm.formState.errors.admin_ref.message}
-              </p>
-            )}
-            <InputField
-              label="Branch ID"
-              placeholder="Enter branch ID"
-              {...userForm.register("branch_id")}
-            />
-            {userForm.formState.errors.branch_id && (
-              <p className="text-red-500 text-sm">
-                {userForm.formState.errors.branch_id.message}
               </p>
             )}
             <button

@@ -56,9 +56,9 @@ const register = async (req, res) => {
       }
       // console.log(inputData);
   
-      const {user_username,user_email,user_password,admin_ref,branch_id} = inputData;
+      const {user_username,user_email,user_password} = inputData;
   
-      if (!user_username || !user_email || !user_password || !admin_ref || !branch_id) {
+      if (!user_username || !user_email || !user_password) {
         return res.json({
           message: "failed",
           status: "400",
@@ -90,15 +90,11 @@ const register = async (req, res) => {
         user_username: user_username,
         user_email: user_email,
         user_password:encryptPassword,
-        admin_ref:admin_ref,
-        branch_id:new mongoose.Types.ObjectId(branch_id),
       });
       await createUser.save();
       
       const refreshToken = await generateRefreshToken(createUser._id);
       console.log(refreshToken,"refreshToken");
-      // console.log("null values",await user.find());
-      // await createUser.save();
 
       if (!refreshToken){
         res.status(500).json({
@@ -153,6 +149,8 @@ const register = async (req, res) => {
       res.status(500).send(err.message);
     }
   }
+
+  // ------------------------------------login--------------------------------------
   const loginUser = async(req,res)=>{
     try {
       //take email and password

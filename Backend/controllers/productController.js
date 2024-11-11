@@ -30,15 +30,31 @@ const getAllProducts = async (req, res) => {
 
 // Update Product
 const updateProduct = async (req, res) => {
-  const { product_id, name, price, stock } = req.body;
+  const { name, price, stock } = req.body;
+  const { product_id } = req.params; // Retrieve product_id from the URL parameter
+
+  if (!name || !price || !stock) {
+    return res.status(400).json({ message: 'Missing required fields' });
+  }
+
   try {
-    const product = await Product.findOneAndUpdate({ product_id }, { name, price, stock }, { new: true });
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    // Find the product by product_id and update it with the new values
+    const product = await Product.findOneAndUpdate(
+      { product_id }, // Use product_id from the URL parameter
+      { name, price, stock },
+      { new: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
     res.status(200).json({ message: 'Product updated successfully', product });
   } catch (error) {
     res.status(500).json({ message: 'Error updating product', error });
   }
 };
+
 
 // Delete Product
 const deleteProduct = async (req, res) => {

@@ -1,6 +1,8 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Header = ({len}) => {
+    const navigate = useNavigate();
   return (
     <div className='main-container w-full h-auto flex justify-between'>
         <div className="invoice flex flex-col">
@@ -13,7 +15,7 @@ const Header = ({len}) => {
                 
             </div>
             <div className="newInvoice">
-                <button className='w-auto h-auto bg-blueSecondary rounded-full p-2 text-white'>New Invoice</button>
+                <button className='w-auto h-auto bg-blueSecondary rounded-full p-2 text-white' onClick={()=> navigate('/admin/invoice/create-invoice')}>New Invoice</button>
             </div>
         </div>
       

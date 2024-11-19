@@ -7,7 +7,6 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/tables";
 import RTLDefault from "views/rtl/default";
 import Inventory from "views/admin/inventory";
-import Invoice from "views/admin/invoice";
 import Branches from "views/admin/Branches/Branches.jsx";
 
 // Auth Imports
@@ -22,6 +21,7 @@ import {
   MdPerson,
   MdLock,
 } from "react-icons/md";
+import InvoiceList from "views/admin/invoice/InvoiceList";
 
 const routes = [
   {
@@ -58,7 +58,7 @@ const routes = [
     layout: "/admin",
     icon: <MdBarChart className="h-6 w-6" />,
     path: "invoice",
-    component: <Invoice/>,
+    component: <InvoiceList/>,
   },
   {
     name: "Profile",

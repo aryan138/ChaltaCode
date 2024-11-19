@@ -10,6 +10,7 @@ const inventoryBranchRoutes = require('./routes/inventoryBranchRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const productRoutes = require('./routes/productRoutes');
+const invoiceRoutes = require('./routes/invoiceRoutes');
 const PORT = 3000;
 
 // Middleware to parse JSON requests
@@ -41,6 +42,7 @@ app.use('/inventorybranch', inventoryBranchRoutes);
 app.use('/user', userRoutes);
 app.use('/order',orderRoutes);
 app.use('/products', productRoutes);
+app.use('/invoices', invoiceRoutes);
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server started on ${PORT}`);

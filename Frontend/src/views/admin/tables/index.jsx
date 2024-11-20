@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
-import ComplexTable from "./components/ComplexTable";
-import { columnsDataComplex } from "./variables/columnsData";
+import ComplexTable from "./components/ComplexTable"; // Importing ComplexTable
+import { columnsDataComplex } from "./variables/columnsData"; // Assuming you have column data here
 import axios from "axios";
-import Card from "components/card";
-import { MdFileUpload } from "react-icons/md";
-import AddOrder from "./components/AddOrder";
+import Card from "components/card"; // Card component for layout
+import { MdFileUpload } from "react-icons/md"; // Upload icon for the button
+import AddOrder from "./components/AddOrder"; // Modal component for adding order
 
 const Tables = () => {
-  const [tableData, setTableData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tableData, setTableData] = useState([]); // State to store the table data
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
 
+  // Fetch table data from the server
   useEffect(() => {
     const fetchTableData = async () => {
       try {
         const response = await axios.get("http://localhost:3000/order/getorder", {
-          withCredentials: true,
+          withCredentials: true, // Ensure cookies are sent if needed for authentication
         });
 
         if (response.data.status === 200) {
@@ -30,7 +31,7 @@ const Tables = () => {
             status: order.status,
             item_quantity: order.product_quantity,
           }));
-          setTableData(formattedData);
+          setTableData(formattedData); // Set the formatted data in state
         } else {
           console.error("Failed to fetch data:", response.data.message);
         }
@@ -39,15 +40,15 @@ const Tables = () => {
       }
     };
 
-    fetchTableData();
+    fetchTableData(); // Call the function to fetch data on component mount
   }, []);
 
   const handleOrderClick = () => {
-    setIsModalOpen(true);
+    setIsModalOpen(true); // Open the modal when the order button is clicked
   };
 
   const handleModalClose = () => {
-    setIsModalOpen(false);
+    setIsModalOpen(false); // Close the modal
   };
 
   return (
@@ -87,13 +88,13 @@ const Tables = () => {
       </div>
 
       <div className="mt-5">
-        <ComplexTable columnsData={columnsDataComplex} tableData={tableData} />
+        <ComplexTable columnsData={columnsDataComplex} tableData={tableData} /> {/* Rendering ComplexTable component */}
       </div>
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ">
           <div className="bg-white rounded-lg shadow-lg p-6 w-2/5 h-2/4">
-            <AddOrder onClose={handleModalClose} />
+            <AddOrder onClose={handleModalClose} /> {/* Rendering AddOrder modal */}
           </div>
         </div>
       )}
@@ -102,5 +103,3 @@ const Tables = () => {
 };
 
 export default Tables;
-
-

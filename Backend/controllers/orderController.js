@@ -153,15 +153,38 @@ const updateorder = async (req, res) => {
 };
 
 // Delete Order
+// const deleteorder = async (req, res) => {
+//   try {
+//     const id = req.params.id;
+//     const deleteData = await order.findByIdAndDelete(id);
+//     if (!deleteData) {
+//       return res.status(404).json({
+//         message: "Order not found",
+//       });
+//     }
+//     res.json({
+//       status: 200,
+//       message: "Order Deleted",
+//       data: deleteData,
+//     });
+//   } catch (err) {
+//     res.status(500).send(err.message);
+//   }
+// };
+
+
 const deleteorder = async (req, res) => {
   try {
-    const id = req.params.id;
-    const deleteData = await order.findByIdAndDelete(id);
+    const orderId = req.params.id;
+    // Find the order by the custom order_id (not _id)
+    const deleteData = await order.findOneAndDelete({ order_id: orderId });
+
     if (!deleteData) {
       return res.status(404).json({
         message: "Order not found",
       });
     }
+
     res.json({
       status: 200,
       message: "Order Deleted",
@@ -171,6 +194,10 @@ const deleteorder = async (req, res) => {
     res.status(500).send(err.message);
   }
 };
+
+
+
+
 
 const acceptOrder = async (req, res) => {
   try {

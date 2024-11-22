@@ -3,8 +3,8 @@ import { MdModeEditOutline } from "react-icons/md";
 import Card from "components/card";
 import { useUser } from "useContext/userContext";
 
-const General = () => {
-  const userInfo = useUser();
+const General = ({values}) => {
+  console.log(values.user_username);
   return (
     <Card extra={"w-full p-4 h-full"}>
       <div className="mb-8 w-full">
@@ -20,7 +20,7 @@ const General = () => {
         <div className="flex items-center">
           <div className="ml-4">
             <p className="text-base font-medium text-navy-700 dark:text-white">
-              Full Name: {userInfo.user_username}
+              Full Name: {values.user_username}
             </p>
             <p className="mt-2 text-sm text-gray-600">
               Full legal name of the user.
@@ -36,7 +36,7 @@ const General = () => {
         <div className="flex items-center">
           <div className="ml-4">
             <p className="text-base font-medium text-navy-700 dark:text-white">
-              Email: {userInfo.user_email}
+              Email: {values.user_email}
             </p>
             <p className="mt-2 text-sm text-gray-600">
               User's primary email address.
@@ -52,7 +52,7 @@ const General = () => {
         <div className="flex items-center">
           <div className="ml-4">
             <p className="text-base font-medium text-navy-700 dark:text-white">
-              Mobile Number: {userInfo.user_phone_number}
+              Mobile Number: {values.user_phone_number}
             </p>
             <p className="mt-2 text-sm text-gray-600">
               User's primary contact number.
@@ -68,7 +68,7 @@ const General = () => {
         <div className="flex items-center">
           <div className="ml-4">
             <p className="text-base font-medium text-navy-700 dark:text-white">
-              Company Name: {userInfo.user_company_name}
+              Company Name: {values.user_company_name}
             </p>
             <p className="mt-2 text-sm text-gray-600">
               The company the user is associated with.
@@ -116,7 +116,7 @@ const General = () => {
         <div className="flex items-center">
           <div className="ml-4">
             <p className="text-base font-medium text-navy-700 dark:text-white">
-              Company ID: {userInfo.user_username}
+              Company ID: {values.user_username}
             </p>
             <p className="mt-2 text-sm text-gray-600">
               Unique ID assigned to the user's company.

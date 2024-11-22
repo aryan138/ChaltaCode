@@ -29,18 +29,18 @@ const Banner = () => {
       {/* Post followers */}
       <div className="mt-6 mb-3 flex gap-4 md:!gap-14">
         <div className="flex flex-col items-center justify-center">
-          <p className="text-2xl font-bold text-navy-700 dark:text-white">17</p>
+          <p className="text-lg font-bold text-navy-700 dark:text-white">17</p>
           <p className="text-sm font-normal text-gray-600">Users</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <p className="text-2xl font-bold text-navy-700 dark:text-white">
+          <p className="text-lg font-bold text-navy-700 dark:text-white">
             20
           </p>
           <p className="text-sm font-normal text-gray-600">Branches</p>
         </div>
         <div className="flex flex-col items-center justify-center">
-          <p className="text-2xl font-bold text-navy-700 dark:text-white">
-            {userInfo.user_username+"@123"}
+          <p className="text-lg font-bold text-navy-700 dark:text-white">
+            {userInfo.user_username}
           </p>
           <p className="text-sm font-normal text-gray-600">Employee Id</p>
         </div>

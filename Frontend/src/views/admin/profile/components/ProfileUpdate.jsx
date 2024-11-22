@@ -32,7 +32,7 @@ const ProfileUpdate = ({ onClose }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/user/profile", {
+        const response = await axios.get("http://localhost:3000/user/get-details", {
           withCredentials: true
         });
         
@@ -65,6 +65,7 @@ const ProfileUpdate = ({ onClose }) => {
     toast.dismiss();
 
     try {
+      console.log("data",data);
       const response = await axios.post(
         "http://localhost:3000/user/update-details", 
         data, 

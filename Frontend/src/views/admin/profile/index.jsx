@@ -12,7 +12,7 @@ import { useUser } from "useContext/userContext";
 
 const ProfileOverview = () => {
   const [isProfileUpdateOpen, setIsProfileUpdateOpen] = useState(false);
-  const userInfo = useUser();
+  const [value,setValue] = useState({});
 
   const handleProfileUpdateClick = () => {
     setIsProfileUpdateOpen(true);
@@ -28,6 +28,27 @@ const ProfileOverview = () => {
       handleProfileUpdateClose();
     }
   };
+  useEffect(()=>{
+    const handleApi = async ()=>{
+      try {
+        const response = await axios.get("http://localhost:3000/user/get-details", {
+          withCredentials: true
+        });
+        
+        const userData = response.data.data;
+        console.log(userData);
+        setValue("user_username", userData.username || "");
+        setValue("user_email", userData.email || "");
+        setValue("user_fullname", userData.fullName || "");
+        setValue("user_phone_number", userData.phoneNumber || "");
+        setValue("user_designation", userData.designation || "");
+        setValue("user_company_name", userData.companyName || "");
+      } catch (error) {
+        console.error("Error fetching user data", error);
+      }
+    }
+    handleApi();
+  },[handleProfileUpdateClose]);
 
   return (
     <div 
@@ -71,7 +92,7 @@ const ProfileOverview = () => {
           <Project />
         </div>
         <div className="col-span-5 lg:col-span-6 lg:mb-0 3xl:col-span-5">
-          <General />
+          <General values={value} />
         </div>
 
         <div className="col-span-5 lg:col-span-12 lg:mb-0 3xl:!col-span-3">

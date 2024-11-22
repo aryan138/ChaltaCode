@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema(
   {
-    order_id: { type: String, unique: true }, // Retained for unique order tracking
-    product_name: { type: String, required: true }, // Product name for the order
+    order_id: { type: String, unique: true, required:true}, // Retained for unique order tracking
+    product_name: { type: String }, // Product name for the order
     product_quantity: { type: Number, required: true }, // Quantity of the product
     status: {
       type: String,

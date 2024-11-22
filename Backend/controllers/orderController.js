@@ -6,33 +6,33 @@ const Product = require("../models/Product");
 const SuperProduct = require("../models/superProduct");
 
 const placeorder = async (req, res) => {
+  
   try {
-    const inputData = req.body;
 
-    if (!inputData) {
-      return res.status(400).json({
-        message: "failed",
-        status: "400",
-        error: "Please provide details",
-      });
+    const { product_id, product_quantity } = req.body;
+  
+    if (!product_id || !product_quantity) {
+      return res.status(400).json({ message: "Product ID and quantity are required" });
     }
 
-    const { product_name: productName, product_quantity: productQuantity } = inputData;
-
-    if (!productName || !productQuantity) {
-      return res.status(400).json({
-        message: "failed",
-        status: "400",
-        error: "Please fill the empty fields",
-      });
-    }
+    //find the superProduct name
+    const superProduct = await SuperProduct.findById(product_id);
+    if (!superProduct) res.json({
+      status:401,
+      message:"product not found",
+    })
+    // console.log("superProduct",superProduct.name);
+    const product_name = superProduct.name;
+    const productId = superProduct.product_id;
+    // console.log("product name is :"+product_name);
 
     const createOrder = await order.create({
-      product_name: productName,
-      product_quantity: productQuantity,
+      order_id:`profitex${productId}${parseInt(Math.random() * 100)}`,
+      product_quantity: product_quantity,
+      product_name: product_name
     });
-
-    createOrder.order_id = `profitex-${createOrder._id}`;
+    // console.log("chalra hai yaha tk",createOrder);
+  
 
     // Generate unique tokens for accept/reject links
     const acceptToken = crypto.randomBytes(16).toString("hex");
@@ -43,7 +43,7 @@ const placeorder = async (req, res) => {
     await createOrder.save();
 
     const baseUrl = req.protocol + "://" + req.get("host");
-    const acceptUrl = `${baseUrl}/order/accept/${createOrder._id}/${acceptToken}`;
+    const acceptUrl =` ${baseUrl}/order/accept/${createOrder._id}/${acceptToken}`;
     const rejectUrl = `${baseUrl}/order/reject/${createOrder._id}/${rejectToken}`;
 
     const recipientEmail = "amansharma865865@gmail.com";
@@ -610,7 +610,7 @@ const placeorder = async (req, res) => {
                                        <tr>
                                         <td valign="top" align="left">
                                          <div class="pc-font-alt pc-w620-fontSize-16 pc-w620-lineHeight-163pc" style="line-height: 156%; letter-spacing: -0.3px; font-family: 'Fira Sans', Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 500; font-variant-ligatures: normal; color: #151515; text-align: left; text-align-last: left;">
-                                            ${productName}
+                                            ${product_name}
                                           </div>
                                         </td>
                                        </tr>
@@ -636,7 +636,7 @@ const placeorder = async (req, res) => {
                         <tr>
                          <td valign="top" align="right">
                           <div class="pc-font-alt pc-w620-fontSize-16 pc-w620-lineHeight-125pc" style="line-height: 122%; letter-spacing: -0.2px; font-family: 'Fira Sans', Arial, Helvetica, sans-serif; font-size: 18px; font-weight: normal; font-variant-ligatures: normal; color: #9b9b9b; text-align: right; text-align-last: right; margin-top: 13px;">
-                                ${productQuantity}
+                                ${product_quantity}
                             </div>
                          </td>
                         </tr>
@@ -847,7 +847,6 @@ const placeorder = async (req, res) => {
   }
 };
 
-module.exports = { placeorder };
 
 const acceptOrder = async (req, res) => {
   try {
@@ -903,7 +902,7 @@ const acceptOrder = async (req, res) => {
       productItem.stock += productQuantity;
     } else {
       console.log("Product does not exist in Product. Creating new product...");
-      const uniqueProductId = `product_${productName}_${Date.now()}`;
+      const uniqueProductId =` product_${productName}_${Date.now()}`;
 
       productItem = new Product({
         product_id: uniqueProductId,

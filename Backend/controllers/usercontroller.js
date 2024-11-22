@@ -117,11 +117,11 @@ const register = async (req, res) => {
       console.log(finalData,"finalData");
   
       // Send email
-      await mail.SendGreetMail({
-        email:user_email,
-        name:user_username,
-        pno:createUser.user_phone_number
-      });
+      // await mail.SendGreetMail({
+      //   email:user_email,
+      //   name:user_username,
+      //   pno:createUser.user_phone_number
+      // });
 
       const registerUser = await user.findById(createUser._id).select("-user_password -user_refreshToken");
   
@@ -276,50 +276,39 @@ const register = async (req, res) => {
 
   const updateUserDetails = async (req, res) => {
     try {
-      console.log("aagya andar");
+      console.log("inside update user");
         const {_id} = req.user;
         const id = _id;
+        // console.log(_id);
       
         const { 
             user_username, 
-            user_email, 
-            user_password, 
+            user_email,  
             user_fullname, 
             user_designation, 
-            user_role, 
-            user_status, 
-            user_profile, 
+            user_company_name,  
             user_phone_number 
         } = req.body;
+        console.log("now need to find user");
+        const userr = await user.findById(_id);
 
-        let user = await user.findOne({ id });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
+        if (!userr) {
+          console.log("can't find user");
+            return res.json({status:404, message: "User not found" });
         }
 
-        
-        if (user_password) {
-            const salt = await bcrypt.genSalt(10);
-            user.user_password = await bcrypt.hash(user_password, salt);
-        }
+        if (user_username) userr.user_username = user_username;
+        if (user_email) userr.user_email = user_email;
+        if (user_fullname) userr.user_fullname = user_fullname;
+        if (user_designation) userr.user_designation = user_designation;
+        if (user_company_name) userr.user_company_name = user_company_name;
+        if (user_phone_number) userr.user_phone_number = user_phone_number;  
+        await userr.save();
 
-        
-        if (user_username) user.user_username = user_username;
-        if (user_email) user.user_email = user_email;
-        if (user_fullname) user.user_fullname = user_fullname;
-        if (user_designation) user.user_designation = user_designation;
-        if (user_role) user.user_role = user_role;
-        if (user_status) user.user_status = user_status;
-        if (user_profile) user.user_profile = user_profile;
-        if (user_phone_number) user.user_phone_number = user_phone_number;
-
-        
-        await user.save();
-
-        return res.status(200).json({ message: "User details updated successfully", user });
+        return res.json({ status:200, message: "User details updated successfully", user });
 
     } catch (error) {
-        return res.status(500).json({ message: "Server Error", error });
+        return res.json({ status:500,message: "Server Error", error });
     }
 };
 

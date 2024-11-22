@@ -1,17 +1,19 @@
 const mongoose = require('mongoose');
 
-const orderSchema = new mongoose.Schema({
-    branch_id: { type: mongoose.Schema.Types.ObjectId, ref: 'branch' },
-    order_id: { type: String, unique: true },
-    product_name: { type: String, required: true },
-    product_quantity: { type: Number, required: true },
-    status: { 
-        type: String, 
-        enum: ['pending', 'accepted', 'rejected'], 
-        default: 'pending' 
+const orderSchema = new mongoose.Schema(
+  {
+    order_id: { type: String, unique: true }, // Retained for unique order tracking
+    product_name: { type: String, required: true }, // Product name for the order
+    product_quantity: { type: Number, required: true }, // Quantity of the product
+    status: {
+      type: String,
+      enum: ['pending', 'accepted', 'rejected'], // Order status options
+      default: 'pending',
     },
-    acceptToken: { type: String },
-    rejectToken: { type: String },
-}, { timestamps: true });
+    acceptToken: { type: String }, // Token for accepting the order
+    rejectToken: { type: String }, // Token for rejecting the order
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('order',orderSchema);
+module.exports = mongoose.model('Order', orderSchema);

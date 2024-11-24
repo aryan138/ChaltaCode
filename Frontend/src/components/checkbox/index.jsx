@@ -1,5 +1,6 @@
 const Checkbox = (props) => {
-  const { extra, color, ...rest } = props;
+  const { extra, color, colorScheme, ...rest } = props; // Destructure colorScheme to prevent it from being passed to DOM
+
   return (
     <input
       type="checkbox"
@@ -37,7 +38,7 @@ const Checkbox = (props) => {
           : "checked:bg-brand-500 dark:checked:bg-brand-400"
       } ${extra}`}
       name="weekly"
-      {...rest}
+      {...rest} // Spread the remaining props after destructuring colorScheme
     />
   );
 };

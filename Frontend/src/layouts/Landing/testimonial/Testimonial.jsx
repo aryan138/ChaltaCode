@@ -15,16 +15,18 @@ const Testimonial = () => {
           setIsVisible(false);
         }
       },
-      { threshold: 0.000000000000000000000000000000000001 } 
+      { threshold: 0.000000000000000000000000000000000001 } // Extremely small threshold
     );
 
-    if (mainRef.current) {
-      observer.observe(mainRef.current);
+    const currentRef = mainRef.current; // Store the ref value in a local variable
+
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (mainRef.current) {
-        observer.unobserve(mainRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, []);
@@ -34,7 +36,7 @@ const Testimonial = () => {
       {/* Gradient Shapes */}
       <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-gradient-to-br from-purple-600 via-blue-500 to-indigo-600 rounded-full opacity-50 blur-3xl z-0"></div>
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-gradient-to-tl from-blue-500 via-teal-400 to -green-300 rounded-full opacity-40 blur-3xl z-0" ref={mainRef}></div>
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-tl from-blue-500 via-teal-400 to -green-300 rounded-full opacity-40 blur-3xl z-0" ref={mainRef}></div>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-tl from-blue-500 via-teal-400 to -green-300 rounded-full opacity-40 blur-3xl z-0"></div>
       <div className="absolute top-1/4 left-1/2 w-[250px] h-[250px] bg-gradient-to-br from-purple-600 via-blue-500 to-indigo-600 rounded-full opacity-20 blur-2xl z-0"></div>
 
       {/* Main Content */}

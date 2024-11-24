@@ -1,39 +1,33 @@
 import React from "react";
 
-// Admin Imports
-import MainDashboard from "views/admin/default";
-import NFTMarketplace from "views/admin/marketplace";
-import Profile from "views/admin/profile";
-import DataTables from "views/admin/tables";
-import RTLDefault from "views/rtl/default";
-import Inventory from "views/admin/inventory";
-import Branches from "views/admin/Branches/Branches.jsx";
+import MainDashboard from "views/user/default";
+import Profile from "views/user/profile";
+import DataTables from "views/user/tables";
+import Inventory from "views/user/inventory";
+import Branches from "views/user/Branches/Branches.jsx";
 
-// Auth Imports
 import SignIn from "views/auth/SignIn";
 import SignUp from "views/auth/SignUp";
 
-// Icon Imports
 import {
   MdHome,
-  MdOutlineShoppingCart,
   MdBarChart,
   MdPerson,
   MdLock,
 } from "react-icons/md";
-import InvoiceList from "views/admin/invoice/InvoiceList";
+import InvoiceList from "views/user/invoice/InvoiceList";
 
 const routes = [
   {
     name: "Main Dashboard",
-    layout: "/admin",
+    layout: "/user",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,
     component: <MainDashboard />,
   },
   {
     name: "Branches",
-    layout: "/admin",
+    layout: "/user",
     path: "branches",
     icon: <MdHome className="h-6 w-6" />,
     component: <Branches/>,
@@ -41,28 +35,28 @@ const routes = [
   
   {
     name: "Order Tables",
-    layout: "/admin",
+    layout: "/user",
     icon: <MdBarChart className="h-6 w-6" />,
     path: "order-tables",
     component: <DataTables />,
   },
   {
     name: "Inventory",
-    layout: "/admin",
+    layout: "/user",
     icon: <MdBarChart className="h-6 w-6" />,
     path: "inventory",
     component: <Inventory/>,
   },
   {
     name: "Invoice",
-    layout: "/admin",
+    layout: "/user",
     icon: <MdBarChart className="h-6 w-6" />,
     path: "invoice",
     component: <InvoiceList/>,
   },
   {
     name: "Profile",
-    layout: "/admin",
+    layout: "/user",
     path: "profile",
     icon: <MdPerson className="h-6 w-6" />,
     component: <Profile />,

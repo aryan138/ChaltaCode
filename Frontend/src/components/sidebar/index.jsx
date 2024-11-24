@@ -3,9 +3,7 @@ import { HiX } from "react-icons/hi";
 import Links from "./components/Links";
 import { Link } from 'react-router-dom'
 
-import SidebarCard from "components/sidebar/componentsrtl/SidebarCard";
 import routes from "routes.js";
-import { useState } from 'react';
 
 const Sidebar = ({ open, onClose }) => {
   return (

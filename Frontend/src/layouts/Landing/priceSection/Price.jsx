@@ -103,7 +103,7 @@ const PricingPlans = () => {
                 </span>
                 <span className={`${index === 1 ? "text-gray-300" : "text-gray-600"}`}>{plan.duration}</span>
               </div>
-              <ul role="list" className="mb-8 space-y-4 text-left">
+              <ul className="mb-8 space-y-4 text-left">
                 {plan.features.map((feature, idx) => (
                   <li key={idx} className="flex items-center space-x-3">
                     <svg

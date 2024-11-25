@@ -4,7 +4,7 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 const Table = ({ data = [], onDelete, onEdit }) => {
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full table-auto bg-white shadow-lg rounded-2xl border-separate dark:bg-navy-800">
+      <table className="min-w-full table-auto bg-white shadow-lg rounded-2xl border-separate dark:bg-black-800">
         <thead>
           <tr>
             <th className="py-3 px-6 text-left text-s font-semibold text-gray-600 dark:text-white">

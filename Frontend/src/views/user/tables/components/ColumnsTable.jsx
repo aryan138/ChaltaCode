@@ -21,7 +21,7 @@ function ColumnsTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">NAME</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-black-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -34,7 +34,7 @@ function ColumnsTable(props) {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-black-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -47,7 +47,7 @@ function ColumnsTable(props) {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-black-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -58,7 +58,7 @@ function ColumnsTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-black-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -79,7 +79,7 @@ function ColumnsTable(props) {
   return (
     <Card extra={"w-full pb-10 p-4 h-full"}>
       <header className="relative flex items-center justify-between">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
+        <div className="text-xl font-bold text-black-700 dark:text-white">
           4-Columns Table
         </div>
         <CardMenu />

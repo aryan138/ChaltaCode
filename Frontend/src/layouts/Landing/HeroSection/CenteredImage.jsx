@@ -5,7 +5,8 @@ const CenteredImage = () => {
 
   return (
     <div
-      style={{ backgroundColor: "#050323" }}
+      // style={{ backgroundColor: "#050323" }}
+      style={{ backgroundColor: "#051708" }}
       className="relative flex justify-center items-center h-auto pb-6"
     >
       {/* Main Image */}

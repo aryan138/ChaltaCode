@@ -67,7 +67,7 @@ const AddOrder = ({ onClose }) => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-lg w-full h-full">
-      <h3 className="text-lg font-bold text-navy-700 mb-4">Place a New Order</h3>
+      <h3 className="text-lg font-bold text-black-700 mb-4">Place a New Order</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Product dropdown */}
         <div className="mb-4">

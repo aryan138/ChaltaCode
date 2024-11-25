@@ -175,12 +175,12 @@ const Upload = ({ onDataUpdate }) => {
 
   return (
     <>
-      <Card className="grid h-full w-full grid-cols-1 gap-3 rounded-[20px] bg-white bg-clip-border p-3 font-dm shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:shadow-none 2xl:grid-cols-11">
+      <Card className="grid h-full w-full grid-cols-1 gap-3 rounded-[20px] bg-white bg-clip-border p-3 font-dm shadow-3xl shadow-shadow-500 dark:!bg-black-800 dark:shadow-none 2xl:grid-cols-11">
         <div
-          className="col-span-5 h-full w-full rounded-xl bg-lightPrimary dark:!bg-navy-700 2xl:col-span-6"
+          className="col-span-5 h-full w-full rounded-xl bg-lightPrimary dark:!bg-black-700 2xl:col-span-6"
           onClick={handleUploadClick}
         >
-          <button className="flex h-full w-full flex-col items-center justify-center rounded-xl border-[2px] border-dashed border-gray-200 py-3 dark:!border-navy-700 lg:pb-0">
+          <button className="flex h-full w-full flex-col items-center justify-center rounded-xl border-[2px] border-dashed border-gray-200 py-3 dark:!border-black-700 lg:pb-0">
             <MdFileUpload className="text-[80px] text-brand-500 dark:text-white" />
             <h4 className="text-xl font-bold text-brand-500 dark:text-white">
               Upload Product
@@ -191,8 +191,8 @@ const Upload = ({ onDataUpdate }) => {
           </button>
         </div>
 
-        <div className="col-span-5 flex h-full w-full flex-col justify-center overflow-hidden rounded-xl bg-white pl-3 pb-4 dark:!bg-navy-800">
-          <h5 className="text-left text-xl font-bold leading-9 text-navy-700 dark:text-white">
+        <div className="col-span-5 flex h-full w-full flex-col justify-center overflow-hidden rounded-xl bg-white pl-3 pb-4 dark:!bg-black-800">
+          <h5 className="text-left text-xl font-bold leading-9 text-black-700 dark:text-white">
             Add your Product here
           </h5>
           <p className="leading-1 mt-2 text-base font-normal text-gray-600">
@@ -213,15 +213,15 @@ const Upload = ({ onDataUpdate }) => {
           onClick={handleOutsideClick}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 backdrop-blur-sm"
         >
-          <div className="relative w-full max-w-md transform rounded-lg bg-white p-6 shadow-xl dark:bg-navy-800">
+          <div className="relative w-full max-w-md transform rounded-lg bg-white p-6 shadow-xl dark:bg-black-800">
             <button
               onClick={handleClosePopup}
-              className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 dark:bg-navy-700 dark:text-gray-400 dark:hover:bg-navy-600 dark:hover:text-white"
+              className="absolute -right-3 -top-3 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 dark:bg-black-700 dark:text-gray-400 dark:hover:bg-black-600 dark:hover:text-white"
             >
               <X size={18} />
             </button>
 
-            <h3 className="mb-4 text-xl font-bold text-navy-700 dark:text-white">
+            <h3 className="mb-4 text-xl font-bold text-black-700 dark:text-white">
               Choose an Option
             </h3>
 

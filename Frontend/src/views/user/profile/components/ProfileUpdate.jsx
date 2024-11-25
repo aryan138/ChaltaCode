@@ -130,7 +130,7 @@ const ProfileUpdate = ({ onClose }) => {
         limit={3}
       />
 
-      <div className="bg-white dark:!bg-navy-800 shadow-3xl shadow-shadow-500 rounded-[20px] p-6 relative">
+      <div className="bg-white dark:!bg-black-800 shadow-3xl shadow-shadow-500 rounded-[20px] p-6 relative">
         {/* Close Button */}
         <button 
           onClick={onClose}
@@ -140,7 +140,7 @@ const ProfileUpdate = ({ onClose }) => {
         </button>
 
         <div className="mb-6">
-          <h4 className="text-2xl font-bold text-navy-700 dark:text-white mb-2">
+          <h4 className="text-2xl font-bold text-black-700 dark:text-white mb-2">
             Update Your Profile
           </h4>
           <p className="text-sm font-medium text-gray-600 dark:text-gray-400">

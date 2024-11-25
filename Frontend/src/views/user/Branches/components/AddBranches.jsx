@@ -40,7 +40,7 @@ const AddBranch = ({ onClose }) => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-lg w-full h-full">
-      <h3 className="text-lg font-bold text-navy-700 mb-4">Add a New Branch</h3>
+      <h3 className="text-lg font-bold text-black-700 mb-4">Add a New Branch</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         <InputField
           label="Branch Name"

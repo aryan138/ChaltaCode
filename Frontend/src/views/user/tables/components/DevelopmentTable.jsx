@@ -25,7 +25,7 @@ function CheckTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">NAME</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-black-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -78,7 +78,7 @@ function CheckTable(props) {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-black-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -89,7 +89,7 @@ function CheckTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-black-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -103,7 +103,7 @@ function CheckTable(props) {
       ),
       cell: (info) => (
         <div className="flex items-center gap-3">
-          <p className="text-sm font-bold text-navy-700 dark:text-white">
+          <p className="text-sm font-bold text-black-700 dark:text-white">
             {info.getValue()}%
           </p>
           <Progress width="w-[68px]" value={info.getValue()} />
@@ -126,7 +126,7 @@ function CheckTable(props) {
   return (
     <Card extra={"w-full h-full sm:overflow-auto px-6"}>
       <header className="relative flex items-center justify-between pt-4">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
+        <div className="text-xl font-bold text-black-700 dark:text-white">
           Check Table
         </div>
 

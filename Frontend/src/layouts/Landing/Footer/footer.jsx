@@ -29,7 +29,7 @@ const Footer = () => {
   ];
   // JSX structure of the footer
   return (
-    <div className='bg-[#050323] mt-16 pl-12 pr-16 mx-auto py-16 px-4 grid lg:grid-cols-3 gap-8 text-gray-300 rounded-t-[75px]'>
+    <div className='bg-[#051708] mt-16 pl-12 pr-16 mx-auto py-16 px-4 grid lg:grid-cols-3 gap-8 text-gray-300 rounded-t-[75px]'>
       {/* Left section with brand and social icons */}
       <div>
         <h1 className='w-full text-3xl lg:text-4xl xl:text-5xl font-bold text-[#ffffff]'>PROFITEX.</h1>

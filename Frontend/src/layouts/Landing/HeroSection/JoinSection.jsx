@@ -6,7 +6,9 @@ import React from 'react';
 const Join = () => {
 
   return (
-    <div style={{ backgroundColor: "#050323" }} className="text-center pt-20 pb-14 rounded-b-[75px]">
+    // <div style={{ backgroundColor: "#050323" }} 
+    <div style={{ backgroundColor: "#051708" }} 
+    className="text-center pt-20 pb-14 rounded-b-[75px]">
       <h2 className="text-2xl md:text-3xl text-white font-semibold mb-10">
           JOIN 30,000+ USERS STREAMLINING BILLING, INVENTORY, AND INVOICING
       </h2>

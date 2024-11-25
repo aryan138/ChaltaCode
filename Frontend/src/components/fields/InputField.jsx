@@ -10,7 +10,7 @@
 //     <div className={`${props.extra}`}>
 //       <label
 //         htmlFor={props.id}
-//         className={`text-sm text-navy-700 dark:text-white ${
+//         className={`text-sm text-black-700 dark:text-white ${
 //           props.variant === "auth" ? "ml-1.5 font-medium" : "ml-3 font-bold"
 //         }`}
 //       >
@@ -50,7 +50,7 @@ const InputField = forwardRef(function InputField(props, ref) {
     <div className={`${extra}`}>
       <label
         htmlFor={id}
-        className={`text-sm text-navy-700 dark:text-white ${
+        className={`text-sm text-black-700 dark:text-white ${
           variant === "auth" ? "ml-1.5 font-medium" : "ml-3 font-bold"
         }`}
       >

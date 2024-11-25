@@ -7,7 +7,7 @@ const General = ({values}) => {
   return (
     <Card extra={"w-full p-4 h-full"}>
       <div className="mb-8 w-full">
-        <h4 className="text-xl font-bold text-navy-700 dark:text-white">
+        <h4 className="text-xl font-bold text-black-700 dark:text-white">
           User Information
         </h4>
         <p className="mt-2 text-base text-gray-600">
@@ -15,10 +15,10 @@ const General = ({values}) => {
         </p>
       </div>
       {/* Full Name */}
-      <div className="flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+      <div className="flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-black-700 dark:shadow-none">
         <div className="flex items-center">
           <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
+            <p className="text-base font-medium text-black-700 dark:text-white">
               Full Name: {values.user_username}
             </p>
             <p className="mt-2 text-sm text-gray-600">
@@ -31,10 +31,10 @@ const General = ({values}) => {
         </div>
       </div>
       {/* Email */}
-      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-black-700 dark:shadow-none">
         <div className="flex items-center">
           <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
+            <p className="text-base font-medium text-black-700 dark:text-white">
               Email: {values.user_email}
             </p>
             <p className="mt-2 text-sm text-gray-600">
@@ -47,10 +47,10 @@ const General = ({values}) => {
         </div>
       </div>
       {/* Mobile Number */}
-      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-black-700 dark:shadow-none">
         <div className="flex items-center">
           <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
+            <p className="text-base font-medium text-black-700 dark:text-white">
               Mobile Number: {values.user_phone_number}
             </p>
             <p className="mt-2 text-sm text-gray-600">
@@ -63,10 +63,10 @@ const General = ({values}) => {
         </div>
       </div>
       {/* Company Name */}
-      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-black-700 dark:shadow-none">
         <div className="flex items-center">
           <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
+            <p className="text-base font-medium text-black-700 dark:text-white">
               Company Name: {values.user_company_name}
             </p>
             <p className="mt-2 text-sm text-gray-600">
@@ -79,10 +79,10 @@ const General = ({values}) => {
         </div>
       </div>
       {/* PAN Number */}
-      {/* <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+      {/* <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-black-700 dark:shadow-none">
         <div className="flex items-center">
           <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
+            <p className="text-base font-medium text-black-700 dark:text-white">
               PAN Number: ABCDE1234F
             </p>
             <p className="mt-2 text-sm text-gray-600">
@@ -95,10 +95,10 @@ const General = ({values}) => {
         </div>
       </div> */}
       {/* GST Number */}
-      {/* <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+      {/* <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-black-700 dark:shadow-none">
         <div className="flex items-center">
           <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
+            <p className="text-base font-medium text-black-700 dark:text-white">
               GST Number: 22ABCDE1234F2Z5
             </p>
             <p className="mt-2 text-sm text-gray-600">
@@ -111,10 +111,10 @@ const General = ({values}) => {
         </div>
       </div> */}
       {/* Company ID */}
-      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-navy-700 dark:shadow-none">
+      <div className="mt-3 flex w-full items-center justify-between rounded-2xl bg-white p-3 shadow-3xl shadow-shadow-500 dark:!bg-black-700 dark:shadow-none">
         <div className="flex items-center">
           <div className="ml-4">
-            <p className="text-base font-medium text-navy-700 dark:text-white">
+            <p className="text-base font-medium text-black-700 dark:text-white">
               Company ID: {values.user_username}
             </p>
             <p className="mt-2 text-sm text-gray-600">

@@ -51,7 +51,7 @@ export default function SignUp() {
   return (
     <div className="mt-6 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10 lg:items-center lg:justify-start">
       <div className="top-0 w-full max-w-full flex-col items-center md:pl-4 lg:pl-0 xl:max-w-[420px]">
-        <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
+        <h4 className="mb-2.5 text-4xl font-bold text-black-700 dark:text-white">
           {userType === "user" ? "User Sign Up" : "Admin Sign Up"}
         </h4>
 
@@ -108,7 +108,7 @@ export default function SignUp() {
         </form>
 
         <div className="mt-4">
-          <span className="text-sm font-medium text-navy-700 dark:text-gray-600">
+          <span className="text-sm font-medium text-black-700 dark:text-gray-600">
             Already have an account?
           </span>
           <Link

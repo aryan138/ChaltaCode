@@ -34,7 +34,7 @@
 //         </p>
 //       ),
 //       cell: (info) => (
-//         <p className="text-sm font-bold text-navy-700 dark:text-white">
+//         <p className="text-sm font-bold text-black-700 dark:text-white">
 //           {info.getValue()}
 //         </p>
 //       ),
@@ -47,7 +47,7 @@
 //         </p>
 //       ),
 //       cell: (info) => (
-//         <p className="text-sm font-bold text-navy-700 dark:text-white">
+//         <p className="text-sm font-bold text-black-700 dark:text-white">
 //           {info.getValue()}
 //         </p>
 //       ),
@@ -58,7 +58,7 @@
 //         <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
 //       ),
 //       cell: (info) => (
-//         <p className="text-sm font-bold text-navy-700 dark:text-white">
+//         <p className="text-sm font-bold text-black-700 dark:text-white">
 //           {info.getValue()}
 //         </p>
 //       ),
@@ -79,7 +79,7 @@
 //           ) : info.getValue() === "Rejected" ? (
 //             <MdCancel className="text-red-500 me-1 dark:text-red-300" />
 //           ) : null}
-//           <p className="text-sm font-bold text-navy-700 dark:text-white">
+//           <p className="text-sm font-bold text-black-700 dark:text-white">
 //             {info.getValue()}
 //           </p>
 //         </div>
@@ -93,7 +93,7 @@
 //         </p>
 //       ),
 //       cell: (info) => (
-//         <p className="text-sm font-bold text-navy-700 dark:text-white">
+//         <p className="text-sm font-bold text-black-700 dark:text-white">
 //           {info.getValue()}
 //         </p>
 //       ),
@@ -176,7 +176,7 @@
 //   return (
 //     <Card extra={"w-full h-full px-6 pb-6 sm:overflow-x-auto"}>
 //       <div className="relative flex items-center justify-between pt-4">
-//         <div className="text-xl font-bold text-navy-700 dark:text-white">
+//         <div className="text-xl font-bold text-black-700 dark:text-white">
 //           Order Tracker
 //         </div>
 //         <CardMenu />
@@ -275,17 +275,17 @@ export default function OrderTable(props) {
     columnHelper.accessor("order_id", {
       id: "order_id",
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ORDER ID</p>,
-      cell: (info) => <p className="text-sm font-bold text-navy-700 dark:text-white">{info.getValue()}</p>,
+      cell: (info) => <p className="text-sm font-bold text-black-700 dark:text-white">{info.getValue()}</p>,
     }),
     columnHelper.accessor("item_name", {
       id: "item_name",
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ITEM NAME</p>,
-      cell: (info) => <p className="text-sm font-bold text-navy-700 dark:text-white">{info.getValue()}</p>,
+      cell: (info) => <p className="text-sm font-bold text-black-700 dark:text-white">{info.getValue()}</p>,
     }),
     columnHelper.accessor("date", {
       id: "date",
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>,
-      cell: (info) => <p className="text-sm font-bold text-navy-700 dark:text-white">{info.getValue()}</p>,
+      cell: (info) => <p className="text-sm font-bold text-black-700 dark:text-white">{info.getValue()}</p>,
     }),
     columnHelper.accessor("status", {
       id: "status",
@@ -299,14 +299,14 @@ export default function OrderTable(props) {
           ) : info.getValue() === "Rejected" ? (
             <MdCancel className="text-red-500 me-1 dark:text-red-300" />
           ) : null}
-          <p className="text-sm font-bold text-navy-700 dark:text-white">{info.getValue()}</p>
+          <p className="text-sm font-bold text-black-700 dark:text-white">{info.getValue()}</p>
         </div>
       ),
     }),
     columnHelper.accessor("item_quantity", {
       id: "item_quantity",
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ITEM QUANTITY</p>,
-      cell: (info) => <p className="text-sm font-bold text-navy-700 dark:text-white">{info.getValue()}</p>,
+      cell: (info) => <p className="text-sm font-bold text-black-700 dark:text-white">{info.getValue()}</p>,
     }),
     columnHelper.accessor("action", {
       id: "action",
@@ -414,7 +414,7 @@ export default function OrderTable(props) {
   return (
     <Card extra={"w-full h-full px-6 pb-6 sm:overflow-x-auto"}>
       <div className="relative flex items-center justify-between pt-4">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">Order Tracker</div>
+        <div className="text-xl font-bold text-black-700 dark:text-white">Order Tracker</div>
         <CardMenu />
       </div>
 

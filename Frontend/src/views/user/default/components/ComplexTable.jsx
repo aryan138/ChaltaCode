@@ -26,7 +26,7 @@ export default function ComplexTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">NAME</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-black-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -47,7 +47,7 @@ export default function ComplexTable(props) {
           ) : info.getValue() === "Error" ? (
             <MdOutlineError className="text-amber-500 me-1 dark:text-amber-300" />
           ) : null}
-          <p className="text-sm font-bold text-navy-700 dark:text-white">
+          <p className="text-sm font-bold text-black-700 dark:text-white">
             {info.getValue()}
           </p>
         </div>
@@ -59,7 +59,7 @@ export default function ComplexTable(props) {
         <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm font-bold text-black-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -93,7 +93,7 @@ export default function ComplexTable(props) {
   return (
     <Card extra={"w-full h-full px-6 pb-6 sm:overflow-x-auto"}>
       <div className="relative flex items-center justify-between pt-4">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
+        <div className="text-xl font-bold text-black-700 dark:text-white">
           Order Status
         </div>
         <CardMenu />

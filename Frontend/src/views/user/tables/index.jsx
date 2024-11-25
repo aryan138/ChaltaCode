@@ -54,10 +54,10 @@ const Tables = () => {
   return (
     <div>
       <div className="mt-5 w-2/4">
-        <Card className="grid h-full w-full grid-cols-1 gap-3 rounded-[20px] bg-white bg-clip-border p-4 font-dm shadow-3xl shadow-shadow-500 dark:!bg-navy-800 dark:shadow-none 2xl:grid-cols-11">
-          <div className="col-span-5 h-full w-full rounded-xl bg-lightPrimary dark:!bg-navy-700 2xl:col-span-6 overflow-y-auto">
+        <Card className="grid h-full w-full grid-cols-1 gap-3 rounded-[20px] bg-white bg-clip-border p-4 font-dm shadow-3xl shadow-shadow-500 dark:!bg-black-800 dark:shadow-none 2xl:grid-cols-11">
+          <div className="col-span-5 h-full w-full rounded-xl bg-lightPrimary dark:!bg-black-700 2xl:col-span-6 overflow-y-auto">
             <button
-              className="flex h-full w-full flex-col items-center justify-center rounded-xl border-[2px] border-dashed border-gray-200 py-3 dark:!border-navy-700 lg:pb-0"
+              className="flex h-full w-full flex-col items-center justify-center rounded-xl border-[2px] border-dashed border-gray-200 py-3 dark:!border-black-700 lg:pb-0"
               onClick={handleOrderClick}
             >
               <MdFileUpload className="text-[80px] text-brand-500 dark:text-white" />
@@ -70,8 +70,8 @@ const Tables = () => {
             </button>
           </div>
 
-          <div className="col-span-5 flex h-full w-full flex-col justify-center overflow-hidden rounded-xl bg-white pl-3 pb-4 dark:!bg-navy-800">
-            <h5 className="text-left text-xl font-bold leading-9 text-navy-700 dark:text-white">
+          <div className="col-span-5 flex h-full w-full flex-col justify-center overflow-hidden rounded-xl bg-white pl-3 pb-4 dark:!bg-black-800">
+            <h5 className="text-left text-xl font-bold leading-9 text-black-700 dark:text-white">
               Order Products from here
             </h5>
             <p className="leading-1 mt-2 text-base font-normal text-gray-600">

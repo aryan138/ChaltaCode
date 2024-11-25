@@ -8,7 +8,7 @@ function InputField(props) {
     <div className={`${extra}`}>
       <label
         htmlFor={id}
-        className="ml-3 mb-2 text-sm font-bold text-navy-700 dark:text-white"
+        className="ml-3 mb-2 text-sm font-bold text-black-700 dark:text-white"
       >
         {label}
       </label>

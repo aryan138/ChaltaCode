@@ -126,7 +126,7 @@ const Upload = ({ onDataUpdate }) => {
 
       setLoading(true);
       await axios.post(
-        "http://localhost:3000/products/upload-excel",
+        "http://localhost:3000/superproducts/upload-excel",
         formattedData,
         {
           headers: {
@@ -161,7 +161,7 @@ const Upload = ({ onDataUpdate }) => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:3000/products/create",
+        "http://localhost:3000/superproducts/create",
         formData
       );
       if (response.status === 200) {

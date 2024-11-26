@@ -17,7 +17,7 @@ const App = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/products/getall"
+          "http://localhost:3000/superproducts/getall"
         );
         setProducts(response.data.products);
       } catch (error) {
@@ -64,7 +64,7 @@ const App = () => {
 
     try {
       await axios.put(
-        `http://localhost:3000/products/update/${editingProduct.product_id}`,
+        `http://localhost:3000/superproducts/update/${editingProduct.product_id}`,
         editingProduct
       );
       setProducts((prevData) =>
@@ -93,7 +93,7 @@ const App = () => {
   // Delete a product
   const handleDelete = async (productId) => {
     try {
-      await axios.delete(`http://localhost:3000/products/delete/${productId}`);
+      await axios.delete(`http://localhost:3000/superproducts/delete/${productId}`);
       setProducts((prevData) =>
         prevData.filter((product) => product.product_id !== productId)
       );

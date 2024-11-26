@@ -91,14 +91,14 @@ const routes = [
     component: <AdminDataTables />,
   },
   {
-    name: "Inventory",
+    name: "Super Inventory",
     layout: "/admin",
     icon: <MdDeck className="h-6 w-6" />,
     path: "inventory",
     component: <AdminInventory />,
   },
   {
-    name: "Invoice",
+    name: "User",
     layout: "/admin",
     icon: <MdOutlineTableChart className="h-6 w-6" />,
     path: "invoice",

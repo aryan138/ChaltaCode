@@ -3,12 +3,14 @@ import axios from "axios";
 import Table from "./components/Table";
 import Upload from "./components/Upload";
 import Storage from "./components/Storage";
+import { Search } from "lucide-react";
 
 const App = () => {
   const [products, setProducts] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [errors, setErrors] = useState({}); // State to track errors
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
   // Fetch products from the API
   useEffect(() => {
@@ -17,7 +19,6 @@ const App = () => {
         const response = await axios.get(
           "http://localhost:3000/products/getall"
         );
-        console.log("Fetched products:", response.data.products);
         setProducts(response.data.products);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -26,11 +27,16 @@ const App = () => {
     fetchProducts();
   }, []);
 
+  // Filter products based on search query
+  const filteredProducts = products.filter(
+    (product) =>
+      product.product_id.toString().includes(searchQuery) ||
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Validate the form inputs
   const validateForm = () => {
     const newErrors = {};
-
-    // Regex for validation
     const nameRegex = /^[a-zA-Z0-9_\s]+$/;
     const priceRegex = /^(?!0$)\d+(\.\d+)?$/;
     const stockRegex = /^[0-9]+$/;
@@ -113,8 +119,28 @@ const App = () => {
         <Storage />
         <Upload onDataUpdate={handleDataUpdate} />
       </div>
+
+      {/* Search Input */}
+      <div className="my-4 flex items-center rounded-lg border border-gray-300 bg-white hover:border-brand-500 hover:ring-2 hover:ring-brand-500 focus-within:ring-2 focus-within:ring-brand-500">
+      <span className="pl-3 text-gray-400">
+        <Search size={20} /> {/* Lucide Search Icon */}
+      </span>
+      <input
+        type="text"
+        placeholder="Search by ID or Name"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mt-1 w-full rounded-lg border-none bg-white p-2 pl-10 outline-none"
+      />
+    </div>
+
       <div className="mt-5 h-full w-full pb-4">
-        <Table data={products} onDelete={handleDelete} onEdit={handleEdit} />
+        {/* Pass filtered products to Table */}
+        <Table
+          data={filteredProducts}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
+        />
       </div>
 
       {editModalOpen && (
@@ -181,14 +207,14 @@ const App = () => {
                 <button
                   type="button"
                   onClick={() => setEditModalOpen(false)}
-                  className="rounded bg-gray-500 px-4 py-2 text-white"
+                  className="rounded-lg bg-red-500 px-4 py-2 text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="rounded bg-blue-500 px-4 py-2 text-white"
+                  className="rounded-lg bg-blue-500 px-4 py-2 text-white"
                 >
                   Save
                 </button>

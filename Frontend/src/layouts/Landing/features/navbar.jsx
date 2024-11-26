@@ -23,12 +23,12 @@ const Navbar = ({ setActiveContent }) => {
                   setActiveIndex(index);
                   setActiveContent(index);
                 }}
-                className={`relative group inline-block text-black border border-r-[1px] border-r-solid border-r-[#f0f0f0] cursor-pointer ${isActive ? 'text-blue-700' : ''}`}
+                className={`relative group inline-block text-black border border-r-[1px] border-r-solid border-r-[#f0f0f0] cursor-pointer ${isActive ? 'text-green-700' : ''}`}
               >
                 <span className="relative z-10 px-8 py-7 block">
                   {text}
                 </span>
-                <div className={`absolute inset-x-0 bottom-0 h-1 bg-blue-700 transform ${isActive ? 'scale-x-100' : 'scale-x-0'} group-hover:scale-x-100 transition-transform duration-500`}></div>
+                <div className={`absolute inset-x-0 bottom-0 h-1 bg-green-700 transform ${isActive ? 'scale-x-100' : 'scale-x-0'} group-hover:scale-x-100 transition-transform duration-500`}></div>
               </div>
             );
           })}

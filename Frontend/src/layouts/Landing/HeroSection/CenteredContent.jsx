@@ -29,7 +29,7 @@ const CenteredContent = () => {
       <div className="animate-fade-up">
         <a
           href="#signIn"
-          className="bg-green-600 text-white py-3 px-6 rounded-full text-sm md:text-base font-medium hover:bg-green-500 transition duration-300"
+          className="bg-green-800 text-white py-3 px-6 rounded-full text-sm md:text-base font-medium hover:bg-green-700 transition duration-300"
         >
           Get Started with Pro
         </a>

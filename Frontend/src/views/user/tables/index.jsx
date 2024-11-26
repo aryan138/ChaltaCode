@@ -93,7 +93,7 @@ const Tables = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-2/5 h-2/4">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-2/5 h-2/4 dark:!bg-black-900">
             <AddOrder onClose={handleModalClose} /> {/* Rendering AddOrder modal */}
           </div>
         </div>

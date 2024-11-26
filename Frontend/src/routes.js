@@ -4,7 +4,6 @@ import MainDashboard from "views/user/default";
 import Profile from "views/user/profile";
 import DataTables from "views/user/tables";
 import Inventory from "views/user/inventory";
-import Branches from "views/user/Branches/Branches.jsx";
 
 import SignIn from "views/auth/SignIn";
 import SignUp from "views/auth/SignUp";
@@ -12,7 +11,9 @@ import SignUp from "views/auth/SignUp";
 import {
   MdHome,
   MdBarChart,
+  MdOutlineTableChart,
   MdPerson,
+  MdDeck,
   MdLock,
 } from "react-icons/md";
 import InvoiceList from "views/user/invoice/InvoiceList";
@@ -25,13 +26,6 @@ const routes = [
     icon: <MdHome className="h-6 w-6" />,
     component: <MainDashboard />,
   },
-  {
-    name: "Branches",
-    layout: "/user",
-    path: "branches",
-    icon: <MdHome className="h-6 w-6" />,
-    component: <Branches/>,
-  },
   
   {
     name: "Order Tables",
@@ -43,14 +37,14 @@ const routes = [
   {
     name: "Inventory",
     layout: "/user",
-    icon: <MdBarChart className="h-6 w-6" />,
+    icon: <MdDeck className="h-6 w-6" />,
     path: "inventory",
     component: <Inventory/>,
   },
   {
     name: "Invoice",
     layout: "/user",
-    icon: <MdBarChart className="h-6 w-6" />,
+    icon: <MdOutlineTableChart className="h-6 w-6" />,
     path: "invoice",
     component: <InvoiceList/>,
   },

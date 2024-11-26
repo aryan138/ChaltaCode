@@ -1,20 +1,29 @@
-const Product = require('../models/Product');
-const multer = require('multer');
-const XLSX = require('xlsx');
-
-// Set up multer for file upload (This can be removed if you no longer need Excel file uploads)
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const Product = require("../models/Product");
 
 // Create Product (Manual Entry)
 const createProduct = async (req, res) => {
   const { product_id, name, price, stock } = req.body;
+
   try {
     const newProduct = new Product({ product_id, name, price, stock });
     await newProduct.save();
-    res.status(201).json({ message: 'Product created successfully', product: newProduct });
+
+    res.status(200).json({
+      message: "Product created successfully",
+      product: newProduct,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating product', error });
+    if (error.code === 11000) {
+      // Duplicate key error
+      res.status(400).json({
+        message: `Product ID '${product_id}' already exists. Please use a unique ID.`,
+      });
+    } else {
+      res.status(500).json({
+        message: "Error creating product",
+        error: error.message,
+      });
+    }
   }
 };
 
@@ -24,7 +33,7 @@ const getAllProducts = async (req, res) => {
     const products = await Product.find();
     res.status(200).json({ products });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching products', error });
+    res.status(500).json({ message: "Error fetching products", error });
   }
 };
 
@@ -34,7 +43,7 @@ const updateProduct = async (req, res) => {
   const { product_id } = req.params; // Retrieve product_id from the URL parameter
 
   if (!name || !price || !stock) {
-    return res.status(400).json({ message: 'Missing required fields' });
+    return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
@@ -46,25 +55,24 @@ const updateProduct = async (req, res) => {
     );
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    res.status(200).json({ message: 'Product updated successfully', product });
+    res.status(200).json({ message: "Product updated successfully", product });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating product', error });
+    res.status(500).json({ message: "Error updating product", error });
   }
 };
-
 
 // Delete Product
 const deleteProduct = async (req, res) => {
   const { product_id } = req.params;
   try {
     const product = await Product.findOneAndDelete({ product_id });
-    if (!product) return res.status(404).json({ message: 'Product not found' });
-    res.status(200).json({ message: 'Product deleted successfully' });
+    if (!product) return res.status(404).json({ message: "Product not found" });
+    res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting product', error });
+    res.status(500).json({ message: "Error deleting product", error });
   }
 };
 
@@ -74,25 +82,102 @@ const uploadExcel = async (req, res) => {
 
   // Validate the data structure
   if (!Array.isArray(data) || data.length === 0) {
-    return res.status(400).json({ message: 'No valid data submitted' });
+    return res.status(400).json({ message: "No valid data submitted" });
   }
 
-  // Optional: Validate that each row contains the necessary fields
-  const isValid = data.every(row => row.product_id && row.name && row.price > 0 && row.stock >= 0);
-  if (!isValid) {
-    return res.status(400).json({ message: 'Some rows are missing required fields or have invalid values.' });
+  // Validate each row for required fields and valid values
+  const errors = [];
+  const validData = data.filter((row, index) => {
+    const isValid =
+      row.product_id &&
+      typeof row.product_id === "string" &&
+      row.name &&
+      typeof row.name === "string" &&
+      row.price > 0 &&
+      typeof row.price === "number" &&
+      row.stock >= 0 &&
+      typeof row.stock === "number";
+
+    if (!isValid) {
+      errors.push({
+        row: index + 1,
+        message: "Invalid fields or missing required values.",
+      });
+    }
+
+    return isValid;
+  });
+
+  if (validData.length === 0) {
+    return res.status(400).json({
+      message: "No valid rows to upload. Please check your data.",
+      errors,
+    });
   }
 
   try {
+    // Check for duplicates first (optional optimization)
+    const existingProductIds = await Product.find({
+      product_id: { $in: validData.map((row) => row.product_id) },
+    }).select("product_id");
+
+    const duplicateRows = validData.filter((row) =>
+      existingProductIds.some(
+        (existingProduct) => existingProduct.product_id === row.product_id
+      )
+    );
+
+    if (duplicateRows.length > 0) {
+      return res.status(400).json({
+        message: "Some rows failed due to duplicate Product IDs.",
+        duplicateErrors: duplicateRows.map((row, index) => ({
+          row: index + 1,
+          product_id: row.product_id,
+          message: "Duplicate Product ID",
+        })),
+        otherErrors: errors.length > 0 ? errors : undefined,
+      });
+    }
+
     // Insert the validated data into the database
-    const products = await Product.insertMany(data);
-    res.status(200).json({ message: 'Products added successfully', products });
+    const products = await Product.insertMany(validData, { ordered: false });
+
+    res.status(200).json({
+      message: "Products added successfully",
+      products,
+      errors: errors.length > 0 ? errors : undefined,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error uploading products', error });
+    // Handle specific errors like duplicates (code 11000)
+    if (error.code === 11000) {
+      const duplicateErrorRows = validData
+        .map((row, index) => {
+          if (error.message.includes(row.product_id)) {
+            return {
+              row: index + 1,
+              product_id: row.product_id,
+              message: "Duplicate Product ID",
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      return res.status(400).json({
+        message: "Some rows failed due to duplicate Product IDs.",
+        duplicateErrors: duplicateErrorRows,
+        otherErrors: errors.length > 0 ? errors : undefined,
+      });
+    }
+
+    // General error handling
+    res.status(500).json({
+      message: "Error uploading products",
+      error: error.message,
+      errors,
+    });
   }
 };
-
-
 
 module.exports = {
   createProduct,
@@ -100,5 +185,4 @@ module.exports = {
   updateProduct,
   deleteProduct,
   uploadExcel,
-  upload,
 };

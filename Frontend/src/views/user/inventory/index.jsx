@@ -14,7 +14,9 @@ const App = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/products/getall");
+        const response = await axios.get(
+          "http://localhost:3000/products/getall"
+        );
         console.log("Fetched products:", response.data.products);
         setProducts(response.data.products);
       } catch (error) {
@@ -37,7 +39,8 @@ const App = () => {
       newErrors.name = "Name must contain only letters and spaces.";
     }
     if (!editingProduct.price || !priceRegex.test(editingProduct.price)) {
-      newErrors.price = "Price must be a valid number (up to 2 decimal places).";
+      newErrors.price =
+        "Price must be a valid number (up to 2 decimal places).";
     }
     if (!editingProduct.stock || !stockRegex.test(editingProduct.stock)) {
       newErrors.stock = "Stock must be a valid positive number.";
@@ -99,20 +102,25 @@ const App = () => {
     setEditModalOpen(true);
   };
 
+  // Function to update data in the parent component
+  const handleDataUpdate = (newData) => {
+    window.location.reload();
+  };
+
   return (
     <div className="container mx-auto py-8">
       <div className="mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
         <Storage />
-        <Upload />
+        <Upload onDataUpdate={handleDataUpdate} />
       </div>
       <div className="mt-5 h-full w-full pb-4">
         <Table data={products} onDelete={handleDelete} onEdit={handleEdit} />
       </div>
 
       {editModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-1/3">
-            <h2 className="text-xl font-semibold mb-4">Edit Product</h2>
+        <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+          <div className="w-1/3 rounded-lg bg-white p-6">
+            <h2 className="mb-4 text-xl font-semibold">Edit Product</h2>
             <form>
               <div className="mb-4">
                 <label className="block text-sm font-medium">Product ID</label>
@@ -121,7 +129,7 @@ const App = () => {
                   name="product_id"
                   value={editingProduct.product_id}
                   disabled
-                  className="mt-1 p-2 w-full border border-gray-300 rounded-lg"
+                  className="mt-1 w-full rounded-lg border border-gray-300 p-2"
                 />
               </div>
               <div className="mb-4">
@@ -131,12 +139,12 @@ const App = () => {
                   name="name"
                   value={editingProduct.name}
                   onChange={handleChange}
-                  className={`mt-1 p-2 w-full border ${
+                  className={`mt-1 w-full border p-2 ${
                     errors.name ? "border-red-500" : "border-gray-300"
                   } rounded-lg`}
                 />
                 {errors.name && (
-                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                  <p className="mt-1 text-sm text-red-500">{errors.name}</p>
                 )}
               </div>
               <div className="mb-4">
@@ -146,12 +154,12 @@ const App = () => {
                   name="price"
                   value={editingProduct.price}
                   onChange={handleChange}
-                  className={`mt-1 p-2 w-full border ${
+                  className={`mt-1 w-full border p-2 ${
                     errors.price ? "border-red-500" : "border-gray-300"
                   } rounded-lg`}
                 />
                 {errors.price && (
-                  <p className="text-red-500 text-sm mt-1">{errors.price}</p>
+                  <p className="mt-1 text-sm text-red-500">{errors.price}</p>
                 )}
               </div>
               <div className="mb-4">
@@ -161,26 +169,26 @@ const App = () => {
                   name="stock"
                   value={editingProduct.stock}
                   onChange={handleChange}
-                  className={`mt-1 p-2 w-full border ${
+                  className={`mt-1 w-full border p-2 ${
                     errors.stock ? "border-red-500" : "border-gray-300"
                   } rounded-lg`}
                 />
                 {errors.stock && (
-                  <p className="text-red-500 text-sm mt-1">{errors.stock}</p>
+                  <p className="mt-1 text-sm text-red-500">{errors.stock}</p>
                 )}
               </div>
               <div className="flex justify-between">
                 <button
                   type="button"
                   onClick={() => setEditModalOpen(false)}
-                  className="bg-gray-500 text-white py-2 px-4 rounded"
+                  className="rounded bg-gray-500 px-4 py-2 text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="bg-blue-500 text-white py-2 px-4 rounded"
+                  className="rounded bg-blue-500 px-4 py-2 text-white"
                 >
                   Save
                 </button>

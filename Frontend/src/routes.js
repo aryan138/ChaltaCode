@@ -94,14 +94,14 @@ const routes = [
     name: "Super Inventory",
     layout: "/admin",
     icon: <MdDeck className="h-6 w-6" />,
-    path: "inventory",
+    path: "superinventory",
     component: <AdminInventory />,
   },
   {
     name: "User",
     layout: "/admin",
     icon: <MdOutlineTableChart className="h-6 w-6" />,
-    path: "invoice",
+    path: "user",
     component: <AdminInvoiceList />,
   },
   {

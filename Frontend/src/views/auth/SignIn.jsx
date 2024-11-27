@@ -224,14 +224,15 @@ export default function SignIn() {
 
   const handleSignInForAdmin = async (data) => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/sign-in", data);
+      const response = await axios.post("http://localhost:3000/admin/login", data);
+      console.log(response.data);
       if (response.data.success) {
         toast.success("Successfully signed in as admin!", {
           position: "top-right",
           autoClose: 3000,
         });
         setTimeout(() => {
-          navigate("/admin-dashboard");
+          navigate("/admin/default");
         }, 1000);
       }
     } catch (error) {

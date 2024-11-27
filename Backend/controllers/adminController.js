@@ -380,7 +380,8 @@ const getAllUsersUnderAdmin = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-    const getData = await admin.find();
+    const id = req.user._id;
+    const getData = await admin.findOne(id);
     res.json({
       status: 200,
       message: 'Users Found',

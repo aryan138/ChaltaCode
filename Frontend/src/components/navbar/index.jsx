@@ -104,31 +104,12 @@ const Navbar = (props) => {
               </div>
 
               <button className="flex w-full items-center">
-                <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
-                  <BsArrowBarUp />
-                </div>
-                <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
-                  <p className="mb-1 text-left text-base font-bold text-black-900 dark:text-white">
-                    New Update: Horizon UI Dashboard PRO
-                  </p>
-                  <p className="font-base text-left text-xs text-black-900 dark:text-white">
-                    A new update for your downloaded item is available!
-                  </p>
-                </div>
               </button>
 
               <button className="flex w-full items-center">
                 <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
                   <BsArrowBarUp />
                 </div>
-                {/* <div className="ml-2 flex h-full w-full flex-col justify-center rounded-lg px-1 text-sm">
-                  <p className="mb-1 text-left text-base font-bold text-gray-900 dark:text-white">
-                    New Update: Horizon UI Dashboard PRO
-                  </p>
-                  <p className="font-base text-left text-xs text-gray-900 dark:text-white">
-                    A new update for your downloaded item is available!
-                  </p>
-                </div> */}
               </button>
             </div>
           }
@@ -179,14 +160,15 @@ const Navbar = (props) => {
               <div className="p-4">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-black-700 dark:text-white">
-                    {userInf.user_username || userInf.username || userInf.admin_email || userInf.user_email}
+                    {userInf.user_email || userInf.admin_email}
+                    {console.log(userInf)}
                   </p>{" "}
                 </div>
               </div>
               <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
 
               <div className="flex flex-col p-4">
-                <Link to={'/user/profile'}
+                <Link to={`/${role}/profile`}
                   href=" "
                   className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
                 >

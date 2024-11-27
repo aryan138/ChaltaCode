@@ -68,7 +68,7 @@ const Navbar = () => {
         <div className="flex items-center flex-grow justify-end animate-slide-left-l">
           <Link
             to={'auth/sign-up'}
-            className="bg-green-600 mix-blend-multiply text-white py-2 px-4 rounded-3xl transform hover:bg-green-500 transition duration-300"
+            className="bg-green-800 mix-blend-multiply text-white py-2 px-4 rounded-3xl transform hover:bg-green-700 transition duration-300"
           >
             Sign Up
           </Link>

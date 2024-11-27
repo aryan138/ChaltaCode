@@ -21,7 +21,7 @@ const PricingPlans = () => {
         "Priority Support",
         "24/7 Priority Support",
       ],
-      buttonText: "Get Started",
+      buttonText: "Upgrade Now",
       buttonClass: "bg-gradient-to-r from-blue-500 to-purple-500",
     },
     {
@@ -64,7 +64,7 @@ const PricingPlans = () => {
         "24/7 Priority Support",
       ],
       limitations: [],
-      buttonText: "Contact Sales",
+      buttonText: "Upgrade Now",
       buttonClass: "bg-gradient-to-r from-blue-500 to-purple-500",
     },
   ];

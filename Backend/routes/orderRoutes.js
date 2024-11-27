@@ -3,8 +3,8 @@ const router = express.Router();
 const orderController = require('../controllers/orderController');
 const authorize = require('../middlewares/authorize');
 
-router.post('/placeorder',authorize.verifyJwt, orderController.placeorder);
-router.get('/getorder',authorize.verifyJwt, orderController.getOrder);
+router.post('/placeorder',authorize.verifyJwtUser, orderController.placeorder);
+router.get('/getorder',authorize.verifyJwtUser, orderController.getOrder);
 router.get('/getorderbyid/:id', orderController.getOrderById);
 router.put('/updateorder/:id', orderController.updateorder);
 router.delete('/deleteorder/:id', orderController.deleteorder);

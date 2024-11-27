@@ -3,8 +3,8 @@ const inventoryBranchController = require('../controllers/inventoryBranchControl
 const authorize = require('../middlewares/authorize')
 const router = express.Router();
 
-router.post('/add-inventory',authorize.verifyJwt ,inventoryBranchController.addInventoryBranch);
-router.get('/get-inventory',authorize.verifyJwt, inventoryBranchController.getInventoryBranches);
+router.post('/add-inventory',authorize.verifyJwtUser ,inventoryBranchController.addInventoryBranch);
+router.get('/get-inventory',authorize.verifyJwtUser, inventoryBranchController.getInventoryBranches);
 router.get('/:branch_id', inventoryBranchController.getItemsUnderBranch);
 router.delete('/:inventoryBranch_id', inventoryBranchController.deleteInventoryBranch);
 

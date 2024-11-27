@@ -36,7 +36,7 @@ app.get('/home', (req, res) => {
 
 
 
-// app.use('/admin', adminRoutes);
+app.use('/admin', adminRoutes);
 app.use('/branch', branchRoutes);
 app.use('/inventory', inventoryRoutes);
 app.use('/inventorybranch', inventoryBranchRoutes);
@@ -45,6 +45,7 @@ app.use('/order',orderRoutes);
 app.use('/products', productRoutes);
 app.use('/invoices', invoiceRoutes);
 app.use('/superproducts', superProductRoutes);
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server started on ${PORT}`);

@@ -18,7 +18,7 @@ const authorize = require('../middlewares/authorize')
 
 // Create Invoice
 router.post('/create-invoice', 
-  authorize.verifyJwt, 
+  authorize.verifyJwtUser, 
   // validateInvoiceCreation, 
   createInvoice
 );
@@ -26,38 +26,38 @@ router.post('/create-invoice',
 // Get All Invoices
 router.get('/getall', 
 
-  authorize.verifyJwt, 
+  authorize.verifyJwtUser, 
   getInvoices
 );
 
 // Get Single Invoice
 router.get('/:id', 
-  authorize.verifyJwt,  
+  authorize.verifyJwtUser,  
   getInvoiceById
 );
 
 // Generate PDF Invoice
 router.get('/:id/pdf', 
-  authorize.verifyJwt, 
+  authorize.verifyJwtUser, 
   generateInvoicePDF
 );
 
 // Update Invoice
 router.put('/:id', 
-  authorize.verifyJwt, 
+  authorize.verifyJwtUser, 
   // validateInvoiceUpdate, 
   updateInvoice
 );
 
 // Delete Invoice
 router.delete('/:id', 
-  authorize.verifyJwt, 
+  authorize.verifyJwtUser, 
   deleteInvoice
 );
 
 // Add Payment to Invoice
 router.post('/:id/payments', 
-  authorize.verifyJwt, 
+  authorize.verifyJwtUser, 
   addInvoicePayment
 );
 

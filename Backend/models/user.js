@@ -4,17 +4,17 @@ const { tokens } = require('../config/cred');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    user_username: { type: String, required: true },
     user_email: { type: String, required: true, unique: true },
-    user_password: { type: String, required: true, unique: true},
-    user_fullname: { type: String,},
-    user_designation: { type: String,default:"owner"},
-    user_role: { type: String ,default:"user" },
-    user_status: { type: String },
-    user_profile: { type: String},
+    user_password: { type: String,},
+    user_fullname: { type: String, trim:true},
+    user_designation: {type: String, required:true,trim:true},
+    user_status: { type: String ,enum:['active','unactive']},
     user_phone_number: { type: Number,},
-    user_refreshToken:{type:String},
-    user_company_name:{type:String,default:"My Anatomy"},
+    user_accessToken:{type:String},
+    user_admin:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'admin'
+    }
     
 }, { timestamps: true });
 
@@ -24,16 +24,8 @@ userSchema.methods.generateAccessToken =  function(){
     return  jwt.sign({
         _id: this._id,
         user_email: this.user_email,
-        user_username: this.user_username,
-        user_fullname: this.user_fullname
+        role:'user',
+
     },tokens.ACCESS_TOKEN_SECRET,{expiresIn:tokens.ACCESS_TOKEN_EXPIRY})
 }
-userSchema.methods.generateRefreshToken =  function(){
-    const tokio = jwt.sign({
-        _id:this._id
-    },tokens.REFRESH_TOKEN_SECRET,{expiresIn:tokens.REFRESH_TOKEN_EXPIRY});
-    console.log("tokio", tokio);
-    return tokio;
-}
-
 module.exports = mongoose.model('user', userSchema);

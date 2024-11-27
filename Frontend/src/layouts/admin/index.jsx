@@ -79,7 +79,7 @@ export default function Admin(props) {
   return (
     <AdminProvider value={userInfo}>
       <div className="flex h-full w-full">
-        <Sidebar open={open} onClose={() => setOpen(false)} />
+        <Sidebar open={open} onClose={() => setOpen(false)} role={"admin"} />
         {/* Navbar & Main Content */}
         <div className="h-full w-full bg-lightPrimary dark:!bg-black-900">
           {/* Main Content */}

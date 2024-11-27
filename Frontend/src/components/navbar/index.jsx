@@ -15,13 +15,13 @@ import axios from "axios";
 
 
 const Navbar = (props) => {
-  const { onOpenSidenav, brandText,userInf } = props;
+  const { onOpenSidenav, brandText,userInf,role } = props;
   const navigate = useNavigate();
   const [darkmode, setDarkmode] = React.useState(false);
   const handleLogout =async ()=>{
     try {
       console.log("want to log out");
-      const response = await axios.get('http://localhost:3000/user/logout',{
+      const response = await axios.get(`http://localhost:3000/${role}/logout`,{
         withCredentials: true,
       });
       // console.log(response);
@@ -179,7 +179,7 @@ const Navbar = (props) => {
               <div className="p-4">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-black-700 dark:text-white">
-                    {userInf.user_username}
+                    {userInf.user_username || userInf.username || userInf.admin_email || userInf.user_email}
                   </p>{" "}
                 </div>
               </div>

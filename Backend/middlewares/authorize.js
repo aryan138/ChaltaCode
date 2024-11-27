@@ -113,4 +113,19 @@ const verifyJwtAdmin = async (req, res, next) => {
     }
 };
 
-module.exports = { verifyJwtUser,verifyJwtAdmin };
+const verifyToken = (req, res, next) => {
+    const token = req.cookies.accessToken; // HTTP-only cookie
+    if (!token) {
+        return res.status(401).json({ message: 'Access Denied' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, tokens.ACCESS_TOKEN_SECRET); // Verify the token
+        req.user = decoded; // Attach user data to the request
+        next();
+    } catch (err) {
+        res.status(403).json({ message: 'Invalid Token' });
+    }
+};
+
+module.exports = { verifyJwtUser,verifyJwtAdmin,verifyToken };

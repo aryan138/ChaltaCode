@@ -158,7 +158,7 @@ export default function AdminSignUp() {
       console.log(response.data);
       if (response.data.success==true){
         toast.success("Successfully registered");
-        navigate('/user/default');
+        navigate('/admin/default');
       }
       // else{
       //   toast.error(response.data.message);

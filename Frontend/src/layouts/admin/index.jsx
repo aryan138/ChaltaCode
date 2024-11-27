@@ -21,7 +21,7 @@ export default function Admin(props) {
     const getUserData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/user/get-details",
+          "http://localhost:3000/admin/get-details",
           { withCredentials: true }
         );
         const data = response.data.data;
@@ -93,6 +93,7 @@ export default function Admin(props) {
                 logoText={"Profitex"}
                 brandText={currentRoute}
                 userInf={userInfo}
+                role={"admin"}
                 secondary={getActiveNavbar(routes)}
                 {...rest}
               />

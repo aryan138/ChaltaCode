@@ -217,6 +217,7 @@ const loginAdmin = async(req,res)=>{
 
     //access and refresh token bnao
     let accessToken = checkData.accessToken;
+    console.log("yahi par hai",accessToken);
     if (!checkData.accessToken || checkData.accessToken==null){
       accessToken = await generateAccessToken(checkData._id);
       if (!accessToken){
@@ -236,20 +237,19 @@ const loginAdmin = async(req,res)=>{
 
     const finalAdmin = await admin.findById(checkData._id).select("-admin_password -accessToken");
 
-    console.log(finalAdmin);
+    // console.log(finalAdmin);
     
     const options = {
       httpOnly: true,
       secure: true,
       //isme abh hamari cookie sirf server se hi modifiable hogi frontend par koi ese modify nhi kr skta.
   }
-  return res.
-  status(200).cookie("accessToken",accessToken,options)
+  return res.status(200).cookie("accessToken",accessToken,options)
   .json({
     success:true,
     status:200,
     data:finalAdmin,
-    message: "user sign in succesfully"
+    message: "admin sign in succesfully"
   })
 
     

@@ -211,12 +211,12 @@ export default function SignIn() {
           autoClose: 3000,
         });
         setTimeout(() => {
-          navigate("/user");
+          navigate("/user/default");
         }, 1000);
       }
     } catch (error) {
       toast.error(
-        error.response?.data?.error || "An error occurred during sign in",
+        error.response?.data?.message,
         { position: "top-right", autoClose: 3000 }
       );
     }
@@ -224,7 +224,7 @@ export default function SignIn() {
 
   const handleSignInForAdmin = async (data) => {
     try {
-      const response = await axios.post("http://localhost:3000/admin/login", data);
+      const response = await axios.post("http://localhost:3000/admin/login", data,{withCredentials: true });
       console.log(response.data);
       if (response.data.success) {
         toast.success("Successfully signed in as admin!", {

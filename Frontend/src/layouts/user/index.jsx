@@ -93,6 +93,7 @@ export default function User(props) {
                 logoText={"Profitex"}
                 brandText={currentRoute}
                 userInf={userInfo}
+                role={"user"}
                 secondary={getActiveNavbar(routes)}
                 {...rest}
               />

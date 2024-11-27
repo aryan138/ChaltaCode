@@ -6,6 +6,7 @@ router.post('/register', register);
 router.post('/login',loginAdmin);
 router.get('/logout',authorize.verifyJwtAdmin,logoutAdmin)
 router.post('/create-user',authorize.verifyJwtAdmin,createUser)
+router.get('/get-details',authorize.verifyJwtAdmin,getUsers)
 router.get('/getAllUsers',authorize.verifyJwtAdmin,getAllUsersUnderAdmin)
 
 

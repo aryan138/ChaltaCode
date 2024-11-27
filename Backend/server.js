@@ -12,6 +12,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const productRoutes = require('./routes/productRoutes');
 const invoiceRoutes = require('./routes/invoiceRoutes');
 const superProductRoutes = require('./routes/superProductRoutes.js');
+const {verifyToken} = require('./middlewares/authorize.js');
 const PORT = 3000;
 
 // Middleware to parse JSON requests
@@ -32,6 +33,12 @@ app.get('/', (req, res) => {
 
 app.get('/home', (req, res) => {
     res.send('helloooo');
+});
+
+//protected routes api
+app.get('/api/getRole',verifyToken, (req, res) => {
+    const role = req.user.role; // Extract role from the decoded token
+    res.status(200).json({ role });
 });
 
 

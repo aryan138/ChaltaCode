@@ -1,62 +1,95 @@
-import React from 'react';
-import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import React from "react";
+import CardMenu from "components/card/CardMenu";
+import Card from "components/card";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
 const Table = ({ data = [], onDelete, onEdit }) => {
-  return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full table-auto bg-white shadow-lg rounded-2xl border-separate dark:bg-black-800">
-        <thead>
-          <tr>
-            <th className="py-3 px-6 text-left text-s font-semibold text-gray-600 dark:text-white">
-              Product ID
-            </th>
-            <th className="py-3 px-6 text-left text-s font-semibold text-gray-600 dark:text-white">
-              Name
-            </th>
-            <th className="py-3 px-6 text-left text-s font-semibold text-gray-600 dark:text-white">
-              Price
-            </th>
-            <th className="py-3 px-6 text-left text-s font-semibold text-gray-600 dark:text-white">
-              Stock
-            </th>
-            <th className="py-3 px-6 text-left text-s font-semibold text-gray-600 dark:text-white">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-  {data.length > 0 ? (
-    data.map((item) => (
-      <tr
-        className="border-b border-r-2  p-2 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-        key={item.product_id}
-      >
-        <td className="p-2 px-6 dark:text-white">{item.product_id}</td>
-        <td className="p-2 px-6 dark:text-white">{item.name}</td>
-        <td className="p-2 px-6 dark:text-white">{item.price}</td>
-        <td className="p-2 px-6 dark:text-white">{item.stock}</td>
-        <td className="p-2 px-6 dark:text-white">
-          <button onClick={() => onEdit(item)} className="mr-2 text-blue-500">
-            <FaEdit />
-          </button>
-          <button onClick={() => onDelete(item.product_id)} className="text-red-500">
-            <FaTrashAlt />
-          </button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="5" className="text-center py-3 px-6 text-gray-500">
-        No data available
-      </td>
-    </tr>
-  )}
-</tbody>
+  const tableHeaders = [
+    "Product ID",
+    "Name",
+    "Price",
+    "Stock",
+    "Actions",
+  ];
 
-      </table>
-    </div>
+  return (
+    <Card extra="w-full h-full px-6 pb-6 sm:overflow-x-auto">
+      {/* Header Section */}
+      <div className="relative flex items-center justify-between pt-4">
+        <h1 className="text-xl font-bold text-black-700 dark:text-white">Product Table</h1>
+        <CardMenu />
+      </div>
+
+      {/* Table Section */}
+      <div className="mt-8 overflow-x-auto">
+        <table className="w-full overflow-y-auto">
+          {/* Table Head */}
+          <thead>
+            <tr className="border-b border-gray-200 text-start">
+              {tableHeaders.map((header) => (
+                <th
+                  key={header}
+                  className="py-3 text-left text-sm font-bold text-gray-600 uppercase dark:text-white"
+                >
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          {/* Table Body */}
+          <tbody>
+            {data.length > 0 ? (
+              data.map((item) => (
+                <tr
+                  key={item.product_id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <TableCell>{item.product_id}</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.price}</TableCell>
+                  <TableCell>{item.stock}</TableCell>
+                  <td className="py-3 pr-4 text-sm font-bold text-black-700 dark:text-white flex space-x-3">
+                    <ActionButton
+                      onClick={() => onEdit(item)}
+                      className="text-blue-500 dark:text-blue-300"
+                      Icon={FaEdit}
+                    />
+                    <ActionButton
+                      onClick={() => onDelete(item.product_id)}
+                      className="text-red-500 dark:text-red-300"
+                      Icon={FaTrashAlt}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={tableHeaders.length}
+                  className="py-6 text-center text-sm font-medium text-gray-500 dark:text-gray-400"
+                >
+                  No data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </Card>
   );
 };
+
+const TableCell = ({ children }) => (
+  <td className="min-w-[150px] border-white/0 py-3 pr-4 text-start text-sm font-bold text-black-700 dark:text-white">
+    {children}
+  </td>
+);
+
+const ActionButton = ({ onClick, className, Icon }) => (
+  <button onClick={onClick} className={className}>
+    <Icon />
+  </button>
+);
 
 export default Table;

@@ -327,7 +327,7 @@ const createUser = async(req,res)=>{
       user_designation: user_designation,
       user_admin:adminn._id,
       user_password:encryptPassword,
-      user_status:"active"
+      user_status:"Active"
     });
     if (!newUser){
       return res.status(409).json({
@@ -409,6 +409,40 @@ const updateUser = async (req, res) => {
   }
 }
 
+const updateUserStatus = async (req, res) => {
+  const { userId, newStatus } = req.body;
+
+  // Validate input
+  if (!userId || !newStatus) {
+    return res.status(400).json({ message: 'User ID and new status are required.' });
+  }
+
+  // Check if the new status is valid
+  if (!['Active', 'Inactive'].includes(newStatus)) {
+    return res.status(400).json({ message: 'Invalid status value.' });
+  }
+
+  try {
+    // Update user status in the database
+    const updatedUser = await user.findByIdAndUpdate(
+      userId,
+      { user_status: newStatus },
+      { new: true } // Return the updated document
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.status(200).json({
+      message: 'User status updated successfully.',
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error. Please try again later.' });
+  }
+};
+
+
 const deleteUser = async (req, res) => {
   try {
     const id = req.params._id;
@@ -423,4 +457,4 @@ const deleteUser = async (req, res) => {
   }
 }
 
-module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin };
+module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus };

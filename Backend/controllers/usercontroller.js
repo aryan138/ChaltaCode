@@ -201,6 +201,14 @@ const register = async (req, res) => {
           error: "Wrong Credentials!!"
         });
       };
+
+      if (checkData.user_status=="Inactive"){
+        return res.status(400).json({
+          success: false,
+          status: "500",
+          error: "User Inactive!!"
+        });
+      };
       // console.log(checkPass);
 
       //access and refresh token bnao

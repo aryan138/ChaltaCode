@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     user_password: { type: String,},
     user_fullname: { type: String, trim:true},
     user_designation: {type: String, required:true,trim:true},
-    user_status: { type: String ,enum:['active','unactive']},
+    user_status: { type: String ,enum:['Active','Inactive']},
     user_phone_number: { type: Number,},
     user_accessToken:{type:String},
     user_admin:{

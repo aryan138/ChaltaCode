@@ -9,7 +9,7 @@ import ExcelUploadPopup from "./ExcelUploadPopup";
 import ManualEntryPopup from "./ManualEntryPopup";
 import ChooseOption from "./ChooseOption";
 
-const Upload = ({ onDataUpdate }) => {
+const Upload = ({ onDataUpdate, userRole }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showManualForm, setShowManualForm] = useState(false);
   const [excelData, setExcelData] = useState(null);
@@ -125,15 +125,18 @@ const Upload = ({ onDataUpdate }) => {
       console.log("Formatted Data to Submit:", formattedData);
 
       setLoading(true);
-      await axios.post(
-        "http://localhost:3000/products/upload-excel",
-        formattedData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+
+      // Conditionally set the API URL based on user role
+      const apiUrl =
+        userRole === "admin"
+          ? "http://localhost:3000/superproducts/upload-excel"
+          : "http://localhost:3000/products/upload-excel";
+
+      await axios.post(apiUrl, formattedData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       onDataUpdate(formattedData);
       setLoading(false);
@@ -160,19 +163,22 @@ const Upload = ({ onDataUpdate }) => {
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:3000/products/create",
-        formData
-      );
+
+      // Conditionally set the API URL based on user role
+      const apiUrl =
+        userRole === "admin"
+          ? "http://localhost:3000/superproducts/create"
+          : "http://localhost:3000/products/create";
+
+      const response = await axios.post(apiUrl, formData);
+
       if (response.status === 200) {
         onDataUpdate([formData]);
         handleClosePopup();
       } else {
-        // If there's a failure response, show the error message
         setError(response.data?.message || "Error submitting product data.");
       }
     } catch (err) {
-      // If an error occurs during the request, display the error message
       setError(
         "Error submitting product data: " +
           (err.response?.data?.message || err.message)
@@ -239,7 +245,6 @@ const Upload = ({ onDataUpdate }) => {
             <h3 className="mb-4 text-xl font-bold text-black-700 dark:text-white">
               Choose an Option
             </h3>
-
             <ChooseOption
               handleManualEntry={handleManualEntry}
               handleExcelUpload={handleExcelUpload}

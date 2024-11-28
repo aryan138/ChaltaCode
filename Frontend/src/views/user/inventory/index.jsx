@@ -158,7 +158,7 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
           />
         </div>
 
-        <div className="mt-5 h-full w-full overflow-auto rounded-lg bg-white">
+        <div className="mt-5 h-full w-full overflow-auto rounded-lg bg-white dark:bg-black-800">
           <Table
             data={filteredProducts}
             onEdit={handleEdit}

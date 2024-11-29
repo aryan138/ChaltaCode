@@ -45,6 +45,7 @@ const AddOrder = ({ onClose }) => {
         {
           product_id: data.product_id,
           product_quantity: data.product_quantity,
+          // product_id:data._id
         },
         {
           withCredentials: true, // Optional, if your server uses cookies for authentication

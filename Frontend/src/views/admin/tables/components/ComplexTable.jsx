@@ -11,6 +11,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { toast } from "react-toastify";
 
 const columnHelper = createColumnHelper();
 
@@ -34,15 +35,18 @@ export default function OrderTable(props) {
         },
         { withCredentials: true }
       );
+      console.log(response);
+      
       if (response.status === 200) {
         await fetchOrders();
-        alert(`Order ${action}ed successfully!`);
+        // alert(`Order ${action}ed successfully!`);
+        toast.success(`Order ${action}ed successfully!`)
       } else {
-        alert(`Failed to ${action} the order.`);
+        toast.error(`Failed to ${action} the order.`);
       }
     } catch (error) {
       console.error(`Error ${action}ing order:`, error);
-      alert(`Error ${action}ing the order.`);
+      toast.error(`Error ${action}ing the order.`);
     }
   };
 

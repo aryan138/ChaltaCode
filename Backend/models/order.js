@@ -10,6 +10,10 @@ const orderSchema = new mongoose.Schema(
       enum: ['pending', 'accepted', 'rejected'], // Order status options
       default: 'pending',
     },
+    productOrdered_id:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'SuperProduct'
+    },
     orderFrom:{
       type:mongoose.Schema.Types.ObjectId,
       ref:'user'

@@ -188,24 +188,25 @@ const register = async (req, res) => {
       if (!checkData){
         return res.status(500).json({
           success: false,
-          status: "500",
+          status: 401,
           error: "user not found!!"
         });
       };
       //user hai 
       const checkPass = await bcrypt.compare(user_password,checkData.user_password);
       if (!checkPass){
-        return res.status(400).json({
+        console.log("glt glt lgt");
+        return res.json({
           success: false,
-          status: "500",
+          status: 409,
           error: "Wrong Credentials!!"
         });
       };
 
       if (checkData.user_status=="Inactive"){
-        return res.status(400).json({
+        return res.status(409).json({
           success: false,
-          status: "500",
+          status: 409,
           error: "User Inactive!!"
         });
       };

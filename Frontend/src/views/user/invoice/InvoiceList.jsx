@@ -175,7 +175,7 @@ const CreateInvoiceForm = ({ onSuccess }) => {
         })),
         subtotal: totalAmount,
         totalAmount: totalAmount,
-        status: 'DRAFT'
+        status: 'PAID'
       };
 
       await api.post('/invoices/create-invoice', invoiceData);

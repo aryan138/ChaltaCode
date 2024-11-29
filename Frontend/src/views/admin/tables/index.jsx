@@ -14,10 +14,10 @@ const Tables = () => {
   useEffect(() => {
     const fetchTableData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/order/getorder", {
+        const response = await axios.get("http://localhost:3000/order/checkOrder", {
           withCredentials: true, // Ensure cookies are sent if needed for authentication
         });
-
+        console.log(response);
         if (response.data.status === 200) {
           const result = response.data.data;
           const formattedData = result.map((order) => ({
@@ -30,6 +30,7 @@ const Tables = () => {
             }),
             status: order.status,
             item_quantity: order.product_quantity,
+            employee:order.orderFrom.user_email
           }));
           setTableData(formattedData); // Set the formatted data in state
         } else {
@@ -53,7 +54,7 @@ const Tables = () => {
 
   return (
     <div>
-      <div className="mt-5 w-2/4">
+      {/* <div className="mt-5 w-2/4">
         <Card className="grid h-full w-full grid-cols-1 gap-3 rounded-[20px] bg-white bg-clip-border p-4 font-dm shadow-3xl shadow-shadow-500 dark:!bg-black-800 dark:shadow-none 2xl:grid-cols-11">
           <div className="col-span-5 h-full w-full rounded-xl bg-lightPrimary dark:!bg-black-700 2xl:col-span-6 overflow-y-auto">
             <button
@@ -85,9 +86,9 @@ const Tables = () => {
             </button>
           </div>
         </Card>
-      </div>
+      </div> */}
 
-      <div className="mt-5">
+      <div className="mt-16">
         <ComplexTable columnsData={columnsDataComplex} tableData={tableData} /> {/* Rendering ComplexTable component */}
       </div>
 

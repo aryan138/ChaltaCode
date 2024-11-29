@@ -27,7 +27,7 @@ const verifyJwtUser = async (req, res, next) => {
         if (accessToken) {
             try {
                 const decodedAccessToken = jwt.verify(accessToken, tokens.ACCESS_TOKEN_SECRET);
-                user = await User.findById(decodedAccessToken?._id).select("-user_password -user_refreshToken");
+                user = await User.findById(decodedAccessToken?._id).select("-user_password -user_accessToken");
                 console
                 if (!user) {
                     return res.json({
@@ -80,7 +80,7 @@ const verifyJwtAdmin = async (req, res, next) => {
         if (accessToken) {
             try {
                 const decodedAccessToken = jwt.verify(accessToken, tokens.ACCESS_TOKEN_SECRET);
-                user = await admin.findById(decodedAccessToken?._id).select("-user_password -user_refreshToken");
+                user = await admin.findById(decodedAccessToken?._id).select("-admin_password -accessToken");
                 console
                 if (!user) {
                     return res.json({

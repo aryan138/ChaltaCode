@@ -20,6 +20,7 @@ const Tables = () => {
 
         if (response.data.status === 200) {
           const result = response.data.data;
+          console.log(result);
           const formattedData = result.map((order) => ({
             order_id: order.order_id,
             item_name: order.product_name,
@@ -65,7 +66,7 @@ const Tables = () => {
                 Order Now
               </h4>
               <p className="mt-2 text-sm font-medium text-gray-600">
-                Order products from super inventory
+                Order products from inventory
               </p>
             </button>
           </div>
@@ -75,7 +76,7 @@ const Tables = () => {
               Order Products from here
             </h5>
             <p className="leading-1 mt-2 text-base font-normal text-gray-600">
-              You can order products from your 's super inventory through this order.
+              You can order products from your 's inventory through this order.
             </p>
             <button
               className="linear mt-4 flex items-center justify-center rounded-xl bg-brand-500 px-2 py-2 text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"

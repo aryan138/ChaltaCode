@@ -7,14 +7,10 @@ const {
   updateInvoice,
   deleteInvoice,
   addInvoicePayment,
-  generateInvoicePDF
+  generateInvoicePDF,
+  getTotalEarnings
 } = require('../controllers/invoiceController');
 const authorize = require('../middlewares/authorize')
-// const { 
-//   validateInvoiceCreation, 
-//   validateInvoiceUpdate,
-//   validatePayment 
-// } = require('../middleware/invoiceValidation');
 
 // Create Invoice
 router.post('/create-invoice', 
@@ -60,5 +56,7 @@ router.post('/:id/payments',
   authorize.verifyJwtUser, 
   addInvoicePayment
 );
+
+router.get('/earnings/total-earnings',authorize.verifyJwtUser, getTotalEarnings);
 
 module.exports = router;

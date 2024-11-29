@@ -5,10 +5,10 @@ import { MdFileUpload } from "react-icons/md"; // Upload icon for the button
 import AddOrder from "./components/AddUser"; // Modal component for adding order
 import Table from "./components/Table";
 
-const api = axios.create({
-  baseURL: 'http://localhost:3001/',
-  withCredentials: true // Ensure cookies are sent with requests
-});
+// const api = axios.create({
+//   baseURL: 'http://localhost:3001/',
+//   withCredentials: true // Ensure cookies are sent with requests
+// });
 
 function User() {
   const [users, setUsers] = useState([]);
@@ -28,7 +28,7 @@ function User() {
     const fetchUsers = async () => {
       try {
         
-        const response = await api.get("http://localhost:3000/admin/getAllUsers", {
+        const response = await axios.get("http://localhost:3000/admin/getAllUsers", {
           withCredentials: true,
         });
         setUsers(response.data.users); // Set the users state

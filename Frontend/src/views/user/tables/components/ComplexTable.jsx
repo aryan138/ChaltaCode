@@ -308,26 +308,26 @@ export default function OrderTable(props) {
       header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ITEM QUANTITY</p>,
       cell: (info) => <p className="text-sm font-bold text-black-700 dark:text-white">{info.getValue()}</p>,
     }),
-    columnHelper.accessor("action", {
-      id: "action",
-      header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ACTION</p>,
-      cell: (info) => (
-        <div className="flex space-x-3">
-          <button
-            onClick={() => handleEdit(info.row.original)}
-            className="text-blue-500 dark:text-blue-300"
-          >
-            <MdEdit />
-          </button>
-          <button
-            onClick={() => handleDelete(info.row.original.order_id)}
-            className="text-red-500 dark:text-red-300"
-          >
-            <MdDelete />
-          </button>
-        </div>
-      ),
-    }),
+    // columnHelper.accessor("action", {
+    //   id: "action",
+    //   header: () => <p className="text-sm font-bold text-gray-600 dark:text-white">ACTION</p>,
+    //   cell: (info) => (
+    //     <div className="flex space-x-3">
+    //       <button
+    //         onClick={() => handleEdit(info.row.original)}
+    //         className="text-blue-500 dark:text-blue-300"
+    //       >
+    //         <MdEdit />
+    //       </button>
+    //       <button
+    //         onClick={() => handleDelete(info.row.original.order_id)}
+    //         className="text-red-500 dark:text-red-300"
+    //       >
+    //         <MdDelete />
+    //       </button>
+    //     </div>
+    //   ),
+    // }),
   ];
 
   const handleEdit = (order) => {

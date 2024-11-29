@@ -10,6 +10,14 @@ const orderSchema = new mongoose.Schema(
       enum: ['pending', 'accepted', 'rejected'], // Order status options
       default: 'pending',
     },
+    orderFrom:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'user'
+    },
+    orderTo:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'admin'
+    },
     acceptToken: { type: String }, // Token for accepting the order
     rejectToken: { type: String }, // Token for rejecting the order
   },

@@ -5,8 +5,9 @@ const authorize = require('../middlewares/authorize');
 
 router.post('/placeorder',authorize.verifyJwtUser, orderController.placeorder);
 router.get('/getorder',authorize.verifyJwtUser, orderController.getOrder);
+router.get('/checkOrder',authorize.verifyJwtAdmin, orderController.getOrderForAdmin);
 router.get('/getorderbyid/:id', orderController.getOrderById);
-router.put('/updateorder/:id', orderController.updateorder);
+router.put('/updateorder',authorize.verifyJwtAdmin, orderController.updateorder);
 router.delete('/deleteorder/:id', orderController.deleteorder);
 router.delete('/clear', orderController.clearOrders);
 

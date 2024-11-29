@@ -66,12 +66,12 @@ const InvoiceSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['DRAFT', 'SENT', 'PAID', 'CANCELLED'],
-    default: 'DRAFT'
+    enum: [ 'PAID', 'CANCELLED'],
+    default: 'PAID'
   },
   paymentStatus: {
     type: String,
-    enum: ['UNPAID', 'PARTIALLY_PAID', 'FULLY_PAID'],
+    enum: ['UNPAID', 'PAID'],
     default: 'UNPAID'
   },
   createdBy: {
@@ -92,24 +92,24 @@ const InvoiceSchema = new mongoose.Schema({
 InvoiceSchema.plugin(mongoosePaginate);
 
 // Method to add payment
-InvoiceSchema.methods.addPayment = function(amount, method, notes = '') {
-  this.paymentHistory.push({
-    amount,
-    date: new Date(),
-    paymentMethod: method,
-    notes
-  });
+// InvoiceSchema.methods.addPayment = function(amount, method, notes = '') {
+//   this.paymentHistory.push({
+//     amount,
+//     date: new Date(),
+//     paymentMethod: method,
+//     notes
+//   });
   
-  const totalPaid = this.paymentHistory.reduce((sum, payment) => sum + payment.amount, 0);
+//   const totalPaid = this.paymentHistory.reduce((sum, payment) => sum + payment.amount, 0);
   
-  if (totalPaid >= this.totalAmount) {
-    this.paymentStatus = 'FULLY_PAID';
-    this.status = 'PAID';
-  } else if (totalPaid > 0) {
-    this.paymentStatus = 'PARTIALLY_PAID';
-  }
+//   if (totalPaid >= this.totalAmount) {
+//     this.paymentStatus = 'PAID';
+//     this.status = 'PAID';
+//   } else if (totalPaid > 0) {
+//     this.paymentStatus = 'PARTIALLY_PAID';
+//   }
   
-  return this;
-};
+//   return this;
+// };
 
 module.exports = mongoose.model('Invoice', InvoiceSchema);

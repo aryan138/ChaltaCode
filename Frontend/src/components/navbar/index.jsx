@@ -1,90 +1,276 @@
+// import React from "react";
+// import Dropdown from "components/dropdown";
+// import { FiAlignJustify } from "react-icons/fi";
+// import { Link, useNavigate } from "react-router-dom";
+// import { BsArrowBarUp } from "react-icons/bs";
+// import { FiSearch } from "react-icons/fi";
+// import { RiMoonFill, RiSunFill } from "react-icons/ri";
+// import {
+//   IoMdNotificationsOutline,
+//   IoMdInformationCircleOutline,
+// } from "react-icons/io";
+// import avatar from "assets/img/avatars/avatar4.png"; 
+// import axios from "axios";
+
+
+
+// const Navbar = (props) => {
+//   const { onOpenSidenav, brandText,userInf,role } = props;
+//   const navigate = useNavigate();
+//   const [darkmode, setDarkmode] = React.useState(false);
+//   const handleLogout =async ()=>{
+//     try {
+//       console.log("want to log out");
+//       const response = await axios.get(`http://localhost:3000/${role}/logout`,{
+//         withCredentials: true,
+//       });
+//       // console.log(response);
+//       if (response.data.success){
+//         alert("user logged out Successfully");
+//         // onclose();
+//         navigate("/");
+//       }
+//     } catch (error) {
+//       alert("error while logout:",error.message);
+//     }
+//   }
+
+//   return (
+//     // #0b14374d
+//     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl  p-2 backdrop-blur-xl "> 
+//       <div className="ml-[6px]">
+//         <div className="h-6 w-[224px] pt-1">
+//           <a
+//             className="text-sm font-normal text-black-700 hover:underline dark:text-white dark:hover:text-white"
+//             href=" "
+//           >
+//             Pages
+//             <span className="mx-1 text-sm text-black-700 hover:text-black-700 dark:text-white">
+//               {" "}
+//               /{" "}
+//             </span>
+//           </a>
+//           <Link
+//             className="text-sm font-normal capitalize text-black-700 hover:underline dark:text-white dark:hover:text-white"
+//             to="#"
+//           >
+//             {brandText}
+//           </Link>
+//         </div>
+//         <p className="shrink text-[33px] capitalize text-black-700 dark:text-white">
+//           <Link
+//             to="#"
+//             className="font-bold capitalize hover:text-black-700 dark:hover:text-white"
+//           >
+//             {brandText}
+//           </Link>
+//         </p>
+//       </div>
+
+//       <div className="relative mt-[3px] flex h-[61px] w-[355px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl shadow-shadow-500 dark:!bg-black-800 dark:shadow-none md:w-[365px] md:flex-grow-0 md:gap-1 xl:w-[365px] xl:gap-2">
+//         {/* <div className="flex h-full items-center rounded-full bg-lightPrimary text-black-700 dark:bg-black-900 dark:text-white xl:w-[225px]"> */}
+//           {/* <p className="pl-3 pr-2 text-xl">
+//             <FiSearch className="h-4 w-4 text-gray-400 dark:text-white" />
+//           </p>
+//           <input
+//             type="text"
+//             placeholder="Search..."
+//             class="block h-full w-full rounded-full bg-lightPrimary text-sm font-medium text-black-700 outline-none placeholder:!text-gray-400 dark:bg-black-900 dark:text-white dark:placeholder:!text-white sm:w-fit"
+//           /> */}
+//           <h6>Good Evening</h6>
+//         {/* </div> */}
+//         <span
+//           className="flex cursor-pointer text-xl text-gray-600 dark:text-white xl:hidden"
+//           onClick={onOpenSidenav}
+//         >
+//           <FiAlignJustify className="h-5 w-5" />
+//         </span>
+//         {/* start Notification */}
+//         <Dropdown
+//           button={
+//             <p className="cursor-pointer">
+//               <IoMdNotificationsOutline className="h-4 w-4 text-gray-600 dark:text-white" />
+//             </p>
+//           }
+//           animation="origin-[65%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
+//           children={
+//             <div className="flex w-[360px] flex-col gap-3 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500 dark:!bg-black-700 dark:text-white dark:shadow-none sm:w-[460px]">
+//               <div className="flex items-center justify-between">
+//                 <p className="text-base font-bold text-black-700 dark:text-white">
+//                   Notification
+//                 </p>
+//                 <p className="text-sm font-bold text-black-700 dark:text-white">
+//                   Mark all read
+//                 </p>
+//               </div>
+
+//               <button className="flex w-full items-center">
+//               </button>
+
+//               <button className="flex w-full items-center">
+//                 <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
+//                   <BsArrowBarUp />
+//                 </div>
+//               </button>
+//             </div>
+//           }
+//           classNames={"py-2 top-4 -left-[230px] md:-left-[440px] w-max"}
+//         />
+//         <Dropdown
+//           button={
+//             <p className="cursor-pointer">
+//               <IoMdInformationCircleOutline className="h-4 w-4 text-gray-600 dark:text-white" />
+//             </p>
+//           }
+//           children={
+//             <div className="flex w-[350px] flex-col gap-2 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500 dark:!bg-black-700 dark:text-white dark:shadow-none">
+//             </div>
+//           }
+//           classNames={"py-2 top-6 -left-[250px] md:-left-[330px] w-max"}
+//           animation="origin-[75%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
+//         />
+//         <div
+//           className="cursor-pointer text-gray-600"
+//           onClick={() => {
+//             if (darkmode) {
+//               document.body.classList.remove("dark");
+//               setDarkmode(false);
+//             } else {
+//               document.body.classList.add("dark");
+//               setDarkmode(true);
+//             }
+//           }}
+//         >
+//           {darkmode ? (
+//             <RiSunFill className="h-4 w-4 text-gray-600 dark:text-white" />
+//           ) : (
+//             <RiMoonFill className="h-4 w-4 text-gray-600 dark:text-white" />
+//           )}
+//         </div>
+//         {/* Profile & Dropdown */}
+//         <Dropdown
+//           button={
+//             <img
+//               className="h-10 w-10 rounded-full"
+//               src={avatar}
+//               alt="Elon Musk"
+//             />
+//           }
+//           children={
+//             <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-black-700 dark:text-white dark:shadow-none">
+//               <div className="p-4">
+//                 <div className="flex items-center gap-2">
+//                   <p className="text-sm font-bold text-black-700 dark:text-white">
+//                     {userInf.user_email || userInf.admin_email}
+//                     {console.log(userInf)}
+//                   </p>{" "}
+//                 </div>
+//               </div>
+//               <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
+
+//               <div className="flex flex-col p-4">
+//                 <Link to={`/${role}/profile`}
+//                   href=" "
+//                   className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
+//                 >
+//                   Profile Settings
+//                 </Link>
+                
+//                 <button
+//                   onClick={handleLogout}
+//                   className="mt-3 text-sm font-medium text-red-500 hover:text-red-500 transition duration-150 ease-out hover:ease-in"
+//                 >
+//                   Log Out
+//                 </button>
+//               </div>
+//             </div>
+//           }
+//           classNames={"py-2 top-8 -left-[180px] w-max"}
+//         />
+//       </div>
+//     </nav>
+//   );
+// };
+
+// export default Navbar;
+
+
+
+
+
+
 import React from "react";
 import Dropdown from "components/dropdown";
 import { FiAlignJustify } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { BsArrowBarUp } from "react-icons/bs";
-import { FiSearch } from "react-icons/fi";
 import { RiMoonFill, RiSunFill } from "react-icons/ri";
 import {
   IoMdNotificationsOutline,
   IoMdInformationCircleOutline,
 } from "react-icons/io";
-import avatar from "assets/img/avatars/avatar4.png"; 
+import avatar from "assets/img/avatars/avatar4.png";
 import axios from "axios";
 
-
-
 const Navbar = (props) => {
-  const { onOpenSidenav, brandText,userInf,role } = props;
+  const { onOpenSidenav, brandText, userInf, role } = props;
   const navigate = useNavigate();
   const [darkmode, setDarkmode] = React.useState(false);
-  const handleLogout =async ()=>{
+
+  // Handle logout
+  const handleLogout = async () => {
     try {
       console.log("want to log out");
-      const response = await axios.get(`http://localhost:3000/${role}/logout`,{
+      const response = await axios.get(`http://localhost:3000/${role}/logout`, {
         withCredentials: true,
       });
-      // console.log(response);
-      if (response.data.success){
-        alert("user logged out Successfully");
-        // onclose();
+      if (response.data.success) {
+        alert("User logged out successfully");
         navigate("/");
       }
     } catch (error) {
-      alert("error while logout:",error.message);
+      alert("Error while logout:", error.message);
     }
-  }
+  };
+
+  // Determine greeting based on time of day
+  const getGreeting = () => {
+    const currentHour = new Date().getHours();
+    if (currentHour >= 5 && currentHour < 12) {
+      return "Good Morning";
+    } else {
+      return "Good Evening";
+    }
+  };
 
   return (
-    // #0b14374d
-    <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl  p-2 backdrop-blur-xl "> 
+    <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-between rounded-xl p-2 backdrop-blur-xl">
       <div className="ml-[6px]">
         <div className="h-6 w-[224px] pt-1">
-          <a
-            className="text-sm font-normal text-black-700 hover:underline dark:text-white dark:hover:text-white"
-            href=" "
-          >
+          <a className="text-sm font-normal text-black-700 hover:underline dark:text-white dark:hover:text-white" href="#">
             Pages
-            <span className="mx-1 text-sm text-black-700 hover:text-black-700 dark:text-white">
-              {" "}
-              /{" "}
-            </span>
+            <span className="mx-1 text-sm text-black-700 hover:text-black-700 dark:text-white"> / </span>
           </a>
-          <Link
-            className="text-sm font-normal capitalize text-black-700 hover:underline dark:text-white dark:hover:text-white"
-            to="#"
-          >
+          <Link className="text-sm font-normal capitalize text-black-700 hover:underline dark:text-white dark:hover:text-white" to="#">
             {brandText}
           </Link>
         </div>
         <p className="shrink text-[33px] capitalize text-black-700 dark:text-white">
-          <Link
-            to="#"
-            className="font-bold capitalize hover:text-black-700 dark:hover:text-white"
-          >
+          <Link to="#" className="font-bold capitalize hover:text-black-700 dark:hover:text-white">
             {brandText}
           </Link>
         </p>
       </div>
 
       <div className="relative mt-[3px] flex h-[61px] w-[355px] flex-grow items-center justify-around gap-2 rounded-full bg-white px-2 py-2 shadow-xl shadow-shadow-500 dark:!bg-black-800 dark:shadow-none md:w-[365px] md:flex-grow-0 md:gap-1 xl:w-[365px] xl:gap-2">
-        <div className="flex h-full items-center rounded-full bg-lightPrimary text-black-700 dark:bg-black-900 dark:text-white xl:w-[225px]">
-          <p className="pl-3 pr-2 text-xl">
-            <FiSearch className="h-4 w-4 text-gray-400 dark:text-white" />
-          </p>
-          <input
-            type="text"
-            placeholder="Search..."
-            class="block h-full w-full rounded-full bg-lightPrimary text-sm font-medium text-black-700 outline-none placeholder:!text-gray-400 dark:bg-black-900 dark:text-white dark:placeholder:!text-white sm:w-fit"
-          />
-        </div>
-        <span
-          className="flex cursor-pointer text-xl text-gray-600 dark:text-white xl:hidden"
-          onClick={onOpenSidenav}
-        >
+      <h6 className="text-gray-600">{getGreeting()}</h6>
+
+
+        <span className="flex cursor-pointer text-xl text-gray-600 dark:text-white xl:hidden" onClick={onOpenSidenav}>
           <FiAlignJustify className="h-5 w-5" />
         </span>
-        {/* start Notification */}
+
+        {/* Start Notification */}
         <Dropdown
           button={
             <p className="cursor-pointer">
@@ -95,17 +281,9 @@ const Navbar = (props) => {
           children={
             <div className="flex w-[360px] flex-col gap-3 rounded-[20px] bg-white p-4 shadow-xl shadow-shadow-500 dark:!bg-black-700 dark:text-white dark:shadow-none sm:w-[460px]">
               <div className="flex items-center justify-between">
-                <p className="text-base font-bold text-black-700 dark:text-white">
-                  Notification
-                </p>
-                <p className="text-sm font-bold text-black-700 dark:text-white">
-                  Mark all read
-                </p>
+                <p className="text-base font-bold text-black-700 dark:text-white">Notification</p>
+                <p className="text-sm font-bold text-black-700 dark:text-white">Mark all read</p>
               </div>
-
-              <button className="flex w-full items-center">
-              </button>
-
               <button className="flex w-full items-center">
                 <div className="flex h-full w-[85px] items-center justify-center rounded-xl bg-gradient-to-b from-brandLinear to-brand-500 py-4 text-2xl text-white">
                   <BsArrowBarUp />
@@ -115,6 +293,8 @@ const Navbar = (props) => {
           }
           classNames={"py-2 top-4 -left-[230px] md:-left-[440px] w-max"}
         />
+        
+        {/* Information Icon */}
         <Dropdown
           button={
             <p className="cursor-pointer">
@@ -128,57 +308,42 @@ const Navbar = (props) => {
           classNames={"py-2 top-6 -left-[250px] md:-left-[330px] w-max"}
           animation="origin-[75%_0%] md:origin-top-right transition-all duration-300 ease-in-out"
         />
-        <div
-          className="cursor-pointer text-gray-600"
-          onClick={() => {
-            if (darkmode) {
-              document.body.classList.remove("dark");
-              setDarkmode(false);
-            } else {
-              document.body.classList.add("dark");
-              setDarkmode(true);
-            }
-          }}
-        >
+
+        {/* Dark Mode Toggle */}
+        <div className="cursor-pointer text-gray-600" onClick={() => {
+          if (darkmode) {
+            document.body.classList.remove("dark");
+            setDarkmode(false);
+          } else {
+            document.body.classList.add("dark");
+            setDarkmode(true);
+          }
+        }}>
           {darkmode ? (
             <RiSunFill className="h-4 w-4 text-gray-600 dark:text-white" />
           ) : (
             <RiMoonFill className="h-4 w-4 text-gray-600 dark:text-white" />
           )}
         </div>
+
         {/* Profile & Dropdown */}
         <Dropdown
-          button={
-            <img
-              className="h-10 w-10 rounded-full"
-              src={avatar}
-              alt="Elon Musk"
-            />
-          }
+          button={<img className="h-10 w-10 rounded-full" src={avatar} alt="Elon Musk" />}
           children={
             <div className="flex w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-black-700 dark:text-white dark:shadow-none">
               <div className="p-4">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-black-700 dark:text-white">
                     {userInf.user_email || userInf.admin_email}
-                    {console.log(userInf)}
-                  </p>{" "}
+                  </p>
                 </div>
               </div>
-              <div className="h-px w-full bg-gray-200 dark:bg-white/20 " />
-
+              <div className="h-px w-full bg-gray-200 dark:bg-white/20" />
               <div className="flex flex-col p-4">
-                <Link to={`/${role}/profile`}
-                  href=" "
-                  className="text-sm text-gray-800 dark:text-white hover:dark:text-white"
-                >
+                <Link to={`/${role}/profile`} href=" " className="text-sm text-gray-800 dark:text-white hover:dark:text-white">
                   Profile Settings
                 </Link>
-                
-                <button
-                  onClick={handleLogout}
-                  className="mt-3 text-sm font-medium text-red-500 hover:text-red-500 transition duration-150 ease-out hover:ease-in"
-                >
+                <button onClick={handleLogout} className="mt-3 text-sm font-medium text-red-500 hover:text-red-500 transition duration-150 ease-out hover:ease-in">
                   Log Out
                 </button>
               </div>

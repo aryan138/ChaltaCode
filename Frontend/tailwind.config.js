@@ -209,7 +209,7 @@ module.exports = {
       blueSecondary: "#18431F",
       brandLinear: "#86FF8C",
       customdarkblue: "rgb(3, 35, 5)",
-      // blueSecondary: "#4318FF",
+      // blueSecondary: "#00830d",
       // brandLinear: "#868CFF",
       // customdarkblue: "rgb(5, 3, 35)",
       black: {

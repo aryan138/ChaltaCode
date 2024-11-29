@@ -50,12 +50,12 @@ const Testimonial = () => {
             <article className="grid grid-cols-1 gap-y-10 px-6 md:grid-cols-4 md:gap-x-8 md:gap-y-10">
               <TestimonialCard
                 name="Daniel Clifford"
-                className={`purple-card md:col-span-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 shadow-lg text-white ${isVisible ? 'animate-T-slide-right' : 'hidden'}`}
+                className={`purple-card md:col-span-2 rounded-lg bg-gradient-to-r from-green-900 to-green-500 shadow-lg text-white ${isVisible ? 'animate-T-slide-right' : 'hidden'}`}
                 avatarBorder="border-opacity-40 border-white border-4"
               />
               <TestimonialCard
                 name="Jonathan Walters"
-                className={`dark bg-tg-gray-blue rounded-lg bg-gray-900 shadow-lg text-white ${isVisible ? 'animate-T-slide-up' : 'hidden'}`}
+                className={`dark bg-tg-gray-blue rounded-lg bg-green-900 shadow-lg text-white ${isVisible ? 'animate-T-slide-up' : 'hidden'}`}
                 avatarBorder="border-opacity-70 border-white border-4"
               />
               <TestimonialCard
@@ -65,7 +65,7 @@ const Testimonial = () => {
               />
               <TestimonialCard
                 name="Patrick Abrams"
-                className={`dark bg-tg-dark-blue md:col-span-2 rounded-lg bg-gradient-to-r from-gray-800 to-gray-900 shadow-lg text-white ${isVisible ? 'animate-T-slide-down' : 'hidden'}`}
+                className={`dark bg-tg-dark-blue md:col-span-2 rounded-lg bg-gradient-to-r from-green-900 to-green-900 shadow-lg text-white ${isVisible ? 'animate-T-slide-down' : 'hidden'}`}
                 avatarBorder="border-indigo-500 border-4"
               />
               <TestimonialCard

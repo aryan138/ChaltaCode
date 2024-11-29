@@ -1,3 +1,8 @@
+
+
+// ManualEntryPopUp
+
+
 import React, { useState } from 'react';
 
 const ManualEntryPopup = ({ handleFormSubmit, loading, error, handleClosePopup }) => {
@@ -23,16 +28,58 @@ const ManualEntryPopup = ({ handleFormSubmit, loading, error, handleClosePopup }
     }));
   };
 
+
+
   const validateFields = () => {
     const errors = {};
-    if (!formData.product_id) errors.product_id = 'Product ID is required';
-    if (!formData.name) errors.name = 'Product Name is required';
-    if (!formData.price || formData.price <= 0) errors.price = 'Price must be a positive number';
-    if (!formData.stock || formData.stock < 0) errors.stock = 'Stock cannot be negative';
-    
+  
+    // Validate product ID: must contain both letters and numbers
+    const productIdRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]+$/; // Must contain both alphabets and numbers
+    if (!formData.product_id) {
+      errors.product_id = "Product ID is required";
+    } else if (!productIdRegex.test(formData.product_id)) {
+      errors.product_id = "Product ID must contain both letters and numbers";
+    }
+  
+    // Validate product name: cannot start with a number
+    const productNameRegex = /^[a-zA-Z][a-zA-Z0-9\s]*$/;
+    if (!formData.name) {
+      errors.name = "Product Name is required";
+    } else if (!productNameRegex.test(formData.name)) {
+      errors.name = "Product Name should start from a alphabet";
+    }
+  
+    // Validate price: must be positive and greater than 0
+    if (!formData.price || formData.price <= 0) {
+      errors.price = "Price must be a positive number greater than 0";
+    }
+  
+    // Validate stock: must be a whole number and cannot be negative
+    const stockRegex = /^\d+$/;
+    if (!formData.stock) {
+      errors.stock = "Stock is required";
+    } else if (!stockRegex.test(formData.stock)) {
+      errors.stock = "Stock must be a whole number and cannot be negative";
+    }
+  
     setFieldErrors(errors);
     return Object.keys(errors).length === 0; // returns true if there are no errors
   };
+  
+  
+
+
+
+  // const validateFields = () => {
+  //   const errors = {};
+  //   if (!formData.product_id) errors.product_id = 'Product ID is required';
+  //   if (!formData.name) errors.name = 'Product Name is required';
+  //   if (!formData.price || formData.price <= 0) errors.price = 'Price must be a positive number';
+  //   if (!formData.stock || formData.stock < 0) errors.stock = 'Stock cannot be negative';
+    
+  //   setFieldErrors(errors);
+  //   return Object.keys(errors).length === 0; // returns true if there are no errors
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -118,3 +165,9 @@ const ManualEntryPopup = ({ handleFormSubmit, loading, error, handleClosePopup }
 };
 
 export default ManualEntryPopup;
+
+
+
+
+
+

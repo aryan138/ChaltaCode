@@ -41,7 +41,7 @@ const Navbar = () => {
         </div>
 
         {/* Center: Navigation Links */}
-        <ul className="flex space-x-16 flex-grow justify-center">
+        {/* <ul className="flex space-x-16 flex-grow justify-center">
           <li>
             <a href="#Home" className="text-l font-medium  hover:underline ">
               Home
@@ -62,7 +62,7 @@ const Navbar = () => {
               FAQ
             </a>
           </li>
-        </ul>
+        </ul> */}
 
         {/* Right Side: Sign In Button */}
         <div className="flex items-center flex-grow justify-end animate-slide-left-l">

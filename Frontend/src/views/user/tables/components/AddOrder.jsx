@@ -1,17 +1,30 @@
-
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import InputField from "components/fields/InputField"; // Adjust the path if necessary
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Define Zod schema for order validation
+const orderSchema = z.object({
+  product_id: z.string().nonempty("Product is required"), // Ensures product selection
+  product_quantity: z
+    .string() // Ensure the value is a string initially
+    .regex(/^\d+$/, "Quantity must be a valid number") // Ensure it's numeric
+    .transform((val) => Number(val)) // Transform to a number
+    .refine((val) => val > 0, { message: "Quantity must be greater than 0" }), // Validate positive numbers
+});
 
 const AddOrder = ({ onClose }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: zodResolver(orderSchema), // Use Zod resolver for form validation
+  });
 
   const [products, setProducts] = useState([]);
   const [darkMode, setDarkMode] = useState(false);
@@ -33,7 +46,6 @@ const AddOrder = ({ onClose }) => {
     // Check if dark mode is enabled in localStorage or by class
     const isDarkMode = document.body.classList.contains("dark");
     setDarkMode(isDarkMode);
-
   }, []);
 
   const onSubmit = async (data) => {
@@ -66,7 +78,7 @@ const AddOrder = ({ onClose }) => {
   };
 
   return (
-    <div className={`p-4 rounded-lg w-full h-full `}>
+    <div className={`p-4 rounded-lg w-full h-full`}>
       <h3 className="text-lg font-bold mb-4">Place a New Order</h3>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Product dropdown */}
@@ -74,7 +86,7 @@ const AddOrder = ({ onClose }) => {
           <label className="block text-sm font-medium mb-1">Product Name</label>
           <select
             className={`w-full border rounded-md p-2 ${darkMode ? 'bg-black-900 text-white' : 'bg-white text-black'}`}
-            {...register("product_id", { required: "Product is required" })}
+            {...register("product_id")}
           >
             <option value="">Select a product</option>
             {products.map((product) => (
@@ -93,13 +105,7 @@ const AddOrder = ({ onClose }) => {
           label="Quantity"
           placeholder="Enter quantity"
           type="number"
-          {...register("product_quantity", {
-            required: "Quantity is required",
-            min: {
-              value: 1,
-              message: "Quantity must be at least 1",
-            },
-          })}
+          {...register("product_quantity")}
           error={errors.product_quantity?.message}
         />
 

@@ -10,69 +10,69 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Zod schemas
-const userSignInSchema = z.object({
-  user_email: z.string().email("Invalid email address"),
-  user_password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-const adminSignInSchema = z.object({
-  admin_email: z.string().email("Invalid email address"),
-  admin_password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-// const emailValidation = z
-//   .string()
-//   .trim()
-//   .toLowerCase()
-//   .email("Invalid email address")
-//   .max(100, "Email must not exceed 100 characters")
-//   .refine(
-//     (email) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email),
-//     "Invalid email format"
-//   )
-//   .refine(
-//     (email) => {
-//       const blockedDomains = ["tempmail.com", "10minutemail.com", "disposablemail.com"];
-//       return !blockedDomains.some((domain) => email.endsWith(domain));
-//     },
-//     "Disposable email addresses are not allowed"
-//   );
-
-// // Common reusable password checks
-// const passwordValidation = z
-//   .string()
-//   .min(8, "Password must be at least 8 characters")
-//   .max(64, "Password cannot exceed 64 characters")
-//   .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/, 
-//     "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character"
-//   )
-//   .refine(
-//     (password) => {
-//       const commonPasswords = [
-//         "password",
-//         "123456",
-//         "123456789",
-//         "qwerty",
-//         "password123",
-//         "12345678",
-//         "admin123",
-//       ];
-//       return !commonPasswords.includes(password.toLowerCase());
-//     },
-//     "This password is too common and is not allowed"
-//   );
-
-// // User Sign-In Schema
 // const userSignInSchema = z.object({
-//   user_email: emailValidation,
-//   user_password: passwordValidation,
+//   user_email: z.string().email("Invalid email address"),
+//   user_password: z.string().min(8, "Password must be at least 8 characters"),
 // });
 
-// // Admin Sign-In Schema
 // const adminSignInSchema = z.object({
-//   admin_email: emailValidation,
-//   admin_password: passwordValidation,
+//   admin_email: z.string().email("Invalid email address"),
+//   admin_password: z.string().min(8, "Password must be at least 8 characters"),
 // });
+
+const emailValidation = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .email("Invalid email address")
+  .max(100, "Email must not exceed 100 characters")
+  .refine(
+    (email) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email),
+    "Invalid email format"
+  )
+  .refine(
+    (email) => {
+      const blockedDomains = ["tempmail.com", "10minutemail.com", "disposablemail.com"];
+      return !blockedDomains.some((domain) => email.endsWith(domain));
+    },
+    "Disposable email addresses are not allowed"
+  );
+
+// Common reusable password checks
+const passwordValidation = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .max(64, "Password cannot exceed 64 characters")
+  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/, 
+    "Password must include at least one uppercase letter, one lowercase letter, one number, and one special character"
+  )
+  .refine(
+    (password) => {
+      const commonPasswords = [
+        "password",
+        "123456",
+        "123456789",
+        "qwerty",
+        "password123",
+        "12345678",
+        "admin123",
+      ];
+      return !commonPasswords.includes(password.toLowerCase());
+    },
+    "This password is too common and is not allowed"
+  );
+
+// User Sign-In Schema
+const userSignInSchema = z.object({
+  user_email: emailValidation,
+  user_password: passwordValidation,
+});
+
+// Admin Sign-In Schema
+const adminSignInSchema = z.object({
+  admin_email: emailValidation,
+  admin_password: passwordValidation,
+});
 
 
 

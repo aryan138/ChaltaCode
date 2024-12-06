@@ -239,23 +239,29 @@ const updateorder = async (req, res) => {
     console.log("Updating Order begins")
     const {adminOutput,orderId} = req.body;
     console.log(adminOutput,orderId);
-    const updateData = await order.findOneAndUpdate({order_id:orderId}, {status:adminOutput}, {
-      new: true,
-    });
-    
-    if (!updateData) {
-      return res.status(400).json({
-        message: "error occured while updating order or order not found",
+    if (adminOutput=='rejected'){
+      const updateData = await order.findOneAndUpdate({order_id:orderId}, {status:adminOutput}, {
+        new: true,
       });
-    }
-    if (adminOutput=='reject'){
+      if (!updateData){
+        return res.status(404).json({
+          message:"order not found"
+        })
+      }
       return res.status(200).json({status: 200,
       message: "Order Updated",
       data: updateData,})
     console.log("updated order", updateData);
   }
-    const productOrdered_id = updateData.productOrdered_id;
-    const quantityNeeded = updateData.product_quantity;
+  const Data = await order.findOne({order_id:orderId});
+  
+  if (!Data) {
+    return res.status(400).json({
+      message: "order or order not found",
+    });
+  }
+    const productOrdered_id = Data.productOrdered_id;
+    const quantityNeeded = Data.product_quantity;
     console.log(productOrdered_id);
     //check if product under superinventory are greater than quantity ordered
     const superInventoryProduct = await SuperProduct.findOne(productOrdered_id);
@@ -285,12 +291,21 @@ const updateorder = async (req, res) => {
         product_id:productId,
         name:superInventoryProduct.name,
         stock:quantityNeeded,
-        user:updateData.orderFrom,
+        user:Data.orderFrom,
         price:superInventoryProduct.price
 
       })
       if (!newProductInInventory){
         return res.status(500).json({message:"error while adding product"})
+      }
+      const updateData = await order.findOneAndUpdate({order_id:orderId}, {status:adminOutput}, {
+        new: true,
+      });
+      
+      if (!updateData) {
+        return res.status(400).json({
+          message: "error occured while updating order or order not found",
+        });
       }
       return res.status(200).json({
         status: 200,
@@ -302,6 +317,15 @@ const updateorder = async (req, res) => {
     const updatedInventory = await Product.findOneAndUpdate({product_id:productId},{stock:addValue},{new:true});
     if (!updatedInventory){
       return res.status(500).json({message:"error while adding product"})
+    }
+    const updateData = await order.findOneAndUpdate({order_id:orderId}, {status:adminOutput}, {
+      new: true,
+    });
+    
+    if (!updateData) {
+      return res.status(400).json({
+        message: "error occured while updating order or order not found",
+      });
     }
     
     return res.json({

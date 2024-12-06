@@ -81,7 +81,7 @@ const register = async (req, res) => {
         });
       }
       // Hashing password 
-      const encryptPassword = await bcrypt.hash(user_password,10);
+      const encryptPassword = await bcrypt.hash(user_password,7);
       if (!encryptPassword) {
         return res.json({sucess: false,message:"dikkat aari hai"});
       }

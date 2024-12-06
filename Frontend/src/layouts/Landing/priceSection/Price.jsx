@@ -22,7 +22,7 @@ const PricingPlans = () => {
         "24/7 Priority Support",
       ],
       buttonText: "Upgrade Now",
-      buttonClass: "bg-gradient-to-r from-blue-500 to-purple-500",
+      buttonClass: "bg-gradient-to-r from-green-900 to-green-500",
     },
     {
       name: "Pro",
@@ -44,7 +44,7 @@ const PricingPlans = () => {
         "24/7 Priority Support",
       ],
       buttonText: "Upgrade Now",
-      buttonClass: "bg-gradient-to-r from-blue-500 to-purple-500",
+      buttonClass: "bg-gradient-to-r from-green-900 to-green-500",
     },
     {
       name: "Enterprise",
@@ -65,7 +65,7 @@ const PricingPlans = () => {
       ],
       limitations: [],
       buttonText: "Upgrade Now",
-      buttonClass: "bg-gradient-to-r from-blue-500 to-purple-500",
+      buttonClass: "bg-gradient-to-r from-green-900 to-green-500",
     },
   ];
   
@@ -83,10 +83,11 @@ const PricingPlans = () => {
         </div>
         <div className="grid lg:grid-cols-3 sm:gap-6 xl:gap-10">
           {plans.map((plan, index) => (
+            
             <div
               key={index}
               className={`flex flex-col p-6 max-w-md text-center rounded-2xl shadow-lg xl:p-8 mx-auto ${
-                index === 1 ? "bg-gradient-to-br from-purple-500 to-blue-600 text-white" : "bg-white"
+                index === 1 ? "bg-gradient-to-br from-green-400 to-green-900 text-white" : "bg-white"
               }`}
             >
               <h3 className={`mb-4 text-3xl font-semibold ${index === 1 ? "text-white" : "text-gray-800"}`}>
@@ -107,7 +108,7 @@ const PricingPlans = () => {
                 {plan.features.map((feature, idx) => (
                   <li key={idx} className="flex items-center space-x-3">
                     <svg
-                      className={`w-6 h-6 ${index === 1 ? "text-white" : "text-blue-500"}`}
+                      className={`w-6 h-6 ${index === 1 ? "text-white" : "text-green-700"}`}
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="currentColor"

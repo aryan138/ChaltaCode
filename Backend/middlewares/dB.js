@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { moncrd } = require("../config/cred");
 
-const url = `mongodb+srv://${moncrd.user}:${moncrd.pass}@cluster0.oxhj6pg.mongodb.net`;
+const url = `mongodb+srv://${moncrd.user}:${moncrd.pass}@cluster0.oxhj6pg.mongodb.net/ev2`;
 
 const dbConnect = async () => {
   try {

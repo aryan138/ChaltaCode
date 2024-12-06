@@ -457,4 +457,22 @@ const deleteUser = async (req, res) => {
   }
 }
 
-module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus };
+const getUserCount = async(req,res)=>{
+  try {
+    const id = req.user._id;
+    const countUser = await user.findById({user_admin:id}).count();
+    if (!countUser){
+      return res.status(401).json({
+        success: false,
+        message:"no user found"
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      count: countUser
+    });
+  } catch (error) {
+    return res.status(500).json({success: false, message: error.message});
+  }
+}
+module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus, getUserCount };

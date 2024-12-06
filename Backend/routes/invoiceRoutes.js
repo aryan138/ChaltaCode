@@ -8,7 +8,8 @@ const {
   deleteInvoice,
   addInvoicePayment,
   generateInvoicePDF,
-  getTotalEarnings
+  getTotalEarnings,
+  calculateProductsSold
 } = require('../controllers/invoiceController');
 const authorize = require('../middlewares/authorize')
 
@@ -57,6 +58,6 @@ router.post('/:id/payments',
   addInvoicePayment
 );
 
-router.get('/earnings/total-earnings',authorize.verifyJwtUser, getTotalEarnings);
+router.get('/earnings/total-earnings', getTotalEarnings);
 
 module.exports = router;

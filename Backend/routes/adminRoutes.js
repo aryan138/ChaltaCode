@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin, createUser, getAllUsersUnderAdmin, updateUserStatus } = require('../controllers/adminController');
+const { register, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin, createUser, getAllUsersUnderAdmin, updateUserStatus,getUserCount } = require('../controllers/adminController');
 const authorize = require('../middlewares/authorize')
 router.post('/register', register);
 router.post('/login',loginAdmin);
@@ -9,6 +9,7 @@ router.post('/create-user',authorize.verifyJwtAdmin,createUser)
 router.get('/get-details',authorize.verifyJwtAdmin,getUsers)
 router.get('/getAllUsers',authorize.verifyJwtAdmin,getAllUsersUnderAdmin)
 router.put('/update-status',authorize.verifyJwtAdmin,updateUserStatus)
+router.get('/user-count',authorize.verifyJwtAdmin,getUserCount);
 
 
 

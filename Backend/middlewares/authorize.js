@@ -8,10 +8,10 @@ const admin = require('../models/admin');
 
 const verifyJwtUser = async (req, res, next) => {
     try {
+        console.log("helloooo");
         // Extract tokens from cookies
         const accessToken = req.cookies?.accessToken;
-        
-
+        // console.log("user access token: " + accessToken);
         // If no tokens are present
         if (!accessToken) {
             return res.status(401).json({
@@ -62,6 +62,7 @@ const verifyJwtUser = async (req, res, next) => {
 const verifyJwtAdmin = async (req, res, next) => {
     try {
         // Extract tokens from cookies
+        
         const accessToken = req.cookies?.accessToken;
         
 

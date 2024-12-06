@@ -433,7 +433,7 @@ const getTotalEarnings = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      totalEarnings
+      earn:totalEarnings
     });
   } catch (error) {
     res.status(500).json({
@@ -444,6 +444,8 @@ const getTotalEarnings = async (req, res) => {
   }
 };
 
+
+
 module.exports = {
   createInvoice,
   getInvoices,
@@ -452,5 +454,5 @@ module.exports = {
   deleteInvoice,
   addInvoicePayment,
   generateInvoicePDF,
-  getTotalEarnings
+  getTotalEarnings,
 };

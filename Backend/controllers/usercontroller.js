@@ -1,7 +1,8 @@
 const user = require("../models/user");
 const bcrypt = require("bcryptjs");
 const mail = require('../helper/sendMail')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const admin = require("../models/admin");
 
 
 
@@ -331,7 +332,18 @@ const getDetails = async (req,res)=>{
     return res.status(500).json({ message: "error while fetching data of user", error });
   }
 };
+
+const getAdmin = async (req, res)=>{
+  try {
+    const admin_id = req.user.user_admin;
+    const findAdmin = await admin.findById(admin_id);
+    if (!findAdmin) return res.status(404).json({success:false,message:"admin not found"});
+    return res.status(200).json({success:true,message:"successfully found admin",admin:findAdmin});
+  } catch (error) {
+    return res.status(500).json({message: "error while fetching your admin"});
+  }
+}
   
 
-  module.exports= {register,loginUser,logoutUser,updateUserDetails,getDetails};
+  module.exports= {register,loginUser,logoutUser,updateUserDetails,getDetails,getAdmin};
 

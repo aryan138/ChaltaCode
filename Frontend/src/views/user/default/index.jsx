@@ -13,19 +13,59 @@ import CheckTable from "views/user/default/components/CheckTable";
 import ComplexTable from "views/user/default/components/ComplexTable";
 import tableDataCheck from "./variables/tableDataCheck.json";
 import tableDataComplex from "./variables/tableDataComplex.json";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Dashboard = () => {
+  const [earnings,setEarning] = useState(0);
+  const [userAdmin,setUserAdmin] = useState('admin');
+  useEffect(()=>{
+    const handleEarnings = async()=>{
+      try {
+        const response = await axios.get('http://localhost:3000/invoices/earnings/total-earnings');
+        // console.log("earnings: " + response);
+        if (response.data.success==true){
+          setEarning(response.data.earn);
+        }
+        else{
+          setEarning(0);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    }
+    const handleAdmin = async()=>{
+      try {
+        const response = await axios.get('http://localhost:3000/user/admin-details',{
+          withCredentials:true
+        });
+        // console.log("earnings: " + response);
+        if (response.data.success==true){
+          // console.log(response.data.admin.username);
+          setUserAdmin(response.data.admin.username);
+        }
+        else{
+          setUserAdmin('admin');
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    }
+    handleEarnings();
+    handleAdmin();
+  },[])
   return (
     <div>
       {/* Card widget */}
 
-      <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
+      <div className="mt-3 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-4">
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
           title={"Earnings"}
-          subtitle={"₹ 350000"}
+          subtitle={"₹"+earnings}
         />
-        <Widget
+        {/* <Widget
           icon={<IoDocuments className="h-6 w-6" />}
           title={"Spend this month"}
           subtitle={"₹ 200000"}
@@ -34,21 +74,21 @@ const Dashboard = () => {
           icon={<MdBarChart className="h-7 w-7" />}
           title={"Sales"}
           subtitle={"₹ 150000"}
-        />
+        /> */}
         <Widget
           icon={<MdDashboard className="h-6 w-6" />}
-          title={"Your Balance"}
+          title={"Out of Stock Products"}
           subtitle={"₹ 900000"}
         />
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
-          title={"New Tasks"}
+          title={"Total Orders"}
           subtitle={"14"}
         />
         <Widget
           icon={<IoMdHome className="h-6 w-6" />}
-          title={"Total Companies"}
-          subtitle={"172"}
+          title={"Admin"}
+          subtitle={userAdmin}
         />
       </div>
 
@@ -97,3 +137,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

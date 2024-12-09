@@ -14,6 +14,8 @@ const ProfileUpdate = ({ onClose }) => {
     user_company_name: "Company Name",
   });
 
+  const [profileImage, setProfileImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState({});
@@ -54,6 +56,20 @@ const ProfileUpdate = ({ onClose }) => {
       [name]: value,
     }));
   };
+
+  const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          setProfileImage(file);
+    
+          // Show preview
+          const reader = new FileReader();
+          reader.onload = () => {
+            setPreviewImage(reader.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
 
   const validateFields = () => {
     const errors = {};
@@ -145,6 +161,31 @@ const ProfileUpdate = ({ onClose }) => {
 
         <h4 className="text-2xl font-bold mb-4">Update Your Profile</h4>
         <form onSubmit={handleSubmit} className="space-y-4">
+
+        <div>
+             <label className="mb-2 block text-sm font-medium">
+               Profile Picture
+             </label>
+             <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="block w-full text-sm text-gray-500
+                file:mr-4 file:rounded-md file:border-0
+                file:bg-green-800 file:px-4
+                file:py-2 file:text-sm
+                file:font-semibold file:text-white
+                hover:file:bg-green-700"
+            />
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="Profile Preview"
+                className="mt-4 h-32 w-32 rounded-full object-cover"
+              />
+            )}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             {/* Email */}
             <div>
@@ -192,34 +233,6 @@ const ProfileUpdate = ({ onClose }) => {
               )}
             </div>
           </div>
-
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Designation</label>
-              <input
-                name="user_designation"
-                value={formData.user_designation}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              />
-              {errors.user_designation && (
-                <p className="text-red-500 text-xs">{errors.user_designation}</p>
-              )}
-            </div>  
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Company Name</label>
-              <input
-                name="user_company_name"
-                value={formData.user_company_name}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              />
-              {errors.user_company_name && (
-                <p className="text-red-500 text-xs">{errors.user_company_name}</p>
-              )}
-            </div>
-          </div> */}
 
           <div className="flex justify-end mt-6">
             <button

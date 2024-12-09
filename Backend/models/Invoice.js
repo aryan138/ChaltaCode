@@ -1,6 +1,95 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 
+// const InvoiceSchema = new mongoose.Schema({
+//   invoiceNumber: {
+//     type: String,
+//     unique: true,
+//     required: true,
+//     index: true
+//   },
+//   customer: {
+//     type: {
+//       _id: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: 'Customer'
+//       },
+//       name: {
+//         type: String,
+//         required: true,
+//         trim: true
+//       },
+//       email: {
+//         type: String,
+//         lowercase: true,
+//         trim: true
+//       },
+//       phone: {
+//         type: String,
+//         trim: true
+//       }
+//     },
+//     required: true
+//   },
+//   shop: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: 'Shop',
+//   },
+//   items: [{
+//     product: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: 'Product',
+//       required: true
+//     },
+//     name: String,
+//     quantity: {
+//       type: Number,
+//       required: true,
+//       min: 1
+//     },
+//     unitPrice: {
+//       type: Number,
+//       required: true
+//     },
+//     totalPrice: {
+//       type: Number,
+//       required: true
+//     }
+//   }],
+//   subtotal: {
+//     type: Number,
+//     required: true
+//   },
+//   totalAmount: {
+//     type: Number,
+//     required: true
+//   },
+//   status: {
+//     type: String,
+//     enum: [ 'PAID', 'CANCELLED'],
+//     default: 'PAID'
+//   },
+//   paymentStatus: {
+//     type: String,
+//     enum: ['UNPAID', 'PAID'],
+//     default: 'UNPAID'
+//   },
+//   createdBy: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: 'User',
+//     required: true
+//   },
+//   paymentHistory: [{
+//     amount: Number,
+//     date: Date,
+//     paymentMethod: String,
+//     notes: String
+//   }]
+// }, { 
+//   timestamps: true 
+// });
+
+// InvoiceSchema.plugin(mongoosePaginate);
 const InvoiceSchema = new mongoose.Schema({
   invoiceNumber: {
     type: String,
@@ -39,6 +128,10 @@ const InvoiceSchema = new mongoose.Schema({
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
+      required: true
+    },
+    productId: {
+      type: String,
       required: true
     },
     name: String,
@@ -89,7 +182,15 @@ const InvoiceSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-InvoiceSchema.plugin(mongoosePaginate);
+// Pre-save middleware to ensure productId is set
+InvoiceSchema.pre('save', function(next) {
+  this.items.forEach(item => {
+    if (item.product && (!item.productId || item.productId !== item.product.toString())) {
+      item.productId = item.product.toString();
+    }
+  });
+  next();
+});
 
 // Method to add payment
 // InvoiceSchema.methods.addPayment = function(amount, method, notes = '') {

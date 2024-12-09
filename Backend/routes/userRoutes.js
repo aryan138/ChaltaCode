@@ -9,4 +9,5 @@ router.get("/logout",authorize.verifyJwtUser,userController.logoutUser);
 router.post("/update-details",authorize.verifyJwtUser,userController.updateUserDetails);
 router.get("/get-details",authorize.verifyJwtUser,userController.getDetails);
 router.get("/admin-details",authorize.verifyJwtUser,userController.getAdmin);
+router.get('/daily-salees',authorize.verifyJwtUser,userController.getDailySalees);
 module.exports = router;

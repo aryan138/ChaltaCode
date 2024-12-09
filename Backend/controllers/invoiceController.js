@@ -22,20 +22,102 @@ const generateInvoiceNumber = async () => {
 };
 
 // Create Invoice
+// const createInvoice = async (req, res) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
+
+//   try {
+//     const { customer, items, subtotal, totalAmount, status = 'DRAFT' } = req.body;
+
+//     // Validate input
+//     if (!customer || !customer.name) {
+//       throw new Error('Customer name is required');
+//     }
+
+//     if (!items || items.length === 0) {
+//       throw new Error('At least one item is required');
+//     }
+
+//     // Process items and validate stock
+//     const processedItems = await Promise.all(items.map(async (item) => {
+//       const product = await Product.findById(item.product);
+      
+//       if (!product) {
+//         throw new Error(`Product not found: ${item.product}`);
+//       }
+
+//       if (product.stock < item.quantity) {
+//         throw new Error(`Insufficient stock for product: ${product.name}`);
+//       }
+
+//       // Reduce product stock
+//       product.stock -= item.quantity;
+//       await product.save({ session });
+
+//       return {
+//         product: product._id,
+//         name: product.name,
+//         quantity: item.quantity,
+//         unitPrice: item.unitPrice || product.price,
+//         totalPrice: item.totalPrice || (item.quantity * (item.unitPrice || product.price))
+//       };
+//     }));
+
+//     // Calculate totals
+//     const calculatedSubtotal = processedItems.reduce((sum, item) => sum + item.totalPrice, 0);
+
+//     // Generate Invoice Number
+//     const invoiceNumber = await generateInvoiceNumber();
+
+//     // Create Invoice
+//     const newInvoice = new Invoice({
+//       invoiceNumber,
+//       customer: {
+//         name: customer.name,
+//         email: customer.email || '',
+//         phone: customer.phone || '',
+//         address: customer.address || ''
+//       },
+//       items: processedItems,
+//       subtotal: subtotal || calculatedSubtotal,
+//       totalAmount: totalAmount || calculatedSubtotal,
+//       status,
+//       shop: req.user.shop,
+//       createdBy: req.user._id
+//     });
+
+//     await newInvoice.save({ session });
+//     await session.commitTransaction();
+
+//     res.status(201).json({
+//       message: 'Invoice created successfully',
+//       invoice: newInvoice
+//     });
+//   } catch (error) {
+//     await session.abortTransaction();
+//     res.status(400).json({ 
+//       message: 'Invoice creation failed', 
+//       error: error.message 
+//     });
+//   } finally {
+//     session.endSession();
+//   }
+// };
+
 const createInvoice = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const { customer, items, subtotal, totalAmount, status = 'DRAFT' } = req.body;
+    const { customer, items, subtotal, totalAmount, status = 'PAID' } = req.body;
 
     // Validate input
     if (!customer || !customer.name) {
-      throw new Error('Customer name is required');
+      return res.status(404).json({success:false,message:'customer not found'});
     }
 
     if (!items || items.length === 0) {
-      throw new Error('At least one item is required');
+      return res.status(404).json({success:false,message:'items not found in invoice'});
     }
 
     // Process items and validate stock
@@ -43,11 +125,11 @@ const createInvoice = async (req, res) => {
       const product = await Product.findById(item.product);
       
       if (!product) {
-        throw new Error(`Product not found: ${item.product}`);
+        return res.status(404).json({success:false,message:'product not found'});
       }
 
       if (product.stock < item.quantity) {
-        throw new Error(`Insufficient stock for product: ${product.name}`);
+        return res.status(401).json({success:false,message:`Insufficient stock for product: ${product.name}`});
       }
 
       // Reduce product stock
@@ -56,6 +138,7 @@ const createInvoice = async (req, res) => {
 
       return {
         product: product._id,
+        productId: product._id.toString(), // Add string representation of product ID
         name: product.name,
         quantity: item.quantity,
         unitPrice: item.unitPrice || product.price,
@@ -73,17 +156,18 @@ const createInvoice = async (req, res) => {
     const newInvoice = new Invoice({
       invoiceNumber,
       customer: {
+        _id: customer._id ? mongoose.Types.ObjectId(customer._id) : undefined,
         name: customer.name,
         email: customer.email || '',
-        phone: customer.phone || '',
-        address: customer.address || ''
+        phone: customer.phone || ''
       },
       items: processedItems,
       subtotal: subtotal || calculatedSubtotal,
       totalAmount: totalAmount || calculatedSubtotal,
       status,
       shop: req.user.shop,
-      createdBy: req.user._id
+      createdBy: req.user._id,
+      paymentStatus: status === 'PAID' ? 'PAID' : 'UNPAID'
     });
 
     await newInvoice.save({ session });
@@ -95,6 +179,7 @@ const createInvoice = async (req, res) => {
     });
   } catch (error) {
     await session.abortTransaction();
+    console.error('Invoice Creation Error:', error);
     res.status(400).json({ 
       message: 'Invoice creation failed', 
       error: error.message 
@@ -104,61 +189,55 @@ const createInvoice = async (req, res) => {
   }
 };
 
-// Get Invoices
+
 const getInvoices = async (req, res) => {
   try {
-    const { 
-      page = 1, 
-      limit = 10, 
-      status, 
-      startDate, 
-      endDate,
-      searchTerm
-    } = req.query;
+    const user_id = req.user._id; // Extract the user ID from the request
+    const { page = 1, limit = 10, startDate, endDate, searchTerm } = req.query;
 
-    const filter = { shop: req.user.shop };
+    // Build the query filters dynamically
+    const query = {
+      createdBy: user_id,
+      status:"PAID"
+    };
 
-    // Status filter
-    if (status) filter.status = status;
-
-    // Date range filter
     if (startDate && endDate) {
-      filter.createdAt = {
-        $gte: moment(startDate).startOf('day').toDate(),
-        $lte: moment(endDate).endOf('day').toDate()
-      };
+      query.createdAt = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    } else if (startDate) {
+      query.createdAt = { $gte: new Date(startDate) };
+    } else if (endDate) {
+      query.createdAt = { $lte: new Date(endDate) };
     }
-
-    // Search filter
     if (searchTerm) {
-      filter.$or = [
-        { 'customer.name': { $regex: searchTerm, $options: 'i' } },
-        { invoiceNumber: { $regex: searchTerm, $options: 'i' } }
+      query.$or = [
+        { invoiceNumber: { $regex: searchTerm, $options: "i" } },
+        { 'customer.name': { $regex: searchTerm, $options: "i" } },
       ];
     }
 
-    const options = {
-      page: parseInt(page),
-      limit: parseInt(limit),
-      sort: { createdAt: -1 },
-      populate: ['items.product']
-    };
+    // Pagination
+    const skip = (page - 1) * limit;
+    const invoices = await Invoice.find(query).skip(skip).limit(Number(limit));
+    const totalInvoices = await Invoice.countDocuments(query);
+    const totalPages = Math.ceil(totalInvoices / limit);
 
-    const invoices = await Invoice.paginate(filter, options);
-
-    res.json({
-      invoices: invoices.docs,
-      totalPages: invoices.totalPages,
-      currentPage: invoices.page,
-      totalInvoices: invoices.totalDocs
+    // Return the response
+    return res.status(200).json({
+      success: true,
+      message: "Invoices fetched successfully",
+      invoices,
+      currentPage: Number(page),
+      totalPages,
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: 'Failed to fetch invoices', 
-      error: error.message 
+    res.status(500).json({
+      message: "Failed to fetch invoices",
+      error: error.message,
     });
   }
 };
+
+
 
 // Get Single Invoice
 const getInvoiceById = async (req, res) => {
@@ -184,7 +263,6 @@ const getInvoiceById = async (req, res) => {
 const updateInvoice = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -443,6 +521,10 @@ const getTotalEarnings = async (req, res) => {
     });
   }
 };
+
+
+
+
 
 
 

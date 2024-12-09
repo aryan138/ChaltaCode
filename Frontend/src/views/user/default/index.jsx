@@ -20,6 +20,7 @@ import axios from "axios";
 const Dashboard = () => {
   const [earnings,setEarning] = useState(0);
   const [userAdmin,setUserAdmin] = useState('admin');
+  const [weeklySale,SetWeeklySale] = useState([])
   useEffect(()=>{
     const handleEarnings = async()=>{
       try {
@@ -42,7 +43,6 @@ const Dashboard = () => {
         });
         // console.log("earnings: " + response);
         if (response.data.success==true){
-          // console.log(response.data.admin.username);
           setUserAdmin(response.data.admin.username);
         }
         else{
@@ -52,8 +52,21 @@ const Dashboard = () => {
         toast.error(error.message);
       }
     }
+    const handleWeeklyData =async ()=>{
+      try {
+        const response = await axios.get('http://localhost:3000/user/daily-salees',{withCredentials:true});
+        if(response.data.success==true){
+          console.log(response.data.data);
+          SetWeeklySale(response.data.data);
+
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    }
     handleEarnings();
     handleAdmin();
+    handleWeeklyData();
   },[])
   return (
     <div>
@@ -96,7 +109,7 @@ const Dashboard = () => {
 
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
         <TotalSpent />
-        <WeeklyRevenue />
+        <WeeklyRevenue data={weeklySale} />
       </div>
 
       {/* Tables & Charts */}

@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const mail = require('../helper/sendMail')
 const mongoose = require('mongoose');
 const admin = require("../models/admin");
+const Invoice = require("../models/Invoice");
 
 
 
@@ -343,7 +344,111 @@ const getAdmin = async (req, res)=>{
     return res.status(500).json({message: "error while fetching your admin"});
   }
 }
+const getDailySalees = async (req, res) => {
+  try {
+    // Get the user from the authorized request
+    const userId = req.user._id;
+
+    // Calculate the date 9 days ago
+    const nineDAaysAgo = new Date();
+    nineDAaysAgo.setDate(nineDAaysAgo.getDate() - 9);
+
+    // Generate an array of last 9 days
+    const last9Days = Array.from({ length: 9 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      return d;
+    }).reverse(); // Reverse to get ascending order
+
+    // Aggregate sales data
+    const dailySales = await Invoice.aggregate([
+      // Match invoices created by the specific user in the last 9 days
+      { 
+        $match: { 
+          createdBy: userId,
+          status: 'PAID', // Only consider paid invoices
+          createdAt: { $gte: nineDAaysAgo }
+        } 
+      },
+      // Unwind the items array to create a document for each item
+      { $unwind: '$items' },
+      
+      // Group by date and product
+      {
+        $group: {
+          _id: {
+            date: { 
+              $dateToString: { 
+                format: "%Y-%m-%d", 
+                date: "$createdAt" 
+              } 
+            },
+            productId: '$items.productId'
+          },
+          productName: { $first: '$items.name' },
+          totalQuantity: { $sum: '$items.quantity' },
+          totalRevenue: { $sum: '$items.totalPrice' }
+        }
+      }
+    ]);
+
+    // Create a map of existing sales
+    const salesMap = new Map(
+      dailySales.map(sale => [
+        `${sale._id.date}-${sale._id.productId}`, 
+        {
+          date: sale._id.date,
+          productId: sale._id.productId,
+          productName: sale.productName,
+          quantity: sale.totalQuantity,
+          revenue: sale.totalRevenue
+        }
+      ])
+    );
+
+    // Prepare final results with all 9 days
+    const formattedSales = last9Days.map(day => {
+      const formattedDate = day.toISOString().split('T')[0];
+      
+      // Find all unique products from the sales data
+      const uniqueProducts = [...new Set(
+        dailySales.map(sale => ({
+          productId: sale._id.productId,
+          productName: sale.productName
+        }))
+      )];
+
+      // Map products for this date
+      const productsForDate = uniqueProducts.map(product => {
+        const key = `${formattedDate}-${product.productId}`;
+        const existingSale = salesMap.get(key);
+
+        return existingSale || {
+          date: formattedDate,
+          productId: product.productId,
+          productName: product.productName,
+          quantity: 0,
+          revenue: 0
+        };
+      });
+
+      return productsForDate;
+    }).flat(); // Flatten the nested array
+
+    res.json({
+      success: true,
+      data: formattedSales
+    });
+  } catch (error) {
+    console.error('Daily Sales Error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Error fetching daily sales', 
+      error: error.message 
+    });
+  }
+}
   
 
-  module.exports= {register,loginUser,logoutUser,updateUserDetails,getDetails,getAdmin};
+  module.exports= {register,loginUser,logoutUser,updateUserDetails,getDetails,getAdmin,getDailySalees};
 

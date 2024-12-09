@@ -1,34 +1,44 @@
-import React, { useState, useEffect, useRef, Fragment, useCallback } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { 
-  EyeIcon, 
-  DownloadIcon, 
-  TrashIcon, 
-  PlusIcon,  
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Fragment,
+  useCallback,
+} from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import {
+  EyeIcon,
+  DownloadIcon,
+  TrashIcon,
+  PlusIcon,
   SearchIcon,
-  UploadIcon 
-} from '@heroicons/react/outline';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import axios from 'axios';
+  UploadIcon,
+} from "@heroicons/react/outline";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 // API Client with Axios
 const api = axios.create({
-  baseURL: 'http://localhost:3000/',
-  withCredentials: true
+  baseURL: "http://localhost:3000/",
+  withCredentials: true,
 });
 
 // Status Badge Component
 const StatusBadge = ({ status }) => {
   const statusColors = {
-    PAID: 'bg-green-100 text-green-800',
-    PENDING: 'bg-yellow-100 text-yellow-800',
-    OVERDUE: 'bg-red-100 text-red-800',
-    DRAFT: 'bg-gray-100 text-gray-800'
+    PAID: "bg-green-100 text-green-800",
+    PENDING: "bg-yellow-100 text-yellow-800",
+    OVERDUE: "bg-red-100 text-red-800",
+    DRAFT: "bg-gray-100 text-gray-800",
   };
 
   return (
-    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[status] || statusColors.DRAFT}`}>
+    <span
+      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+        statusColors[status] || statusColors.DRAFT
+      }`}
+    >
       {status}
     </span>
   );
@@ -38,13 +48,13 @@ const StatusBadge = ({ status }) => {
 const CreateInvoiceForm = ({ onSuccess }) => {
   const [products, setProducts] = useState([]);
   const [customer, setCustomer] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: ''
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
   });
   const [items, setItems] = useState([
-    { product: '', quantity: 1, unitPrice: 0, totalPrice: 0 }
+    { product: "", quantity: 1, unitPrice: 0, totalPrice: 0 },
   ]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [logo, setLogo] = useState(null);
@@ -53,15 +63,19 @@ const CreateInvoiceForm = ({ onSuccess }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await api.get('http://localhost:3000/products/getall');
-        if (response.data && response.data.products) {
-          setProducts(response.data.products);
-        } else {
-          toast.error('Unexpected product data format');
+        const response = await api.get("http://localhost:3000/products/getall");
+        if (response.data.invoices.length>0) {
+          setProducts(response.data.invoices);
+        
+        }else if(response.data.invoices.length==0){
+          toast.error("first add products to your inventory");
+        }
+         else {
+          toast.error("Unexpected product data format");
         }
       } catch (error) {
-        console.error('Error fetching products', error);
-        toast.error('Failed to fetch products');
+        console.error("Error fetching products", error);
+        toast.error("Failed to fetch products");
       }
     };
     fetchProducts();
@@ -82,8 +96,8 @@ const CreateInvoiceForm = ({ onSuccess }) => {
     const newItems = [...items];
     newItems[index][field] = value;
 
-    if (field === 'product') {
-      const selectedProduct = products.find(p => p._id === value);
+    if (field === "product") {
+      const selectedProduct = products.find((p) => p._id === value);
       if (selectedProduct) {
         newItems[index].unitPrice = selectedProduct.price;
         newItems[index].maxQuantity = selectedProduct.stock;
@@ -93,17 +107,21 @@ const CreateInvoiceForm = ({ onSuccess }) => {
       }
     }
 
-    if (field === 'quantity') {
+    if (field === "quantity") {
       const parsedQuantity = parseInt(value);
       const maxQuantity = newItems[index].maxQuantity || 1;
       newItems[index].quantity = Math.min(
-        Math.max(1, parsedQuantity || 1), 
+        Math.max(1, parsedQuantity || 1),
         maxQuantity
       );
     }
 
-    newItems[index].totalPrice = newItems[index].quantity * newItems[index].unitPrice;
-    const newTotalAmount = newItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    newItems[index].totalPrice =
+      newItems[index].quantity * newItems[index].unitPrice;
+    const newTotalAmount = newItems.reduce(
+      (sum, item) => sum + item.totalPrice,
+      0
+    );
 
     setItems(newItems);
     setTotalAmount(newTotalAmount);
@@ -111,15 +129,18 @@ const CreateInvoiceForm = ({ onSuccess }) => {
 
   const addItem = () => {
     setItems([
-      ...items, 
-      { product: '', quantity: 1, unitPrice: 0, totalPrice: 0 }
+      ...items,
+      { product: "", quantity: 1, unitPrice: 0, totalPrice: 0 },
     ]);
   };
 
   const removeItem = (index) => {
     const newItems = items.filter((_, i) => i !== index);
     setItems(newItems);
-    const newTotalAmount = newItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    const newTotalAmount = newItems.reduce(
+      (sum, item) => sum + item.totalPrice,
+      0
+    );
     setTotalAmount(newTotalAmount);
   };
 
@@ -129,27 +150,27 @@ const CreateInvoiceForm = ({ onSuccess }) => {
       toast.error("Customer name is required");
       return false;
     }
-  
+
     // Check if the name contains only letters and spaces
     const nameRegex = /^[a-zA-Z\s]+$/;
     if (!nameRegex.test(customer.name)) {
       toast.error("Customer name must contain only letters");
       return false;
     }
-  
+
     // Check if at least one item is added
     if (items.length === 0) {
       toast.error("Please add at least one item");
       return false;
     }
-  
+
     // Check if all items have a selected product
     const invalidItems = items.some((item) => !item.product);
     if (invalidItems) {
       toast.error("Please select a product for all items");
       return false;
     }
-  
+
     // Check if quantities are valid and within stock limits
     const invalidQuantities = items.some((item) => {
       const product = products.find((p) => p._id === item.product);
@@ -159,10 +180,9 @@ const CreateInvoiceForm = ({ onSuccess }) => {
       toast.error("Invalid product quantities or insufficient stock");
       return false;
     }
-  
+
     return true;
   };
-  
 
   // const validateForm = () => {
   //   if (!customer.name) {
@@ -204,36 +224,42 @@ const CreateInvoiceForm = ({ onSuccess }) => {
       const invoiceData = {
         customer: {
           name: customer.name,
-          email: customer.email || '',
-          phone: customer.phone || '',
-          address: customer.address || ''
+          email: customer.email || "",
+          phone: customer.phone || "",
+          address: customer.address || "",
         },
-        items: items.map(item => ({
+        items: items.map((item) => ({
           product: item.product,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
-          totalPrice: item.totalPrice
+          totalPrice: item.totalPrice,
         })),
         subtotal: totalAmount,
         totalAmount: totalAmount,
-        status: 'PAID'
+        status: "PAID",
       };
 
-      await api.post('/invoices/create-invoice', invoiceData);
-      toast.success('Invoice created successfully');
+      await api.post("/invoices/create-invoice", invoiceData);
+      toast.success("Invoice created successfully");
       onSuccess();
     } catch (error) {
-      console.error('Error creating invoice', error);
-      const errorMessage = error.response?.data?.message || 'Failed to create invoice';
+      console.error("Error creating invoice", error);
+      const errorMessage =
+        error.response?.data?.message || "Failed to create invoice";
       toast.error(errorMessage);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:!bg-black-700">
-      <div className="flex justify-between items-center mb-8 ">
-        <h2 className="text-3xl font-bold text-gray-800 dark:!text-white">Create Invoice</h2>
-        
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 bg-white dark:!bg-black-700"
+    >
+      <div className="mb-8 flex items-center justify-between ">
+        <h2 className="text-3xl font-bold text-gray-800 dark:!text-white">
+          Create Invoice
+        </h2>
+
         <div className="flex items-center">
           <input
             type="file"
@@ -245,15 +271,15 @@ const CreateInvoiceForm = ({ onSuccess }) => {
           <button
             type="button"
             onClick={() => logoInputRef.current.click()}
-            className="flex items-center px-4 py-2 bg-green-800 text-white rounded-md hover:bg-green-700"
+            className="flex items-center rounded-md bg-green-800 px-4 py-2 text-white hover:bg-green-700"
           >
-            <UploadIcon className="h-5 w-5 mr-2" />
+            <UploadIcon className="mr-2 h-5 w-5" />
             Upload Logo
           </button>
           {logo && (
-            <img 
-              src={logo} 
-              alt="Company Logo" 
+            <img
+              src={logo}
+              alt="Company Logo"
               className="ml-4 h-16 w-16 object-contain"
             />
           )}
@@ -262,22 +288,22 @@ const CreateInvoiceForm = ({ onSuccess }) => {
 
       <div className="grid grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2 dark:!text-gray-400">
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:!text-gray-400">
             Customer Name *
           </label>
           <input
             type="text"
             placeholder="Enter customer name"
             value={customer.name}
-            onChange={(e) => setCustomer({...customer, name: e.target.value})}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-200"
+            onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-200"
             required
           />
         </div>
       </div>
 
-      <div className="bg-gray-50 p-4 rounded-md dark:!bg-black-800">
-        <div className="grid grid-cols-6 gap-4 mb-4 font-semibold text-gray-700 dark:!text-gray-400">
+      <div className="rounded-md bg-gray-50 p-4 dark:!bg-black-800">
+        <div className="mb-4 grid grid-cols-6 gap-4 font-semibold text-gray-700 dark:!text-gray-400">
           <div className="col-span-3">Product</div>
           <div>Quantity</div>
           <div>Unit Price</div>
@@ -285,16 +311,16 @@ const CreateInvoiceForm = ({ onSuccess }) => {
         </div>
 
         {items.map((item, index) => (
-          <div key={index} className="grid grid-cols-6 gap-4 mb-3 items-center">
+          <div key={index} className="mb-3 grid grid-cols-6 items-center gap-4">
             <div className="col-span-3">
               <select
                 value={item.product}
-                onChange={(e) => updateItem(index, 'product', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-700"
+                onChange={(e) => updateItem(index, "product", e.target.value)}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-700"
                 required
               >
                 <option value="">Select Product</option>
-                {products.map(product => (
+                {products.map((product) => (
                   <option key={product._id} value={product._id}>
                     {product.name} (Stock: {product.stock})
                   </option>
@@ -305,10 +331,12 @@ const CreateInvoiceForm = ({ onSuccess }) => {
               <input
                 type="number"
                 value={item.quantity}
-                onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value))}
+                onChange={(e) =>
+                  updateItem(index, "quantity", parseInt(e.target.value))
+                }
                 min="1"
-                max={products.find(p => p._id === item.product)?.stock || 1}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-700"
+                max={products.find((p) => p._id === item.product)?.stock || 1}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-700"
                 required
               />
             </div>
@@ -317,7 +345,7 @@ const CreateInvoiceForm = ({ onSuccess }) => {
                 type="number"
                 value={item.unitPrice}
                 readOnly
-                className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"
+                className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2"
               />
             </div>
             <div>
@@ -325,14 +353,14 @@ const CreateInvoiceForm = ({ onSuccess }) => {
                 type="number"
                 value={item.totalPrice}
                 readOnly
-                className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md"
+                className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2"
               />
             </div>
             <div>
-              <button 
+              <button
                 type="button"
                 onClick={() => removeItem(index)}
-                className="text-red-500 hover:bg-red-50 p-2 rounded-full"
+                className="rounded-full p-2 text-red-500 hover:bg-red-50"
               >
                 <TrashIcon className="h-5 w-5" />
               </button>
@@ -340,23 +368,23 @@ const CreateInvoiceForm = ({ onSuccess }) => {
           </div>
         ))}
 
-        <button 
+        <button
           type="button"
           onClick={addItem}
-          className="flex items-center text-green-800 hover:bg-blue-50 px-4 py-2 rounded-md dark:!text-green-600"
+          className="flex items-center rounded-md px-4 py-2 text-green-800 hover:bg-blue-50 dark:!text-green-600"
         >
-          <PlusIcon className="h-5 w-5 mr-2" />
+          <PlusIcon className="mr-2 h-5 w-5" />
           Add Item
         </button>
       </div>
 
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <div className="text-2xl font-bold text-gray-800 dark:!text-gray-400">
           Total Amount: &#8377;{totalAmount.toFixed(2)}
         </div>
-        <button 
+        <button
           type="submit"
-          className="px-8 py-3 bg-green-800 text-white rounded-md hover:bg-green-700 transition-colors"
+          className="rounded-md bg-green-800 px-8 py-3 text-white transition-colors hover:bg-green-700"
         >
           Create Invoice
         </button>
@@ -389,16 +417,19 @@ const InvoiceList = () => {
     async (page = 1) => {
       try {
         setLoading(true);
-        const response = await api.get("http://localhost:3000/invoices/getall", {
-          params: {
-            page,
-            limit: 10,
-            status: appliedFilters.status,
-            startDate: appliedFilters.startDate,
-            endDate: appliedFilters.endDate,
-            searchTerm: appliedFilters.searchTerm,
-          },
-        });
+        const response = await api.get(
+          "http://localhost:3000/invoices/getall",
+          {
+            params: {
+              page,
+              limit: 10,
+              status: appliedFilters.status,
+              startDate: appliedFilters.startDate,
+              endDate: appliedFilters.endDate,
+              searchTerm: appliedFilters.searchTerm,
+            },
+          }
+        );
 
         const { invoices, totalPages, currentPage } = response.data;
         setInvoices(invoices);
@@ -419,33 +450,34 @@ const InvoiceList = () => {
     fetchInvoices(pagination.currentPage);
   }, [fetchInvoices, pagination.currentPage]); // Include fetchInvoices and currentPage in dependencies
 
-
   const downloadInvoice = async (invoiceId) => {
     try {
       const response = await api.get(`/invoices/${invoiceId}/pdf`, {
-        responseType: 'blob'
+        responseType: "blob",
       });
 
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const link = document.createElement('a');
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
       link.download = `invoice_${invoiceId}.pdf`;
       link.click();
     } catch (error) {
-      console.error('Error downloading invoice', error);
-      toast.error('Failed to download invoice');
+      console.error("Error downloading invoice", error);
+      toast.error("Failed to download invoice");
     }
   };
 
   const deleteInvoice = async (invoiceId) => {
     try {
       await api.delete(`/invoices/${invoiceId}`);
-      setInvoices(invoices.filter(inv => inv._id !== invoiceId));
-      setFilteredInvoices(filteredInvoices.filter(inv => inv._id !== invoiceId));
-      toast.success('Invoice deleted successfully');
+      setInvoices(invoices.filter((inv) => inv._id !== invoiceId));
+      setFilteredInvoices(
+        filteredInvoices.filter((inv) => inv._id !== invoiceId)
+      );
+      toast.success("Invoice deleted successfully");
     } catch (error) {
-      console.error('Error deleting invoice', error);
-      toast.error('Failed to delete invoice');
+      console.error("Error deleting invoice", error);
+      toast.error("Failed to delete invoice");
     }
   };
 
@@ -459,90 +491,94 @@ const InvoiceList = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-green-500"></div>
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-green-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-8 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 dark:!text-gray-100">Invoices</h1>
+    <div className="container mx-auto px-4 py-8 sm:px-8">
+      <div className="mb-8 flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-gray-800 dark:!text-gray-100">
+          Invoices
+        </h1>
         <div className="flex space-x-4">
-          <button 
+          <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center bg-green-800 text-white px-4 py-2 rounded-full hover:bg-green-700 transition"
+            className="flex items-center rounded-full bg-green-800 px-4 py-2 text-white transition hover:bg-green-700"
           >
-            <PlusIcon className="h-5 w-5 mr-2" />
+            <PlusIcon className="mr-2 h-5 w-5" />
             Create Invoice
           </button>
         </div>
       </div>
 
       {/* Filters Section */}
-      <div className="bg-white shadow-md rounded-lg p-6 mb-6 dark:!bg-black-700">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="mb-6 rounded-lg bg-white p-6 shadow-md dark:!bg-black-700">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {/* Search Input */}
           <div className="relative">
-            <input 
+            <input
               type="text"
               placeholder="Search invoices..."
               value={filters.searchTerm}
-              onChange={(e) => setFilters(prev => ({...prev, searchTerm: e.target.value}))}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-700"
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, searchTerm: e.target.value }))
+              }
+              className="w-full rounded-md border border-gray-300 py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-green-700"
             />
             <SearchIcon className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
           </div>
-
-          {/* Status Dropdown */}
-          <select
-            value={filters.status}
-            onChange={(e) => setFilters(prev => ({...prev, status: e.target.value}))}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-700"
-          >
-            <option value="">All Statuses</option>
-            <option value="PAID">Paid</option>
-            <option value="PENDING">Pending</option>
-            <option value="OVERDUE">Overdue</option>
-            <option value="DRAFT">Draft</option>
-          </select>
-
           {/* Date Range Inputs */}
           <div className="flex space-x-2">
-            <input 
+            <input
               type="date"
               value={filters.startDate}
-              onChange={(e) => setFilters(prev => ({...prev, startDate: e.target.value}))}
-              className="w-[30%] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-700"
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, startDate: e.target.value }))
+              }
+              className="w-[30%] rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-700"
             />
-            <input 
+            <input
               type="date"
               value={filters.endDate}
-              onChange={(e) => setFilters(prev => ({...prev, endDate: e.target.value}))}
-              className="w-[30%] px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-700"
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, endDate: e.target.value }))
+              }
+              className="w-[30%] rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-700"
             />
             <button
-            onClick={applyFilters}
-            className="bg-green-800 text-white px-4 py-3 rounded-md hover:bg-green-700 transition"
-          >
-            Apply Filters
-          </button>
+              onClick={applyFilters}
+              className="rounded-md bg-green-800 px-4 py-3 text-white transition hover:bg-green-700"
+            >
+              Apply Filters
+            </button>
           </div>
         </div>
       </div>
 
       {/* Invoices Table */}
-      <div className="bg-white shadow-md rounded-lg overflow-hidden dark:!bg-black-700">
+      <div className="overflow-hidden rounded-lg bg-white shadow-md dark:!bg-black-700">
         <table className="min-w-full">
           <thead className="bg-gray-100 font-bold dark:!bg-black-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs text-green-900 uppercase tracking-wider dark:!text-white">Invoice #</th>
-              <th className="px-6 py-3 text-left text-xs text-green-900 uppercase tracking-wider dark:!text-white">Customer</th>
-              <th className="px-6 py-3 text-left text-xs text-green-900 uppercase tracking-wider dark:!text-white">Date</th>
-              <th className="px-6 py-3 text-left text-xs text-green-900 uppercase tracking-wider dark:!text-white">Total Amount</th>
-              <th className="px-6 py-3 text-left text-xs text-green-900 uppercase tracking-wider dark:!text-white">Status</th>
-              {/* <th className="px-6 py-3 text-right text-xs text-green-900 uppercase tracking-wider dark:!text-white">Actions</th> */}
+              <th className="px-6 py-3 text-left text-xs uppercase tracking-wider text-green-900 dark:!text-white">
+                Invoice #
+              </th>
+              <th className="px-6 py-3 text-left text-xs uppercase tracking-wider text-green-900 dark:!text-white">
+                Customer
+              </th>
+              <th className="px-6 py-3 text-left text-xs uppercase tracking-wider text-green-900 dark:!text-white">
+                Date
+              </th>
+              <th className="px-6 py-3 text-left text-xs uppercase tracking-wider text-green-900 dark:!text-white">
+                Total Amount
+              </th>
+              <th className="px-6 py-3 text-left text-xs uppercase tracking-wider text-green-900 dark:!text-white">
+                Status
+              </th>
+              <th className="px-6 py-3 text-right text-xs text-green-900 uppercase tracking-wider dark:!text-white">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -564,7 +600,7 @@ const InvoiceList = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge status={invoice.status} />
                 </td>
-                {/* <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
                     <button 
                       onClick={() => navigate(`/invoice/${invoice._id}`)}
@@ -585,14 +621,15 @@ const InvoiceList = () => {
                       <TrashIcon className="h-5 w-5" />
                     </button>
                   </div>
-                </td> */}
+                </td>
               </tr>
             ))}
           </tbody>
+          
         </table>
 
         {filteredInvoices.length === 0 && (
-          <div className="text-center py-10">
+          <div className="py-10 text-center">
             <p className="text-gray-500">No invoices found</p>
           </div>
         )}
@@ -604,10 +641,10 @@ const InvoiceList = () => {
             <button
               key={index}
               onClick={() => handlePageChange(index + 1)}
-              className={`px-4 py-2 rounded-md ${
-                pagination.currentPage === index + 1 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-200 text-gray-700'
+              className={`rounded-md px-4 py-2 ${
+                pagination.currentPage === index + 1
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 text-gray-700"
               }`}
             >
               {index + 1}
@@ -631,7 +668,7 @@ const InvoiceList = () => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black bg-opacity-25" />
+            <div className="bg-black fixed inset-0 bg-opacity-25" />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
@@ -646,11 +683,11 @@ const InvoiceList = () => {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all dark:!bg-black-700">
-                  <CreateInvoiceForm 
+                  <CreateInvoiceForm
                     onSuccess={() => {
                       setIsCreateModalOpen(false);
                       fetchInvoices();
-                    }} 
+                    }}
                   />
                 </Dialog.Panel>
               </Transition.Child>
@@ -663,3 +700,5 @@ const InvoiceList = () => {
 };
 
 export default InvoiceList;
+
+

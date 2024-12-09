@@ -9,7 +9,7 @@ const {
   addInvoicePayment,
   generateInvoicePDF,
   getTotalEarnings,
-  calculateProductsSold
+  getDailySalees
 } = require('../controllers/invoiceController');
 const authorize = require('../middlewares/authorize')
 

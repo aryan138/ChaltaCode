@@ -1,4 +1,5 @@
 const Product = require("../models/superProduct");
+const user = require("../models/user");
 
 // Create Product (Manual Entry)
 const createProduct = async (req, res) => {
@@ -189,6 +190,17 @@ const uploadExcel = async (req, res) => {
     });
   }
 };
+const getProdutsFromAdmin = async(req,res)=>{
+  const id = req.user._id;
+  try {
+    const findUser = await user.findById(id);
+
+    const products = await Product.find({ admin: findUser.user_admin });
+    res.status(200).json({ products });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching products", error });
+  }
+}
 
 
 module.exports = {
@@ -197,4 +209,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   uploadExcel,
+  getProdutsFromAdmin
 };

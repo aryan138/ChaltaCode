@@ -11,6 +11,7 @@ const { log } = require('console');
 const user = require('../models/user');
 
 
+
 const generateAccessToken = async (userId) => {
   try {
     console.log("Inside generateAccessToken", userId);
@@ -377,6 +378,46 @@ const getAllUsersUnderAdmin = async (req, res) => {
   }
 };
 
+const completeProfile = async(req,res)=>{
+  try {
+    
+    const id = req.user._id;
+    // const updatedAdmin = await admin.findById(id);
+    
+    const {admin_name,admin_mobile_number,company_name,company_address,pan_number,gst_number} = req.body;
+    console.log(admin_name,admin_mobile_number,company_name,company_address,pan_number,gst_number);
+    const updatedAdmin = await admin.findByIdAndUpdate(id,{$set:{admin_name:admin_name,admin_mobile_number:admin_mobile_number,company_name:company_name,company_address:company_address,
+    pan_number:pan_number,
+     gst_number:gst_number 
+    }},
+  {
+    new:true
+  });
+  // if (admin_name) updatedAdmin.admin_name = admin_name;
+  // if(admin_mobile_number) updatedAdmin.admin_mobile_number = admin_mobile_number;
+  // if(company_name) updatedAdmin.company_name = company_name;
+  // if(company_address) updatedAdmin.company_address = company_address;
+  // if(pan_number) updatedAdmin.pan_number = pan_number;
+  // if(gst_number) updatedAdmin.gst_number = gst_number;
+  // await updatedAdmin.save();
+  console.log(updatedAdmin);
+  if(!updatedAdmin){
+    res.status(409).json({
+      success:false,
+      message:"error occured while updating please try again"
+    })
+  }
+  res.status(200).json({
+    success:true,
+    message:"profile updated successfully"
+  })
+  } catch (error) {
+    res.status(500).json({
+      success:false,
+      message:"error occured "+error,
+    })
+  }
+}
 
 
 const getUsers = async (req, res) => {
@@ -476,4 +517,4 @@ const getUserCount = async(req,res)=>{
     return res.status(500).json({success: false, message: error.message});
   }
 }
-module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus, getUserCount };
+module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus, getUserCount,completeProfile };

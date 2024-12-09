@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { IoEllipseSharp } from "react-icons/io5";
 
 // Define Zod schema for order validation
 const orderSchema = z.object({
@@ -33,9 +34,14 @@ const AddOrder = ({ onClose }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/superproducts/getall");
-        console.log("Fetched products:", response.data.products);
-        setProducts(response.data.products);
+        const response = await axios.get("http://localhost:3000/superproducts/get-products-from-admin",{withCredentials:true});
+        console.log("Fetched products:", response);
+        if (response.data.products.length<=0){
+         setProducts(products.push("no products available"));
+        }
+        else{
+          setProducts(response.data.products);
+        }
       } catch (error) {
         toast.error("Failed to fetch products");
       }

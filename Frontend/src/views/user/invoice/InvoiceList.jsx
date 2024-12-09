@@ -63,11 +63,12 @@ const CreateInvoiceForm = ({ onSuccess }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await api.get("http://localhost:3000/products/getall");
-        if (response.data.invoices.length>0) {
-          setProducts(response.data.invoices);
+        const response = await api.get("http://localhost:3000/products/getall",{withCredentials: true});
+        // console.log(response.data.products);
+        if (response.data.products.length>0) {
+          setProducts(response.data.products);
         
-        }else if(response.data.invoices.length==0){
+        }else if(response.data.products.length==0){
           toast.error("first add products to your inventory");
         }
          else {
@@ -239,7 +240,7 @@ const CreateInvoiceForm = ({ onSuccess }) => {
         status: "PAID",
       };
 
-      await api.post("/invoices/create-invoice", invoiceData);
+      await api.post("/invoices/create-invoice", invoiceData,{withCredentials:true});
       toast.success("Invoice created successfully");
       onSuccess();
     } catch (error) {

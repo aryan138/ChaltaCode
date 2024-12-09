@@ -37,7 +37,6 @@ const createProduct = async (req, res) => {
   }
 };
 
-
 // Read Products (Fetch All)
 const getAllProducts = async (req, res) => {
   const userId = req.user._id;
@@ -196,6 +195,8 @@ const uploadExcel = async (req, res) => {
     });
   }
 };
+
+
 
 
 module.exports = {

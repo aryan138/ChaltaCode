@@ -16,11 +16,13 @@ import tableDataComplex from "./variables/tableDataComplex.json";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
+import WeeklyRevenueChart from "./components/WeeklyRevenueChart";
 
 const Dashboard = () => {
   const [earnings,setEarning] = useState(0);
   const [userAdmin,setUserAdmin] = useState('admin');
   const [weeklySale,SetWeeklySale] = useState([])
+  const [weeklyRevenue,SetWeeklyRevenue] = useState([])
   useEffect(()=>{
     const handleEarnings = async()=>{
       try {
@@ -64,9 +66,20 @@ const Dashboard = () => {
         toast.error(error.message);
       }
     }
+    const handleMonthlyRevenue = async()=>{
+      try {
+        const response = await axios.get("http://localhost:3000/user/weekly-revenue",{withCredentials:true});
+        if(response.data.success==true){
+          SetWeeklyRevenue(response.data.data);
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    }
     handleEarnings();
     handleAdmin();
     handleWeeklyData();
+    handleMonthlyRevenue();
   },[])
   return (
     <div>
@@ -78,16 +91,6 @@ const Dashboard = () => {
           title={"Earnings"}
           subtitle={"₹"+earnings}
         />
-        {/* <Widget
-          icon={<IoDocuments className="h-6 w-6" />}
-          title={"Spend this month"}
-          subtitle={"₹ 200000"}
-        />
-        <Widget
-          icon={<MdBarChart className="h-7 w-7" />}
-          title={"Sales"}
-          subtitle={"₹ 150000"}
-        /> */}
         <Widget
           icon={<MdDashboard className="h-6 w-6" />}
           title={"Out of Stock Products"}
@@ -108,7 +111,7 @@ const Dashboard = () => {
       {/* Charts */}
 
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <TotalSpent />
+      <WeeklyRevenueChart data={weeklyRevenue} />
         <WeeklyRevenue data={weeklySale} />
       </div>
 

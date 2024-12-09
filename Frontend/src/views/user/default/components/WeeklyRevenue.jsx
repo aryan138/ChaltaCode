@@ -1,36 +1,3 @@
-// import Card from "components/card";
-// import BarChart from "components/charts/BarChart";
-// import {
-//   barChartDataWeeklyRevenue,
-//   barChartOptionsWeeklyRevenue,
-// } from "variables/charts";
-// import { MdBarChart } from "react-icons/md";
-
-// const WeeklyRevenue = ({data}) => {
-//   return (
-//     <Card extra="flex flex-col bg-white w-full rounded-3xl py-6 px-2 text-center">
-//       <div className="mb-auto flex items-center justify-between px-6">
-//         <h2 className="text-lg font-bold text-black-700 dark:text-white">
-//           Weekly Revenue
-//         </h2>
-//         <button className="!linear z-[1] flex items-center justify-center rounded-lg bg-lightPrimary p-2 text-brand-500 !transition !duration-200 hover:bg-gray-100 active:bg-gray-200 dark:bg-black-700 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/10">
-//           <MdBarChart className="h-6 w-6" />
-//         </button>
-//       </div>
-
-//       <div className="md:mt-16 lg:mt-0">
-//         <div className="h-[250px] w-full xl:h-[350px]">
-//           <BarChart
-//             chartData={}
-//             chartOptions={}
-//           />
-//         </div>
-//       </div>
-//     </Card>
-//   );
-// };
-
-// export default WeeklyRevenue;
 
 
 
@@ -40,10 +7,10 @@ import BarChart from "components/charts/BarChart";
 import { MdBarChart } from "react-icons/md";
 
 const WeeklyRevenue = ({ data }) => {
-  // Debug: Check data validity
-  console.log("Data Received:", data);
+  // Debug: Verify the received data
+  console.log("Data Received for Weekly Revenue:", data);
 
-  // Fallback for empty or invalid data
+  // Handle cases with no data
   if (!data || !Array.isArray(data) || data.length === 0) {
     return (
       <Card extra="flex flex-col bg-white w-full rounded-3xl py-6 px-2 text-center">
@@ -54,52 +21,65 @@ const WeeklyRevenue = ({ data }) => {
     );
   }
 
-  // Transform the data for ApexCharts
+  // Prepare chart data
   const chartData = [
     {
       name: "Products Sold",
-      data: data.map((entry) => entry.quantity || 0),
+      data: data.map((entry) => entry.totalQuantity || 0),
     },
   ];
 
+  // Chart configuration
   const chartOptions = {
     chart: {
       type: "bar",
       height: 350,
-      toolbar: { show: false }, // Hide the toolbar for a cleaner look
+      toolbar: {
+        show: false, // Simplifies the UI
+      },
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "45%", // Adjust width for better appearance
-        borderRadius: 8, // Rounded bar ends
+        columnWidth: "45%",
+        borderRadius: 8,
       },
     },
-    colors: ["#34a853", "#a7f3d0"], // Gradient-like effect using two colors
+    colors: ["#34a853"], // Use a single primary color for simplicity
     dataLabels: {
-      enabled: false, // Hide data labels for simplicity
+      enabled: false,
     },
     xaxis: {
-      categories: data.map((entry) => entry.date), // Dates as x-axis labels
-      title: { text: "Date", style: { color: "#888" } },
-      labels: { style: { colors: "#555", fontSize: "12px" } }, // Styled axis labels
+      categories: data.map((entry) => entry.date),
+      title: {
+        text: "Date",
+        style: { color: "#888", fontSize: "14px" },
+      },
+      labels: {
+        style: { colors: "#555", fontSize: "12px" },
+      },
     },
     yaxis: {
-      title: { text: "Number of Products Sold", style: { color: "#888" } },
-      labels: { style: { colors: "#555", fontSize: "12px" } },
+      title: {
+        text: "Number of Products Sold",
+        style: { color: "#888", fontSize: "14px" },
+      },
+      labels: {
+        style: { colors: "#555", fontSize: "12px" },
+      },
     },
     fill: {
       type: "gradient",
       gradient: {
         shade: "light",
         type: "vertical",
-        gradientToColors: ["#a7f3d0"], // Gradient to a lighter color
+        gradientToColors: ["#a7f3d0"], // Smooth gradient
         stops: [0, 100],
       },
     },
     grid: {
       borderColor: "#eee",
-      strokeDashArray: 4, // Light dashed grid lines
+      strokeDashArray: 4,
     },
     tooltip: {
       y: {
@@ -109,16 +89,16 @@ const WeeklyRevenue = ({ data }) => {
   };
 
   return (
-    <Card extra="flex flex-col bg-white w-full rounded-3xl py-6 px-2 text-center">
-      <div className="mb-auto flex items-center justify-between px-6">
+    <Card extra="flex flex-col bg-white w-full rounded-3xl py-6 px-4 text-center">
+      <div className="flex items-center justify-between px-6">
         <h2 className="text-lg font-bold text-black-700 dark:text-white">
           Weekly Products Sold
         </h2>
-        <button className="!linear z-[1] flex items-center justify-center rounded-lg bg-lightPrimary p-2 text-brand-500 !transition !duration-200 hover:bg-gray-100 active:bg-gray-200 dark:bg-black-700 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/10">
+        <button className="flex items-center justify-center rounded-lg bg-lightPrimary p-2 text-brand-500 transition duration-200 hover:bg-gray-100 active:bg-gray-200 dark:bg-black-700 dark:text-white dark:hover:bg-white/20 dark:active:bg-white/10">
           <MdBarChart className="h-6 w-6" />
         </button>
       </div>
-      <div className="md:mt-16 lg:mt-0">
+      <div className="mt-6">
         <div className="h-[250px] w-full xl:h-[350px]">
           <BarChart chartData={chartData} chartOptions={chartOptions} />
         </div>

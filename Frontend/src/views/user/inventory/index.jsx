@@ -21,7 +21,9 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
         : "http://localhost:3000/products/getall";
 
       try {
-        const response = await axios.get(endpoint);
+        const response = await axios.get(endpoint, {
+          withCredentials: true,
+        });
         setProducts(response.data.products);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -78,7 +80,9 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
       : `http://localhost:3000/products/update/${editingProduct.product_id}`;
 
     try {
-      await axios.put(endpoint, editingProduct);
+      await axios.put(endpoint, editingProduct, {
+        withCredentials: true,
+      });
       setProducts((prevData) =>
         prevData.map((product) =>
           product.product_id === editingProduct.product_id
@@ -109,7 +113,9 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
       : `http://localhost:3000/products/delete/${productId}`;
 
     try {
-      await axios.delete(endpoint);
+      await axios.delete(endpoint, {
+        withCredentials: true,
+      });
       setProducts((prevData) =>
         prevData.filter((product) => product.product_id !== productId)
       );

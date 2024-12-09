@@ -1,12 +1,13 @@
 const express = require('express');
 const productController = require('../controllers/productController');
+const authorize = require('../middlewares/authorize');
 const router = express.Router();
 
-router.post('/create', productController.createProduct);
-router.get('/getall', productController.getAllProducts);
-router.put('/update/:product_id', productController.updateProduct);
+router.post('/create',authorize.verifyJwtUser, productController.createProduct);
+router.get('/getall',authorize.verifyJwtUser, productController.getAllProducts);
+router.put('/update/:product_id',authorize.verifyJwtUser, productController.updateProduct);
 
-router.delete('/delete/:product_id', productController.deleteProduct);
-router.post('/upload-excel', productController.uploadExcel);
+router.delete('/delete/:product_id', authorize.verifyJwtUser,productController.deleteProduct);
+router.post('/upload-excel',authorize.verifyJwtUser, productController.uploadExcel);
 
 module.exports = router;

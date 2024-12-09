@@ -3,9 +3,17 @@ const Product = require("../models/Product");
 // Create Product (Manual Entry)
 const createProduct = async (req, res) => {
   const { product_id, name, price, stock } = req.body;
+  const userId = req.user._id;
 
   try {
-    const newProduct = new Product({ product_id, name, price, stock });
+    const newProduct = new Product({
+      product_id,
+      name,
+      price,
+      stock,
+      user: userId,
+    });
+
     await newProduct.save();
 
     res.status(200).json({
@@ -14,7 +22,6 @@ const createProduct = async (req, res) => {
     });
   } catch (error) {
     if (error.code === 11000) {
-      // Duplicate key error
       res.status(400).json({
         message: `Product ID '${product_id}' already exists. Please use a unique ID.`,
       });
@@ -27,20 +34,25 @@ const createProduct = async (req, res) => {
   }
 };
 
+
 // Read Products (Fetch All)
 const getAllProducts = async (req, res) => {
+  const userId = req.user._id;
+
   try {
-    const products = await Product.find();
+    const products = await Product.find({ user: userId });
     res.status(200).json({ products });
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error });
   }
 };
 
+
 // Update Product
 const updateProduct = async (req, res) => {
   const { name, price, stock } = req.body;
-  const { product_id } = req.params; // Retrieve product_id from the URL parameter
+  const { product_id } = req.params;
+  const userId = req.user._id;
 
   if (!name || !price || !stock) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -49,7 +61,7 @@ const updateProduct = async (req, res) => {
   try {
     // Find the product by product_id and update it with the new values
     const product = await Product.findOneAndUpdate(
-      { product_id }, // Use product_id from the URL parameter
+      { product_id, user: userId }, // Use product_id from the URL parameter
       { name, price, stock },
       { new: true }
     );
@@ -67,8 +79,9 @@ const updateProduct = async (req, res) => {
 // Delete Product
 const deleteProduct = async (req, res) => {
   const { product_id } = req.params;
+  const userId = req.user._id;
   try {
-    const product = await Product.findOneAndDelete({ product_id });
+    const product = await Product.findOneAndDelete({ product_id, user: userId });
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
@@ -79,6 +92,7 @@ const deleteProduct = async (req, res) => {
 // Handle JSON Data Submission (not Excel)
 const uploadExcel = async (req, res) => {
   const data = req.body;
+  const userId = req.user._id;
 
   // Validate the data structure
   if (!Array.isArray(data) || data.length === 0) {
@@ -103,6 +117,8 @@ const uploadExcel = async (req, res) => {
         row: index + 1,
         message: "Invalid fields or missing required values.",
       });
+    }else {
+      row.user = userId; // Assign authenticated user ID to each product
     }
 
     return isValid;

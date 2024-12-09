@@ -132,11 +132,13 @@ const Upload = ({ onDataUpdate, userRole }) => {
           ? "http://localhost:3000/superproducts/upload-excel"
           : "http://localhost:3000/products/upload-excel";
 
-      await axios.post(apiUrl, formattedData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+          await axios.post(apiUrl, formattedData, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          });
+          
 
       onDataUpdate(formattedData);
       setLoading(false);
@@ -170,7 +172,9 @@ const Upload = ({ onDataUpdate, userRole }) => {
           ? "http://localhost:3000/superproducts/create"
           : "http://localhost:3000/products/create";
 
-      const response = await axios.post(apiUrl, formData);
+      const response = await axios.post(apiUrl, formData, {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
         onDataUpdate([formData]);

@@ -3,9 +3,12 @@ const Product = require("../models/superProduct");
 // Create Product (Manual Entry)
 const createProduct = async (req, res) => {
   const { product_id, name, price, stock } = req.body;
-
+  const admin = req.user.user_admin;
+  if (!admin) {
+    return res.status(403).json({ message: "user_admin not found" });
+  }
   try {
-    const newProduct = new Product({ product_id, name, price, stock });
+    const newProduct = new Product({ product_id, name, price, stock,admin: admin, });
     await newProduct.save();
 
     res.status(200).json({
@@ -29,8 +32,9 @@ const createProduct = async (req, res) => {
 
 // Read Products (Fetch All)
 const getAllProducts = async (req, res) => {
+  const admin = req.user.user_admin;
   try {
-    const products = await Product.find();
+    const products = await Product.find({ admin: admin });
     res.status(200).json({ products });
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error });
@@ -41,6 +45,7 @@ const getAllProducts = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { name, price, stock } = req.body;
   const { product_id } = req.params; // Retrieve product_id from the URL parameter
+  const admin = req.user.user_admin;
 
   if (!name || !price || !stock) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -49,7 +54,7 @@ const updateProduct = async (req, res) => {
   try {
     // Find the product by product_id and update it with the new values
     const product = await Product.findOneAndUpdate(
-      { product_id }, // Use product_id from the URL parameter
+      { product_id, admin: admin  }, // Use product_id from the URL parameter
       { name, price, stock },
       { new: true }
     );
@@ -67,8 +72,9 @@ const updateProduct = async (req, res) => {
 // Delete Product
 const deleteProduct = async (req, res) => {
   const { product_id } = req.params;
+  const admin = req.user.user_admin;
   try {
-    const product = await Product.findOneAndDelete({ product_id });
+    const product = await Product.findOneAndDelete({ product_id, admin: admin });
     if (!product) return res.status(404).json({ message: "Product not found" });
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {
@@ -79,6 +85,7 @@ const deleteProduct = async (req, res) => {
 // Handle JSON Data Submission (not Excel)
 const uploadExcel = async (req, res) => {
   const data = req.body;
+  const admin = req.user.user_admin;
 
   // Validate the data structure
   if (!Array.isArray(data) || data.length === 0) {
@@ -103,6 +110,8 @@ const uploadExcel = async (req, res) => {
         row: index + 1,
         message: "Invalid fields or missing required values.",
       });
+    }else {
+      row.admin = admin; // Assign authenticated user ID to each product
     }
 
     return isValid;

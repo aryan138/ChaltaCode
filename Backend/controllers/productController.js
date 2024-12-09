@@ -21,9 +21,10 @@ const createProduct = async (req, res) => {
       product: newProduct,
     });
   } catch (error) {
+    console.error(error); // Log the error for debugging
     if (error.code === 11000) {
       res.status(400).json({
-        message: `Product ID '${product_id}' already exists. Please use a unique ID.`,
+        message: `Product ID '${product_id}' already exists for this user.`,
       });
     } else {
       res.status(500).json({
@@ -91,15 +92,14 @@ const deleteProduct = async (req, res) => {
 
 // Handle JSON Data Submission (not Excel)
 const uploadExcel = async (req, res) => {
-  const data = req.body;
+  const data = req.body; // Assuming JSON data is submitted via API
   const userId = req.user._id;
 
-  // Validate the data structure
   if (!Array.isArray(data) || data.length === 0) {
     return res.status(400).json({ message: "No valid data submitted" });
   }
 
-  // Validate each row for required fields and valid values
+  // Validate each row
   const errors = [];
   const validData = data.filter((row, index) => {
     const isValid =
@@ -117,7 +117,7 @@ const uploadExcel = async (req, res) => {
         row: index + 1,
         message: "Invalid fields or missing required values.",
       });
-    }else {
+    } else {
       row.user = userId; // Assign authenticated user ID to each product
     }
 
@@ -132,30 +132,30 @@ const uploadExcel = async (req, res) => {
   }
 
   try {
-    // Check for duplicates first (optional optimization)
-    const existingProductIds = await Product.find({
+    // Check for duplicate product_id under the same user
+    const existingProducts = await Product.find({
       product_id: { $in: validData.map((row) => row.product_id) },
+      user: userId,
     }).select("product_id");
 
-    const duplicateRows = validData.filter((row) =>
-      existingProductIds.some(
-        (existingProduct) => existingProduct.product_id === row.product_id
+    const duplicates = validData.filter((row) =>
+      existingProducts.some(
+        (existing) => existing.product_id === row.product_id
       )
     );
 
-    if (duplicateRows.length > 0) {
+    if (duplicates.length > 0) {
       return res.status(400).json({
-        message: "Some rows failed due to duplicate Product IDs.",
-        duplicateErrors: duplicateRows.map((row, index) => ({
-          row: index + 1,
-          product_id: row.product_id,
-          message: "Duplicate Product ID",
+        message: "Some rows failed due to duplicate Product IDs for this user.",
+        duplicateErrors: duplicates.map((dup) => ({
+          product_id: dup.product_id,
+          message: "Duplicate Product ID for this user.",
         })),
         otherErrors: errors.length > 0 ? errors : undefined,
       });
     }
 
-    // Insert the validated data into the database
+    // Insert validated data
     const products = await Product.insertMany(validData, { ordered: false });
 
     res.status(200).json({
@@ -164,7 +164,8 @@ const uploadExcel = async (req, res) => {
       errors: errors.length > 0 ? errors : undefined,
     });
   } catch (error) {
-    // Handle specific errors like duplicates (code 11000)
+    console.error("Error during Excel upload:", error);
+
     if (error.code === 11000) {
       const duplicateErrorRows = validData
         .map((row, index) => {
@@ -186,7 +187,6 @@ const uploadExcel = async (req, res) => {
       });
     }
 
-    // General error handling
     res.status(500).json({
       message: "Error uploading products",
       error: error.message,
@@ -194,6 +194,7 @@ const uploadExcel = async (req, res) => {
     });
   }
 };
+
 
 module.exports = {
   createProduct,

@@ -16,10 +16,11 @@ const createProduct = async (req, res) => {
       product: newProduct,
     });
   } catch (error) {
+    console.error(error); // Log the error for debugging
     if (error.code === 11000) {
       // Duplicate key error
       res.status(400).json({
-        message: `Product ID '${product_id}' already exists. Please use a unique ID.`,
+        message: `Product ID '${product_id}' already exists for this admin.`,
       });
     } else {
       res.status(500).json({
@@ -85,7 +86,7 @@ const deleteProduct = async (req, res) => {
 // Handle JSON Data Submission (not Excel)
 const uploadExcel = async (req, res) => {
   const data = req.body;
-  const admin = req.user.user_admin;
+  const admin = req.user.user_admin; // Fetch admin ID from the authenticated user
 
   // Validate the data structure
   if (!Array.isArray(data) || data.length === 0) {
@@ -110,8 +111,8 @@ const uploadExcel = async (req, res) => {
         row: index + 1,
         message: "Invalid fields or missing required values.",
       });
-    }else {
-      row.admin = admin; // Assign authenticated user ID to each product
+    } else {
+      row.admin = admin; // Assign authenticated admin ID to each product
     }
 
     return isValid;
@@ -125,9 +126,10 @@ const uploadExcel = async (req, res) => {
   }
 
   try {
-    // Check for duplicates first (optional optimization)
+    // Check for duplicates within the same admin scope
     const existingProductIds = await Product.find({
       product_id: { $in: validData.map((row) => row.product_id) },
+      admin, // Only check within the same admin
     }).select("product_id");
 
     const duplicateRows = validData.filter((row) =>
@@ -138,11 +140,11 @@ const uploadExcel = async (req, res) => {
 
     if (duplicateRows.length > 0) {
       return res.status(400).json({
-        message: "Some rows failed due to duplicate Product IDs.",
+        message: "Some rows failed due to duplicate Product IDs for this admin.",
         duplicateErrors: duplicateRows.map((row, index) => ({
           row: index + 1,
           product_id: row.product_id,
-          message: "Duplicate Product ID",
+          message: "Duplicate Product ID for this admin.",
         })),
         otherErrors: errors.length > 0 ? errors : undefined,
       });
@@ -165,7 +167,7 @@ const uploadExcel = async (req, res) => {
             return {
               row: index + 1,
               product_id: row.product_id,
-              message: "Duplicate Product ID",
+              message: "Duplicate Product ID for this admin.",
             };
           }
           return null;
@@ -173,7 +175,7 @@ const uploadExcel = async (req, res) => {
         .filter(Boolean);
 
       return res.status(400).json({
-        message: "Some rows failed due to duplicate Product IDs.",
+        message: "Some rows failed due to duplicate Product IDs for this admin.",
         duplicateErrors: duplicateErrorRows,
         otherErrors: errors.length > 0 ? errors : undefined,
       });
@@ -187,6 +189,7 @@ const uploadExcel = async (req, res) => {
     });
   }
 };
+
 
 module.exports = {
   createProduct,

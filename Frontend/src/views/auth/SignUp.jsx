@@ -228,7 +228,7 @@ export default function AdminSignUp() {
 
       if (response.data.success) {
         toast.success("Successfully registered");
-        navigate("/admin/default");
+        navigate("/admin/profile-complete");
       } else {
         toast.error(response.data.message || "Registration failed");
       }

@@ -3,9 +3,9 @@ const Product = require("../models/superProduct");
 // Create Product (Manual Entry)
 const createProduct = async (req, res) => {
   const { product_id, name, price, stock } = req.body;
-  const admin = req.user.user_admin;
+  const admin = req.user._id;
   if (!admin) {
-    return res.status(403).json({ message: "user_admin not found" });
+    return res.status(400).json({ message: "Admin ID is missing." });
   }
   try {
     const newProduct = new Product({ product_id, name, price, stock,admin: admin, });
@@ -33,7 +33,7 @@ const createProduct = async (req, res) => {
 
 // Read Products (Fetch All)
 const getAllProducts = async (req, res) => {
-  const admin = req.user.user_admin;
+  const admin = req.user._id;
   try {
     const products = await Product.find({ admin: admin });
     res.status(200).json({ products });
@@ -46,7 +46,7 @@ const getAllProducts = async (req, res) => {
 const updateProduct = async (req, res) => {
   const { name, price, stock } = req.body;
   const { product_id } = req.params; // Retrieve product_id from the URL parameter
-  const admin = req.user.user_admin;
+  const admin = req.user._id;
 
   if (!name || !price || !stock) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -73,7 +73,7 @@ const updateProduct = async (req, res) => {
 // Delete Product
 const deleteProduct = async (req, res) => {
   const { product_id } = req.params;
-  const admin = req.user.user_admin;
+  const admin = req.user._id;
   try {
     const product = await Product.findOneAndDelete({ product_id, admin: admin });
     if (!product) return res.status(404).json({ message: "Product not found" });
@@ -86,7 +86,7 @@ const deleteProduct = async (req, res) => {
 // Handle JSON Data Submission (not Excel)
 const uploadExcel = async (req, res) => {
   const data = req.body;
-  const admin = req.user.user_admin; // Fetch admin ID from the authenticated user
+  const admin = req.user._id; // Fetch admin ID from the authenticated user
 
   // Validate the data structure
   if (!Array.isArray(data) || data.length === 0) {

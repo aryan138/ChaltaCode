@@ -4,7 +4,9 @@ const Product = require("../models/Product");
 const createProduct = async (req, res) => {
   const { product_id, name, price, stock } = req.body;
   const userId = req.user._id;
-
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is missing." });
+  }
   try {
     const newProduct = new Product({
       product_id,

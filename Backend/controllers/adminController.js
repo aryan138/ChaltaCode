@@ -669,67 +669,7 @@ const getDailySalesForAdmin = async (req, res) => {
 };
 
 
-// const getAdminWeeklyRevenue = async (req, res) => {
-//   try {
-//     const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-//     const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
 
-//     const weeksInMonth = Array.from({ length: 4 }, (_, i) => ({ week: i + 48 }));
-
-    
-//     const weeklyRevenue = await Invoice.aggregate([
-//       {
-//         $match: {
-//           status: "PAID", 
-//           createdAt: { $gte: startOfMonth, $lte: endOfMonth },
-//         },
-//       },
-//       {
-//         $unwind: "$items", 
-//       },
-//       {
-//         $group: {
-//           _id: { week: { $week: "$createdAt" } }, 
-//           totalQuantity: { $sum: "$items.quantity" },
-//           totalRevenue: { $sum: "$items.totalPrice" },
-//         },
-//       },
-//       {
-//         $project: {
-//           week: "$_id.week",
-//           totalQuantity: 1,
-//           totalRevenue: 1,
-//           _id: 0,
-//         },
-//       },
-//     ]);
-
-   
-//     const revenueMap = new Map(weeklyRevenue.map((entry) => [entry.week, entry]));
-
-//     const formattedRevenue = weeksInMonth.map((weekEntry) => {
-//       const weekNumber = weekEntry.week;
-//       const weekData = revenueMap.get(weekNumber);
-//       return {
-//         week: `Week ${weekNumber}`,
-//         totalQuantity: weekData ? weekData.totalQuantity : 0,
-//         totalRevenue: weekData ? weekData.totalRevenue : 0,
-//       };
-//     });
-
-//     res.json({
-//       success: true,
-//       data: formattedRevenue,
-//     });
-//   } catch (error) {
-//     console.error("Admin Weekly Revenue Error:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Error fetching weekly revenue for admin",
-//       error: error.message,
-//     });
-//   }
-// };
 
 const getAdminWeeklyRevenue = async (req, res) => {
   try {

@@ -525,8 +525,8 @@ Date.prototype.getWeek = function () {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'aman1249.be22@chitkara.edu.in', // replace with your email
-    pass: 'AmanSharma123', // replace with your email password
+    user: '', // replace with your email
+    pass: '', // replace with your email password
   },
 });
 
@@ -567,7 +567,7 @@ const forgotPassword = async (req, res) => {
 
     // Send OTP email
     const mailOptions = {
-      from: 'your-email@gmail.com',
+      from: 'aman1249.be22@chitkara.edu.in',
       to: email,
       subject: 'Password Reset OTP',
       text: `Your OTP for password reset is: ${otp}`,

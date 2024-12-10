@@ -1,42 +1,67 @@
+import React from "react";
 import PieChart from "components/charts/PieChart";
-import { pieChartData, pieChartOptions } from "variables/charts";
 import Card from "components/card";
 
-const PieChartCard = () => {
+const PieChartCard = ({ totalProduct, inventorySize }) => {
+  const total = Number(totalProduct) || 0;
+  const size = Number(inventorySize) || 1;
+
+  const inventoryOccupied = ((total / size) * 100).toFixed(2);
+  const emptySpace = (100 - inventoryOccupied).toFixed(2);
+
+  const pieChartData = [Number(inventoryOccupied), Number(emptySpace)];
+  const pieChartOptions = {
+    chart: {
+      type: "pie",
+      height: 430,
+    },
+    colors: ["#10b981", "#86f0a6"], // Colors for the chart
+    dataLabels: {
+      enabled: false, // Disable data labels
+    },
+    tooltip: {
+      enabled: false, // Disable tooltips
+    },
+    legend: {
+      show: false, // Hide legends
+    },
+  };
+
   return (
-    <Card extra="rounded-[20px] p-3">
-      <div className="flex flex-row justify-between px-3 pt-2">
-        <div>
-          <h4 className="text-lg font-bold text-black-700 dark:text-white">
-            Inventory Stats
-          </h4>
-        </div>
-      </div>
+    <Card extra="rounded-[20px] p-6 bg-white dark:bg-black-700">
+      <div className="flex flex-col items-center justify-center">
+        <h4 className="text-lg font-bold text-gray-800 dark:text-white mb-4">
+          Inventory Stats
+        </h4>
 
-      <div className="mb-auto flex h-[220px] w-full items-center justify-center">
-        <PieChart options={pieChartOptions} series={pieChartData} />
-      </div>
-      <div className="flex flex-row !justify-between rounded-2xl px-6 py-3 shadow-2xl shadow-shadow-500 dark:!bg-black-700 dark:shadow-none">
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex items-center justify-center">
-            <div className="h-2 w-2 rounded-full bg-brand-500" />
-            <p className="ml-1 text-sm font-normal text-gray-600">Inventory occupied</p>
-          </div>
-          <p className="mt-px text-xl font-bold text-black-700  dark:text-white">
-            55%
-          </p>
+        <div className="relative flex items-center justify-center w-full h-[220px]">
+          {pieChartData.every((value) => !isNaN(value)) ? (
+            <PieChart options={pieChartOptions} series={pieChartData} />
+          ) : (
+            <p className="text-gray-600">Invalid data for chart</p>
+          )}
         </div>
 
-        <div className="h-11 w-px bg-gray-300 dark:bg-white/10" />
-
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex items-center justify-center">
-            <div className="h-2 w-2 rounded-full bg-[#6AD2FF]" />
-            <p className="ml-1 text-sm font-normal text-gray-600">Empty</p>
+        <div className="mt-6 flex w-full justify-between">
+          <div className="flex items-center">
+            <div
+              className="h-4 w-4 rounded-full"
+              style={{ backgroundColor: "#10b981" }}
+            ></div>
+            <span className="ml-2 text-sm font-medium text-gray-600 dark:text-white">
+              Inventory Occupied:{" "}
+              <strong>{inventoryOccupied}%</strong>
+            </span>
           </div>
-          <p className="mt-px text-xl font-bold text-black-700 dark:text-white">
-            45%
-          </p>
+          <div className="flex items-center">
+            <div
+              className="h-4 w-4 rounded-full"
+              style={{ backgroundColor: "#86f0a6" }}
+            ></div>
+            <span className="ml-2 text-sm font-medium text-gray-600 dark:text-white">
+              Empty Space: <strong>{emptySpace}%</strong>
+            </span>
+          </div>
         </div>
       </div>
     </Card>

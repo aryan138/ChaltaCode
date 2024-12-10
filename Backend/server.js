@@ -12,6 +12,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const productRoutes = require('./routes/productRoutes');
 const invoiceRoutes = require('./routes/invoiceRoutes');
 const superProductRoutes = require('./routes/superProductRoutes.js');
+const warehouseRoutes = require('./routes/warehouseRoutes.js');
 const {verifyToken} = require('./middlewares/authorize.js');
 const PORT = 3000;
 
@@ -52,6 +53,7 @@ app.use('/order',orderRoutes);
 app.use('/products', productRoutes);
 app.use('/invoices', invoiceRoutes);
 app.use('/superproducts', superProductRoutes);
+app.use('/warehouse', warehouseRoutes);
 
 // Start the server
 app.listen(PORT, () => {

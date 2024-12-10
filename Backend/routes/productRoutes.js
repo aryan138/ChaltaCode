@@ -10,4 +10,6 @@ router.put('/update/:product_id',authorize.verifyJwtUser, productController.upda
 router.delete('/delete/:product_id', authorize.verifyJwtUser,productController.deleteProduct);
 router.post('/upload-excel',authorize.verifyJwtUser, productController.uploadExcel);
 
+router.get('/total-stocks',authorize.verifyJwtUser, productController.calculateTotalStocksForUser);
+
 module.exports = router;

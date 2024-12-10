@@ -9,6 +9,7 @@ const sms = require('../helper/smsService')
 const whatsapp = require('../helper/whatsapp');
 const { log } = require('console');
 const user = require('../models/user');
+const Invoice = require('../models/Invoice');
 
 
 
@@ -369,6 +370,7 @@ const getAllUsersUnderAdmin = async (req, res) => {
 
       // Return the users
       res.status(200).json({
+          success:true,
           message: 'Users retrieved successfully',
           users: adminn.users
       });
@@ -517,4 +519,236 @@ const getUserCount = async(req,res)=>{
     return res.status(500).json({success: false, message: error.message});
   }
 }
-module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus, getUserCount,completeProfile };
+
+const getTotalEarningsForAdmin = async (req, res) => {
+  try {
+    const adminId = req.user._id; 
+    const findAdmin = await admin.findById(adminId);
+    if (!findAdmin) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admin not found',
+      });
+    }
+
+    const users = findAdmin.users;
+    if (!users || users.length === 0) {
+      return res.status(200).json({
+        success: true,
+        earnings: 0,
+      });
+    }
+    const result = await Invoice.aggregate([
+      {
+        $match: {
+          status: 'PAID',
+          createdBy: { $in: users }, 
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalEarnings: { $sum: '$totalAmount' },
+        },
+      },
+    ]);
+
+    const totalEarnings = result[0]?.totalEarnings || 0;
+
+    // Respond with success
+    res.status(200).json({
+      success: true,
+      earnings: totalEarnings,
+    });
+  } catch (error) {
+    // Handle errors
+    res.status(500).json({
+      success: false,
+      message: 'Failed to calculate total earnings',
+      error: error.message,
+    });
+  }
+};
+
+const getDailySalesForAdmin = async (req, res) => {
+  try {
+    const adminId = req.user._id;
+    const adminn = await admin.findById(adminId);
+    if (!adminn) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admin not found',
+      });
+    }
+
+    const userIds = adminn.users; 
+    if (!userIds || userIds.length === 0) {
+      return res.json({
+        success: true,
+        data: [], // No users under admin means no sales data
+      });
+    }
+
+    // Calculate the date 9 days ago
+    const nineDaysAgo = new Date();
+    nineDaysAgo.setDate(nineDaysAgo.getDate() - 9);
+
+    // Generate an array of last 9 days
+    const last9Days = Array.from({ length: 9 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      return d;
+    }).reverse(); // Reverse to get ascending order
+
+    // Aggregate sales data
+    const dailySales = await Invoice.aggregate([
+      // Match invoices created by users under the admin in the last 9 days
+      {
+        $match: {
+          createdBy: { $in: userIds }, // Match invoices from users under the admin
+          status: 'PAID', // Only consider paid invoices
+          createdAt: { $gte: nineDaysAgo }, // Only last 9 days
+        },
+      },
+      // Unwind the items array to create a document for each item
+      { $unwind: '$items' },
+      // Group by date
+      {
+        $group: {
+          _id: {
+            date: {
+              $dateToString: {
+                format: '%Y-%m-%d',
+                date: '$createdAt',
+              },
+            },
+          },
+          totalQuantity: { $sum: '$items.quantity' }, 
+          totalRevenue: { $sum: '$items.totalPrice' }, 
+        },
+      },
+      {
+        $project: {
+          date: '$_id.date',
+          totalQuantity: 1,
+          totalRevenue: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    // Create a map of existing sales data by date
+    const salesMap = new Map(
+      dailySales.map((sale) => [sale.date, sale])
+    );
+
+    // Prepare final results with all 9 days
+    const formattedSales = last9Days.map((day) => {
+      const formattedDate = day.toISOString().split('T')[0];
+      return salesMap.get(formattedDate) || {
+        date: formattedDate,
+        totalQuantity: 0,
+        totalRevenue: 0,
+      };
+    });
+
+    res.json({
+      success: true,
+      data: formattedSales,
+    });
+  } catch (error) {
+    console.error('Daily Sales Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching daily sales',
+      error: error.message,
+    });
+  }
+};
+
+
+const getAdminWeeklyRevenue = async (req, res) => {
+  try {
+    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+
+    const weeksInMonth = Array.from({ length: 4 }, (_, i) => ({ week: i + 48 }));
+
+    
+    const weeklyRevenue = await Invoice.aggregate([
+      {
+        $match: {
+          status: "PAID", 
+          createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+        },
+      },
+      {
+        $unwind: "$items", 
+      },
+      {
+        $group: {
+          _id: { week: { $week: "$createdAt" } }, 
+          totalQuantity: { $sum: "$items.quantity" },
+          totalRevenue: { $sum: "$items.totalPrice" },
+        },
+      },
+      {
+        $project: {
+          week: "$_id.week",
+          totalQuantity: 1,
+          totalRevenue: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+   
+    const revenueMap = new Map(weeklyRevenue.map((entry) => [entry.week, entry]));
+
+    const formattedRevenue = weeksInMonth.map((weekEntry) => {
+      const weekNumber = weekEntry.week;
+      const weekData = revenueMap.get(weekNumber);
+      return {
+        week: `Week ${weekNumber}`,
+        totalQuantity: weekData ? weekData.totalQuantity : 0,
+        totalRevenue: weekData ? weekData.totalRevenue : 0,
+      };
+    });
+
+    res.json({
+      success: true,
+      data: formattedRevenue,
+    });
+  } catch (error) {
+    console.error("Admin Weekly Revenue Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching weekly revenue for admin",
+      error: error.message,
+    });
+  }
+};
+
+// Utility to get ISO week number (if not already defined)
+if (!Date.prototype.getWeek) {
+  Date.prototype.getWeek = function () {
+    const date = new Date(this.getTime());
+    date.setHours(0, 0, 0, 0);
+    // Thursday in current week decides the year.
+    date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+    // January 4 is always in week 1.
+    const week1 = new Date(date.getFullYear(), 0, 4);
+    // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+    return (
+      1 +
+      Math.round(
+        ((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) /
+          7
+      )
+    );
+  };
+}
+
+
+
+module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus, getUserCount,completeProfile,getTotalEarningsForAdmin,getDailySalesForAdmin,getAdminWeeklyRevenue };

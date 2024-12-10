@@ -497,23 +497,32 @@ const generateInvoicePDF = async (req, res) => {
 
 const getTotalEarnings = async (req, res) => {
   try {
+    const userId = req.user._id; // Get userId from request parameters
+
     const result = await Invoice.aggregate([
-      { $match: { status: 'PAID' } },
+      {
+        $match: {
+          status: 'PAID',       
+          createdBy: userId        
+        }
+      },
       {
         $group: {
-          _id: null,
-          totalEarnings: { $sum: '$totalAmount' }
+          _id: null,            
+          totalEarnings: { $sum: '$totalAmount' } 
         }
       }
     ]);
 
     const totalEarnings = result[0]?.totalEarnings || 0;
 
+    // Respond with success
     res.status(200).json({
       success: true,
-      earn:totalEarnings
+      earnings: totalEarnings
     });
   } catch (error) {
+    // Handle errors
     res.status(500).json({
       success: false,
       message: 'Failed to calculate total earnings',
@@ -521,6 +530,7 @@ const getTotalEarnings = async (req, res) => {
     });
   }
 };
+
 
 
 

@@ -203,11 +203,43 @@ const getProdutsFromAdmin = async(req,res)=>{
 }
 
 
+const calculateTotalStocksForAdmin = async (req, res) => {
+  try {
+    const userId = req.user._id; 
+    const result = await Product.aggregate([
+      {
+        $match: { admin: userId },
+      },
+      {
+        $group: {
+          _id: null,
+          totalStocks: { $sum: "$stock" },
+        },
+      },
+    ]);
+
+    const totalStocks = result.length > 0 ? result[0].totalStocks : 0;
+
+    res.status(200).json({
+      success: true,
+      message: "Total stocks calculated successfully for the user.",
+      totalStocks,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while calculating total stocks.",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createProduct,
   getAllProducts,
   updateProduct,
   deleteProduct,
   uploadExcel,
-  getProdutsFromAdmin
+  getProdutsFromAdmin,
+  calculateTotalStocksForAdmin
 };

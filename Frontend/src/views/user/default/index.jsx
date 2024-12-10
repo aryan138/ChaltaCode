@@ -23,13 +23,18 @@ const Dashboard = () => {
   const [userAdmin,setUserAdmin] = useState('admin');
   const [weeklySale,SetWeeklySale] = useState([])
   const [weeklyRevenue,SetWeeklyRevenue] = useState([])
+  const [inventorySize,SetInventorySize] = useState({
+    totalProduct:0,
+    inventorySize:0
+  });
   useEffect(()=>{
     const handleEarnings = async()=>{
       try {
-        const response = await axios.get('http://localhost:3000/invoices/earnings/total-earnings');
+        const response = await axios.get('http://localhost:3000/invoices/earnings/total-earnings',{withCredentials:true});
         // console.log("earnings: " + response);
         if (response.data.success==true){
-          setEarning(response.data.earn);
+          // console.log("earnings: " + response.data.earnings)
+          setEarning(response.data.earnings);
         }
         else{
           setEarning(0);
@@ -76,10 +81,26 @@ const Dashboard = () => {
         toast.error(error.message);
       }
     }
+
+    const handlePieChart = async()=>{
+      try {
+        const response1 = await axios.get('http://localhost:3000/products/total-stocks',{withCredentials:true});
+        const response2 = await axios.get('http://localhost:3000/warehouse/get-details',{withCredentials:true});
+        console.log(response1,response2);
+        if (response1.data.success==true && response2.data.success==true){
+          SetInventorySize({totalProduct: Number(response1.data.totalStocks),inventorySize: response2.data.details.storage});
+        }else{
+          console.log("galat baat");
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
+    }
     handleEarnings();
     handleAdmin();
     handleWeeklyData();
     handleMonthlyRevenue();
+    handlePieChart();
   },[])
   return (
     <div>
@@ -129,7 +150,7 @@ const Dashboard = () => {
         {/* Traffic chart & Pie Chart */}
 
         <div className="grid grid-cols-1 gap-5 rounded-[20px] md:grid-cols-1">
-          <PieChartCard />
+          <PieChartCard totalProduct={inventorySize.totalProduct} inventorySize={inventorySize.inventorySize} />
         </div>
 
         {/* Complex Table , Task & Calendar */}

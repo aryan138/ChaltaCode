@@ -9,5 +9,6 @@ router.put('/update/:product_id',authorize.verifyJwtAdmin, productController.upd
 router.delete('/delete/:product_id',authorize.verifyJwtAdmin, productController.deleteProduct);
 router.post('/upload-excel',authorize.verifyJwtAdmin, productController.uploadExcel);
 router.get('/get-products-from-admin',authorize.verifyJwtUser,productController.getProdutsFromAdmin);
+router.get('/get-superProduct-stocks',authorize.verifyJwtAdmin,productController.calculateTotalStocksForAdmin);
 
 module.exports = router;

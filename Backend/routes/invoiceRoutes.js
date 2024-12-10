@@ -58,6 +58,6 @@ router.post('/:id/payments',
   addInvoicePayment
 );
 
-router.get('/earnings/total-earnings', getTotalEarnings);
+router.get('/earnings/total-earnings',authorize.verifyJwtUser,getTotalEarnings);
 
 module.exports = router;

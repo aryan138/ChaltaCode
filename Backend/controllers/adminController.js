@@ -10,6 +10,7 @@ const whatsapp = require('../helper/whatsapp');
 const { log } = require('console');
 const user = require('../models/user');
 const Invoice = require('../models/Invoice');
+const nodemailer = require('nodemailer');
 
 
 
@@ -751,5 +752,100 @@ if (!Date.prototype.getWeek) {
 }
 
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'aman1249.be22@chitkara.edu.in', // replace with your email
+    pass: 'AmanSharma123', // replace with your email password
+  },
+});
 
-module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus, getUserCount,completeProfile,getTotalEarningsForAdmin,getDailySalesForAdmin,getAdminWeeklyRevenue };
+
+
+
+const forgotPassword = async (req, res) => {
+  console.log("call made");
+  const { email, role } = req.body;
+  console.log(email);
+
+  // Check if both email and role are provided
+  if (!email || !role) {
+    return res.status(400).json({ success: false, error: 'Email and role are required' });
+  }
+  console.log("c2", email);
+
+  try {
+    let admindoc = await admin.findOne({ admin_email: email });
+    // Logic for finding user or admin
+    // if (role === 'user') {
+      // user = 
+    // } else if (role === 'admin') {
+    //   user = await admin.findOne({ email });
+    // }
+    console.log("c3");
+
+    if (!admindoc) {
+      return res.status(404).json({ success: false, error: 'User or Admin not found !!!!' });
+    }
+
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(otp);
+
+    // Store OTP in the database
+    admindoc.forgotPasswordOTP = otp;
+    admindoc.forgotPasswordOTPExpiration = Date.now() + 5 * 60 * 1000;
+    await admindoc.save();
+
+    // Send OTP email
+    const mailOptions = {
+      from: 'your-email@gmail.com',
+      to: email,
+      subject: 'Password Reset OTP',
+      text: `Your OTP for password reset is: ${otp}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({ success: true, message: 'OTP has been sent to your email' , generatedotp:otp});
+  } catch (error) {
+    console.error('Error during forgot password process:', error);
+    return res.status(500).json({ success: false, error: 'Server error, please try again later' });
+  }
+};
+
+
+
+const resetPassword = async (req, res) => {
+  try {
+    console.log("inside call");
+    const { email, newPassword } = req.body;
+
+    // Find the user by email
+    // const admindoc = await admin.findOne({ admin_email: email });
+    let admindoc = await admin.findOne({ admin_email: email });
+    console.log("c11");
+
+    if (!admindoc) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    console.log("c12 admin");
+
+    // Hash the new password before saving
+    admindoc.admin_password = await bcrypt.hash(newPassword, 10);
+
+    // Save the updated user document
+    await admindoc.save();
+    console.log("c13");
+
+    return res.status(200).json({ success: true, message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error during password reset:", error); // Log the error to help debug
+    return res.status(500).json({ success: false, message: "An error occurred while updating the password" });
+  }
+};
+
+
+
+module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus, getUserCount,completeProfile,getTotalEarningsForAdmin,getDailySalesForAdmin,getAdminWeeklyRevenue, forgotPassword, resetPassword };

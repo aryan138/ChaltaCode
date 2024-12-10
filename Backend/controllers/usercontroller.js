@@ -6,6 +6,7 @@ const admin = require("../models/admin");
 const Invoice = require("../models/Invoice");
 const moment = require('moment');
 const revenue = require("../models/revenue");
+const nodemailer = require('nodemailer');
 
 
 
@@ -521,8 +522,100 @@ Date.prototype.getWeek = function () {
 };
 
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'aman1249.be22@chitkara.edu.in', // replace with your email
+    pass: 'AmanSharma123', // replace with your email password
+  },
+});
+
+
+const forgotPassword = async (req, res) => {
+  console.log("call made");
+  const { email, role } = req.body;
+  console.log(email);
+
+  // Check if both email and role are provided
+  if (!email || !role) {
+    return res.status(400).json({ success: false, error: 'Email and role are required' });
+  }
+  console.log("c2", email);
+
+  try {
+    let userdoc = await user.findOne({ user_email: email });
+    // Logic for finding user or admin
+    // if (role === 'user') {
+      // user = 
+    // } else if (role === 'admin') {
+    //   user = await admin.findOne({ email });
+    // }
+    console.log("c3");
+
+    if (!userdoc) {
+      return res.status(404).json({ success: false, error: 'User or Admin not found' });
+    }
+
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(otp);
+
+    // Store OTP in the database
+    userdoc.forgotPasswordOTP = otp;
+    userdoc.forgotPasswordOTPExpiration = Date.now() + 5 * 60 * 1000;
+    await userdoc.save();
+
+    // Send OTP email
+    const mailOptions = {
+      from: 'your-email@gmail.com',
+      to: email,
+      subject: 'Password Reset OTP',
+      text: `Your OTP for password reset is: ${otp}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({ success: true, message: 'OTP has been sent to your email' , generatedotp:otp});
+  } catch (error) {
+    console.error('Error during forgot password process:', error);
+    return res.status(500).json({ success: false, error: 'Server error, please try again later' });
+  }
+};
 
 
 
-  module.exports= {register,loginUser,logoutUser,updateUserDetails,getDetails,getAdmin,getDailySalees,getWeeklyRevenue};
+const resetPassword = async (req, res) => {
+  try {
+    console.log("inside call");
+    const { email, newPassword } = req.body;
+
+    // Find the user by email
+    const userdoc = await user.findOne({ user_email: email });
+    console.log("c11");
+
+    if (!userdoc) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    console.log("c12");
+
+    // Hash the new password before saving
+    userdoc.user_password = await bcrypt.hash(newPassword, 10);
+
+    // Save the updated user document
+    await userdoc.save();
+    console.log("c13");
+
+    return res.status(200).json({ success: true, message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error during password reset:", error); // Log the error to help debug
+    return res.status(500).json({ success: false, message: "An error occurred while updating the password" });
+  }
+};
+
+
+
+
+
+  module.exports= {register,loginUser,logoutUser,updateUserDetails,getDetails,getAdmin,getDailySalees,getWeeklyRevenue, forgotPassword, resetPassword};
 

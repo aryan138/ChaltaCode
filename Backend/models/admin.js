@@ -21,6 +21,8 @@ const adminSchema = new mongoose.Schema({
             ref: 'user'
         }
     ],
+    forgotPasswordOTP: String,
+    forgotPasswordOTPExpiration: Date,
 
 }, { timestamps: true });
 

@@ -14,7 +14,9 @@ const userSchema = new mongoose.Schema({
     user_admin:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'admin'
-    }
+    },
+    forgotPasswordOTP: String,
+    forgotPasswordOTPExpiration: Date,
     
 }, { timestamps: true });
 

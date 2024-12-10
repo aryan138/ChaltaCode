@@ -14,7 +14,9 @@ const invoiceRoutes = require('./routes/invoiceRoutes');
 const superProductRoutes = require('./routes/superProductRoutes.js');
 const warehouseRoutes = require('./routes/warehouseRoutes.js');
 const {verifyToken} = require('./middlewares/authorize.js');
+const Razorpay = require("razorpay")
 const PORT = 3000;
+require('dotenv').config();
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -42,7 +44,76 @@ app.get('/api/getRole',verifyToken, (req, res) => {
     res.status(200).json({ role });
 });
 
+app.post('/orders', async (req, res) => {
+    // Initialize Razorpay instance with key ID and secret
+    const razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
+    });
 
+    // Extract amount and currency from the request body
+    const { amount, currency } = req.body;
+
+    // Ensure both amount and currency are provided
+    if (!amount || !currency) {
+        return res.status(400).send('Missing required fields');
+    }
+
+    // Check if the amount is a valid number and is greater than zero
+    if (isNaN(amount) || amount <= 0) {
+        return res.status(400).send('Invalid amount');
+    }
+
+    // Define the Razorpay order options
+    const options = {
+        amount: amount * 100, // Convert amount to the smallest unit (paise for INR)
+        currency: currency,
+        receipt: `receipt#${Date.now()}`, // Unique receipt ID
+        payment_capture: 1, // Auto capture payment
+    };
+
+    try {
+        // Create the Razorpay order
+        const response = await razorpay.orders.create(options);
+        console.log('Razorpay order created:', response);
+
+        // Respond with order details
+        res.json({
+            order_id: response.id,
+            currency: response.currency,
+            amount: response.amount
+        });
+    } catch (error) {
+        console.error('Error creating Razorpay order:', error);
+        res.status(500).send(`Internal Server Error: ${error.message}`);
+    }
+});
+
+app.get("/payment/:paymentId", async (req, res) => {
+    const { paymentId } = req.params;
+
+    const razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
+    });
+
+    try {
+        const payment = await razorpay.payments.fetch(paymentId);
+        if (!payment) {
+            return res.status(500).json("Error fetching payment details");
+        }
+
+        res.json({
+            status: payment.status,
+            method: payment.method,
+            amount: payment.amount,
+            currency: payment.currency,
+        });
+    } catch (error) {
+        console.error('Error fetching payment details:', error);
+        res.status(500).json("Failed to fetch payment details");
+    }
+});
 
 app.use('/admin', adminRoutes);
 app.use('/branch', branchRoutes);

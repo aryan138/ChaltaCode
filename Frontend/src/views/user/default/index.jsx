@@ -10,13 +10,14 @@ import { columnsDataCheck, columnsDataComplex } from "./variables/columnsData";
 
 import Widget from "components/widget/Widget";
 import CheckTable from "views/user/default/components/CheckTable";
-import ComplexTable from "views/user/default/components/ComplexTable";
+// import ComplexTable from "views/user/default/components/ComplexTable";
 import tableDataCheck from "./variables/tableDataCheck.json";
 import tableDataComplex from "./variables/tableDataComplex.json";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import WeeklyRevenueChart from "./components/WeeklyRevenueChart";
+import ComplexTable from '../tables/components/ComplexTable'
 
 const Dashboard = () => {
   const [earnings,setEarning] = useState(0);
@@ -27,6 +28,7 @@ const Dashboard = () => {
     totalProduct:0,
     inventorySize:0
   });
+  const [tableData, setTableData] = useState([]);
   useEffect(()=>{
     const handleEarnings = async()=>{
       try {
@@ -96,11 +98,40 @@ const Dashboard = () => {
         toast.error(error.message);
       }
     }
+    const fetchTableData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/order/getorder", {
+          withCredentials: true, // Ensure cookies are sent if needed for authentication
+        });
+
+        if (response.data.status === 200) {
+          const result = response.data.data;
+          console.log(result);
+          const formattedData = result.map((order) => ({
+            order_id: order.order_id,
+            item_name: order.product_name,
+            date: new Date(order.createdAt).toLocaleDateString("en-US", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            }),
+            status: order.status,
+            item_quantity: order.product_quantity,
+          }));
+          setTableData(formattedData); // Set the formatted data in state
+        } else {
+          console.error("Failed to fetch data:", response.data.message);
+        }
+      } catch (error) {
+        alert("Error fetching data:", error);
+      }
+    };
     handleEarnings();
     handleAdmin();
     handleWeeklyData();
     handleMonthlyRevenue();
     handlePieChart();
+    fetchTableData();
   },[])
   return (
     <div>
@@ -141,10 +172,7 @@ const Dashboard = () => {
       <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-2">
         {/* Check Table */}
         <div>
-          <CheckTable
-            columnsData={columnsDataCheck}
-            tableData={tableDataCheck}
-          />
+        <ComplexTable columnsData={columnsDataComplex} tableData={tableData} />
         </div>
 
         {/* Traffic chart & Pie Chart */}
@@ -155,19 +183,11 @@ const Dashboard = () => {
 
         {/* Complex Table , Task & Calendar */}
 
-        <ComplexTable
-          columnsData={columnsDataComplex}
-          tableData={tableDataComplex}
-        />
+
 
         {/* Task chart & Calendar */}
 
-        <div className="grid grid-cols-1 gap-5 rounded-[20px] md:grid-cols-1">
-          {/* <TaskCard /> */}
-          <div className="grid grid-cols-2  rounded-[20px]">
-            <MiniCalendar />
-          </div>
-        </div>
+        
       </div>
     </div>
   );

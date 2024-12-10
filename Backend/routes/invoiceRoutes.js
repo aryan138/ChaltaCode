@@ -34,8 +34,7 @@ router.get('/:id',
 );
 
 // Generate PDF Invoice
-router.get('/:id/pdf', 
-  authorize.verifyJwtUser, 
+router.get('/pdf/:id',  
   generateInvoicePDF
 );
 

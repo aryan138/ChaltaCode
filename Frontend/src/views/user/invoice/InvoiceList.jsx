@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import img from '../../../assets/favicon.png'
+import InvoiceDownloadModal from "./components/InvoiceDownloadModal";
 // API Client with Axios
 const api = axios.create({
   baseURL: "http://localhost:3000/",
@@ -44,7 +45,6 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-// CreateInvoiceForm Component
 const CreateInvoiceForm = ({ onSuccess }) => {
   const [products, setProducts] = useState([]);
   const [customer, setCustomer] = useState({
@@ -62,6 +62,8 @@ const CreateInvoiceForm = ({ onSuccess }) => {
 
   const [responseId, setResponseId] = React.useState("");
   const [responseState, setResponseState] = React.useState([]);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [generatedInvoiceData, setGeneratedInvoiceData] = useState(null);
 
   const loadScript = (src) => {
     return new Promise((resolve) => {
@@ -293,9 +295,10 @@ const CreateInvoiceForm = ({ onSuccess }) => {
           withCredentials: true,
         });
   
+        setGeneratedInvoiceData(invoiceData);
+        setShowDownloadModal(true);
         // Show success notification
         toast.success("Invoice created successfully");
-  
         // Trigger the success callback
         onSuccess();
       });
@@ -312,7 +315,8 @@ const CreateInvoiceForm = ({ onSuccess }) => {
   
 
   return (
-    <form
+    <>
+      <form
       onSubmit={handleSubmit}
       className="space-y-6 bg-white dark:!bg-black-700"
     >
@@ -451,8 +455,19 @@ const CreateInvoiceForm = ({ onSuccess }) => {
         </button>
       </div>
     </form>
+    {/* Invoice Download Modal */}
+    {showDownloadModal && generatedInvoiceData && (
+        <InvoiceDownloadModal
+          isOpen={showDownloadModal}
+          onClose={() => setShowDownloadModal(false)}
+          invoiceData={generatedInvoiceData}
+          logo={logo}
+        />
+      )}
+    </>
   );
 };
+
 
 const InvoiceList = () => {
   const [invoices, setInvoices] = useState([]);
@@ -513,18 +528,30 @@ const InvoiceList = () => {
 
   const downloadInvoice = async (invoiceId) => {
     try {
-      const response = await api.get(`/invoices/${invoiceId}/pdf`, {
-        responseType: "blob",
+      // Ensure base URL matches your backend server
+      console.log(invoiceId);
+      const response = await axios.get(`http://localhost:3000/invoices/pdf/${invoiceId}`, {
+        responseType: "blob", // Important for handling binary data
       });
-
+  
+      // Create a blob from the response data
       const blob = new Blob([response.data], { type: "application/pdf" });
+  
+      // Create a temporary link element for download
       const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
       link.download = `invoice_${invoiceId}.pdf`;
+  
+      // Simulate a click to trigger the download
       link.click();
+  
+      // Clean up the object URL after download
+      window.URL.revokeObjectURL(link.href);
+  
+      toast.success("Invoice downloaded successfully!");
     } catch (error) {
-      console.error("Error downloading invoice", error);
-      toast.error("Failed to download invoice");
+      console.error("Error downloading invoice:", error);
+      toast.error("Failed to download invoice. Please try again.");
     }
   };
 
@@ -667,24 +694,24 @@ const InvoiceList = () => {
                 </td>
                 <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    <button
+                    {/* <button
                       onClick={() => navigate(`/invoice/${invoice._id}`)}
                       className="text-blue-600 hover:text-blue-900"
                     >
                       <EyeIcon className="h-5 w-5" />
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => downloadInvoice(invoice._id)}
                       className="text-green-600 hover:text-green-900"
                     >
                       <DownloadIcon className="h-5 w-5" />
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => deleteInvoice(invoice._id)}
                       className="text-red-600 hover:text-red-900"
                     >
                       <TrashIcon className="h-5 w-5" />
-                    </button>
+                    </button> */}
                   </div>
                 </td>
               </tr>

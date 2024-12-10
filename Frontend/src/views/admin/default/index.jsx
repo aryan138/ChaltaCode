@@ -1,6 +1,6 @@
 import MiniCalendar from "components/calendar/MiniCalendar";
 import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
-
+import Table from "../user/components/Table";
 import PieChartCard from "views/admin/default/components/PieChartCard";
 import { IoMdHome } from "react-icons/io";
 import { IoDocuments } from "react-icons/io5";
@@ -27,6 +27,8 @@ const Dashboard = () => {
     totalProduct:0,
     inventorySize:0
   });
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState(null);
   useEffect(()=>{
     const handleEarning = async()=>{
       try {
@@ -90,12 +92,38 @@ const Dashboard = () => {
         toast.error(error.message);
       }
     }
+    const fetchUsers = async () => {
+      try {
+        
+        const response = await axios.get("http://localhost:3000/admin/getAllUsers", {
+          withCredentials: true,
+        });
+        setUsers(response.data.users); // Set the users state
+      } catch (error) {
+        setError("Failed to fetch users");
+        console.error("Error fetching users:", error);
+      }
+    };
+    
     handleTotalUsers();
     handleEarning();
     handleWeeklyData();
     handleMonthlyRevenue();
     handlePieChart();
+    fetchUsers();
   },[])
+  const generateDummyData = () => {
+    return users.length
+      ? users.map((user) => ({
+          user_id: user._id,
+          name: user.username || "N/A", // Assuming `username` is the correct key for user name
+          designation: user.user_designation || "N/A", // Correct key as per the data
+          email: user.user_email || "N/A", // Email key matches your response
+          phone_number: user.user_mobile_number || "N/A", // Adjust if the key exists in your API
+          status: user.user_status || "Active", // Correct key for user status
+        }))
+      : [];
+  };
   return (
     <div>
       {/* Card widget */}
@@ -145,33 +173,14 @@ const Dashboard = () => {
       <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-2">
         {/* Check Table */}
         <div>
-          <CheckTable
-            columnsData={columnsDataCheck}
-            tableData={tableDataCheck}
-          />
+        <Table data={generateDummyData()} />
         </div>
 
         {/* Traffic chart & Pie Chart */}
 
         <div className="grid grid-cols-1 gap-5 rounded-[20px] md:grid-cols-1">
         <PieChartCard totalProduct={inventorySize.totalProduct} inventorySize={inventorySize.inventorySize} />
-        </div>
-
-        {/* Complex Table , Task & Calendar */}
-
-        <ComplexTable
-          columnsData={columnsDataComplex}
-          tableData={tableDataComplex}
-        />
-
-        {/* Task chart & Calendar */}
-
-        <div className="grid grid-cols-1 gap-5 rounded-[20px] md:grid-cols-1">
-          {/* <TaskCard /> */}
-          <div className="grid grid-cols-2  rounded-[20px]">
-            <MiniCalendar />
-          </div>
-        </div>
+        </div> 
       </div>
     </div>
   );

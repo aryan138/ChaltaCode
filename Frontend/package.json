@@ -25,6 +25,7 @@
     "framer-motion": "^7.10.2",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.456.0",
+    "pdf-lib": "^1.17.1",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-calendar": "^3.9.0",

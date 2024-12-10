@@ -2,9 +2,37 @@ import React from "react";
 import banner from "assets/img/profile/banner.png";
 import Card from "components/card";
 import { useUser } from "useContext/userContext";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useState, useEffect, useCallback } from "react";
 
 const Banner = () => {
   const userInfo = useUser();
+  const [userAdmin,setUserAdmin] = useState('admin');
+  const [companyName,setCompanyName] = useState('admin');
+
+  const handleAdmin = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/user/admin-details', {
+        withCredentials: true
+      });
+  
+      if (response.data.success === true) {
+        setUserAdmin(response.data.admin.username || 'admin'); 
+        setCompanyName(response.data.admin.company_name || 'Company Name'); 
+      } else {
+        setUserAdmin('admin');
+        setCompanyName('Company Name');
+      }
+    } catch (error) {
+      toast.error(error.message); 
+    }
+  };
+  
+  useEffect(() => {
+    handleAdmin();
+  }, []);
+  
 
   return (
     <Card extra={"w-full h-full p-6 bg-cover rounded-lg shadow-lg"}>
@@ -60,7 +88,7 @@ const Banner = () => {
       </div>
       <div className="mt-4 grid grid-cols-2 gap-6 text-center">
         <div className="flex flex-col items-center">
-          <p className="text-lg font-bold text-gray-800 dark:text-white">{userInfo.user_company_name || "Company Name"}</p>
+          <p className="text-lg font-bold text-gray-800 dark:text-white">{companyName || "Company Name"}</p>
           <p className="text-sm text-gray-500">Company Name</p>
         </div>
         {/* <div className="flex flex-col items-center">
@@ -76,7 +104,7 @@ const Banner = () => {
       </div>
       {/* <div className="mt-4 grid grid-cols-2 gap-6 text-center"> */}
         <div className="flex flex-col items-center mt-4">
-          <p className="text-lg font-bold text-gray-800 dark:text-white">{userInfo.user_admin_name || "Admin Name"}</p>
+          <p className="text-lg font-bold text-gray-800 dark:text-white">{userAdmin || "Admin Name"}</p>
           <p className="text-sm text-gray-500">Admin Name</p>
         </div>
         {/*<div className="flex flex-col items-center">

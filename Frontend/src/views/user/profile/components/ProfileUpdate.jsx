@@ -82,11 +82,14 @@ const ProfileUpdate = ({ onClose }) => {
 
     // Full Name: cannot be just spaces and cannot contain numbers
     const nameRegex = /\d/; // Regex to detect numbers
-    if (!formData.user_fullname.trim()) {
-      errors.user_fullname = "Full Name cannot be empty or just spaces";
-    } else if (nameRegex.test(formData.user_fullname)) {
-      errors.user_fullname = "Full Name cannot contain numbers";
-    }
+if (!formData.user_fullname.trim()) {
+  errors.user_fullname = "Full Name cannot be empty or just spaces";
+} else if (nameRegex.test(formData.user_fullname)) {
+  errors.user_fullname = "Full Name cannot contain numbers";
+} else if (formData.user_fullname.length > 15) {
+  errors.user_fullname = "Full Name cannot be more than 15 characters";
+}
+
 
     // Phone Number: should only contain 10 digits
     const phoneRegex = /^\d{10}$/;

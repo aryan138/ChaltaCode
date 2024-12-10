@@ -20,10 +20,15 @@ const profileUpdateSchema = z.object({
     )
     .transform((val) => val.trim().replace(/\s+/g, " ")) // Trim and reduce spaces
     .optional(),
-  admin_email: z
-    .string()
-    .email({ message: "Invalid email address" })
-    .optional(),
+  admin_mobile_number: z
+  .coerce
+  .number()
+  .min(1000000000, { message: "Phone number must be at least 10 digits" })
+  .max(9999999999, { message: "Phone number must be less than 15 digits" })
+  .optional(),
+
+
+
   company_name: z
     .string()
     .max(20, { message: "Company name must be less than 20 characters" })
@@ -96,7 +101,7 @@ const ProfileUpdate = ({ onClose }) => {
           }
         );
 
-        // console.log("adminINfo", adminInfo.company_industry);
+        // console.log("adminINfo", adminInfo.admin_mobile_number);
 
         const userData = response.data;
         setValue("admin_name", adminInfo.admin_name || "");
@@ -130,11 +135,12 @@ const ProfileUpdate = ({ onClose }) => {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    // console.log("before", data);
+    console.log("before", data);
     Object.keys(data).forEach((key) => {
       if (data[key] === "") delete data[key];
     });
-    // console.log("after", data);
+    console.log("after", data);
+
 
     try {
       const response = await axios.post(
@@ -159,7 +165,7 @@ const ProfileUpdate = ({ onClose }) => {
       });
     } finally {
       setIsSubmitting(false);
-      window.location.reload();
+      // window.location.reload();
     }
   };
 

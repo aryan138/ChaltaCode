@@ -1,18 +1,63 @@
-
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { X, CheckCircle, AlertCircle } from "lucide-react";
 import { ToastContainer, toast, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAdmin } from "useContext/adminContext";
+
+// Zod schema for form validation
+const profileUpdateSchema = z.object({
+  admin_name: z
+    .string()
+    .min(3, { message: "Admin name must be at least 3 characters" })
+    .max(20, { message: "Admin name must be less than 20 characters" })
+    .refine(
+      (val) => /^[a-zA-Z0-9 ]+$/.test(val.trim()), // Alphanumeric and spaces only
+      { message: "Admin name can only contain letters, numbers, and spaces" }
+    )
+    .transform((val) => val.trim().replace(/\s+/g, " ")) // Trim and reduce spaces
+    .optional(),
+  admin_email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .optional(),
+  company_name: z
+    .string()
+    .max(20, { message: "Company name must be less than 20 characters" })
+    .refine(
+      (val) => /^[a-zA-Z0-9 ]+$/.test(val.trim()), // Alphanumeric and spaces only
+      { message: "Company name can only contain letters, numbers, and spaces" }
+    )
+    .transform((val) => val.trim().replace(/\s+/g, " ")) // Trim and reduce spaces
+    .optional(),
+  company_industry: z
+    .string()
+    .max(20, { message: "Company industry must be less than 20 characters" })
+    .refine(
+      (val) => /^[a-zA-Z0-9 ]+$/.test(val.trim()), // Alphanumeric and spaces only
+      { message: "Company Industry can only contain letters, numbers, and spaces" }
+    )
+    .transform((val) => val.trim().replace(/\s+/g, " ")) // Trim and reduce spaces
+    .optional(),
+  company_address: z
+    .string()
+    .max(100, { message: "Address must be less than 100 characters" })
+    .optional(),
+});
 
 const ProfileUpdate = ({ onClose }) => {
+  const adminInfo = useAdmin();
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm();
+  } = useForm({
+    resolver: zodResolver(profileUpdateSchema),
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -27,24 +72,40 @@ const ProfileUpdate = ({ onClose }) => {
     draggable: true,
     progress: undefined,
     transition: Slide,
-    theme: "light"
+    theme: "light",
   };
 
   // Fetch and pre-fill existing user data
   useEffect(() => {
+
+    // useEffect(() => {
+      // console.log("Pre-filling company_industry:", adminInfo.company_industry);
+      // setValue("company_industry", adminInfo.company_industry || "");
+    // }, [adminInfo, setValue]);
+    
+    // useEffect(() => {
+    // console.log("adminInfo:", adminInfo);
+    // }, [adminInfo]);
+
     const fetchUserData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/user/get-details", {
-          withCredentials: true
-        });
-        
+        const response = await axios.get(
+          "http://localhost:3000/admin/get-details",
+          {
+            withCredentials: true,
+          }
+        );
+
+        // console.log("adminINfo", adminInfo.company_industry);
+
         const userData = response.data;
-        setValue("user_username", userData.username || "");
-        setValue("user_email", userData.email || "");
-        setValue("user_fullname", userData.fullName || "");
-        setValue("user_phone_number", userData.phoneNumber || "");
-        setValue("user_designation", userData.designation || "");
-        setValue("user_company_name", userData.companyName || "");
+        setValue("admin_name", adminInfo.admin_name || "");
+        setValue("admin_email", adminInfo.admin_email || "");
+        setValue("admin_mobile_number", adminInfo.admin_mobile_number || "");
+        setValue("company_address", adminInfo.company_address || "");
+        setValue("company_name", adminInfo.company_name || "");
+        setValue("company_industry", adminInfo.company_industry || "");
+        
       } catch (error) {
         console.error("Error fetching user data", error);
       }
@@ -69,94 +130,67 @@ const ProfileUpdate = ({ onClose }) => {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    
-    // Remove empty fields
-    Object.keys(data).forEach(key => {
-      if (data[key] === "") {
-        delete data[key];
-      }
+    // console.log("before", data);
+    Object.keys(data).forEach((key) => {
+      if (data[key] === "") delete data[key];
     });
-    
-    // Close any existing toasts
-    toast.dismiss();
+    // console.log("after", data);
 
     try {
-      console.log("data",data);
       const response = await axios.post(
-        "http://localhost:3000/user/update-details", 
-        data, 
+        "http://localhost:3000/admin/profile-complete",
+        data,
         { withCredentials: true }
       );
 
-      if (response.status === 200) {
-        // Success toast with auto-close and close popup
-        toast.success("Profile updated successfully!", {
-          ...toastConfig,
-          onClose: onClose,
-          icon: () => <CheckCircle className="text-green-500" />,
-        });
+      console.log("data", data);
 
-        // Ensure popup closes
-        setTimeout(() => {
-          onClose();
-        }, 3000);
+      if (response.data.success) {
+        toast.success("Profile updated successfully!", { ...toastConfig });
+        onClose();
+      } else {
+        toast.error(response.data.message || "Failed to update profile.", {
+          ...toastConfig,
+        });
       }
     } catch (error) {
-      // Error toast
-      toast.error(
-        error.response?.data?.message || "Failed to update profile. Please try again.",
-        {
-          ...toastConfig,
-          icon: () => <AlertCircle className="text-red-500" />,
-        }
-      );
+      toast.error(error.response?.data?.message || "An error occurred.", {
+        ...toastConfig,
+      });
     } finally {
       setIsSubmitting(false);
+      window.location.reload();
     }
   };
 
   // Handle escape key to close the popup
   useEffect(() => {
     const handleEscKey = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleEscKey);
+    document.addEventListener("keydown", handleEscKey);
     return () => {
-      document.removeEventListener('keydown', handleEscKey);
+      document.removeEventListener("keydown", handleEscKey);
     };
   }, [onClose]);
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        transition={Slide}
-        limit={3}
-      />
+    <div className="relative mx-auto w-full max-w-2xl">
+      <ToastContainer limit={3} />
 
-      <div className="bg-white dark:!bg-black-800 shadow-3xl shadow-shadow-500 rounded-[20px] p-6 relative">
-        {/* Close Button */}
-        <button 
+      <div className="relative rounded-[20px] bg-white p-6 shadow-3xl shadow-shadow-500 dark:!bg-black-800">
+        <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-white z-50"
+          className="absolute right-4 top-4 z-50 text-gray-500 hover:text-gray-700 dark:text-white"
         >
-          <X className="w-6 h-6" />
+          <X className="h-6 w-6" />
         </button>
 
         <div className="mb-6">
-          <h4 className="text-2xl font-bold text-black-700 dark:text-white mb-2">
+          <h4 className="mb-2 text-2xl font-bold text-black-700 dark:text-white">
             Update Your Profile
           </h4>
           <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -165,8 +199,7 @@ const ProfileUpdate = ({ onClose }) => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          
-        <div>
+          <div>
             <label className="mb-2 block text-sm font-medium">
               Profile Picture
             </label>
@@ -189,145 +222,114 @@ const ProfileUpdate = ({ onClose }) => {
               />
             )}
           </div>
-          
-          <div className="grid md:grid-cols-2 gap-4">
+
+          <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
-                Username
+              <label className="mb-2 block text-sm font-medium">
+                Admin Name
               </label>
               <input
-                {...register("user_username", { 
-                  minLength: {
-                    value: 3,
-                    message: "Username must be at least 3 characters"
-                  }
-                })}
-                placeholder="Enter your username"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500"
+                {...register("admin_name")}
+                placeholder="Enter your name"
+                className="w-full rounded-md border px-3 py-2"
               />
-              {errors.user_username && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.user_username.message}
+              {errors.admin_name && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.admin_name.message}
                 </p>
               )}
             </div>
-
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
-                Email
-              </label>
+              <label className="mb-2 block text-sm font-medium">Email</label>
               <input
-                type="email"
-                {...register("user_email", { 
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address"
-                  }
-                })}
+                {...register("admin_email")}
                 placeholder="Enter your email"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500"
+                className="w-full rounded-md border px-3 py-2"
               />
-              {errors.user_email && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.user_email.message}
+              {errors.admin_email && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.admin_email.message}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
-                Full Name
-              </label>
-              <input
-                {...register("user_fullname")}
-                placeholder="Enter your full name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500"
-              />
-              {errors.user_fullname && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.user_fullname.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
+              <label className="mb-2 block text-sm font-medium">
                 Phone Number
               </label>
               <input
-                type="tel"
-                {...register("user_phone_number", { 
-                  pattern: {
-                    value: /^[0-9]{10}$/,
-                    message: "Invalid phone number"
-                  }
-                })}
+                {...register("admin_mobile_number")}
                 placeholder="Enter your phone number"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500"
+                className="w-full rounded-md border px-3 py-2"
               />
-              {errors.user_phone_number && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.user_phone_number.message}
+              {errors.admin_mobile_number && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.admin_mobile_number.message}
                 </p>
               )}
             </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
-                Designation
-              </label>
-              <input
-                {...register("user_designation", { 
-                  maxLength: {
-                    value: 100,
-                    message: "Designation must be less than 100 characters"
-                  }
-                })}
-                placeholder="Enter your designation"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500"
-              />
-              {errors.user_designation && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.user_designation.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">
+              <label className="mb-2 block text-sm font-medium">
                 Company Name
               </label>
               <input
-                {...register("user_company_name", { 
-                  maxLength: {
-                    value: 100,
-                    message: "Company name must be less than 100 characters"
-                  }
-                })}
+                {...register("company_name")}
                 placeholder="Enter your company name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500"
+                className="w-full rounded-md border px-3 py-2"
               />
-              {errors.user_company_name && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.user_company_name.message}
+              {errors.company_name && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.company_name.message}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="flex justify-end mt-6">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium">
+                Company Industry
+              </label>
+              <input
+                {...register("company_industry")}
+                placeholder="Enter your company industry"
+                className="w-full rounded-md border px-3 py-2"
+              />
+              {errors.company_industry && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.company_industry.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium">
+                Company Address
+              </label>
+              <input
+                {...register("company_address")}
+                placeholder="Enter your company address"
+                className="w-full rounded-md border px-3 py-2"
+              />
+              {errors.company_address && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.company_address.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-end">
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`inline-flex justify-center rounded-md border border-transparent bg-brand-500 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 ${
-                isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+              className={`inline-flex justify-center rounded-md border bg-brand-500 px-4 py-2 text-sm text-white ${
+                isSubmitting ? "cursor-not-allowed opacity-50" : ""
               }`}
             >
-              {isSubmitting ? 'Updating...' : 'Update Profile'}
+              {isSubmitting ? "Updating..." : "Update Profile"}
             </button>
           </div>
         </form>

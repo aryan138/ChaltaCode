@@ -51,9 +51,9 @@ const Banner = () => {
         </div>
         <div className="flex flex-col items-center justify-center">
           <p className="text-lg font-bold text-black-700 dark:text-white">
-          {adminInfo.company_industry || "Comapany Industry"}
+          {adminInfo.company_industry || "Company Industry"}
           </p>
-          <p className="text-sm font-normal text-gray-600">Comapany Industry</p>
+          <p className="text-sm font-normal text-gray-600">Company Industry</p>
         </div>
       </div>
 

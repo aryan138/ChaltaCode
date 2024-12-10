@@ -386,11 +386,12 @@ const completeProfile = async(req,res)=>{
     const id = req.user._id;
     // const updatedAdmin = await admin.findById(id);
     
-    const {admin_name,admin_mobile_number,company_name,company_address,pan_number,gst_number} = req.body;
-    console.log(admin_name,admin_mobile_number,company_name,company_address,pan_number,gst_number);
+    const {admin_name,admin_mobile_number,company_name,company_address,pan_number,gst_number,company_industry} = req.body;
+    console.log(admin_name,admin_mobile_number,company_name,company_address,pan_number,gst_number,company_industry);
     const updatedAdmin = await admin.findByIdAndUpdate(id,{$set:{admin_name:admin_name,admin_mobile_number:admin_mobile_number,company_name:company_name,company_address:company_address,
     pan_number:pan_number,
-     gst_number:gst_number 
+     gst_number:gst_number,
+     company_industry:company_industry
     }},
   {
     new:true

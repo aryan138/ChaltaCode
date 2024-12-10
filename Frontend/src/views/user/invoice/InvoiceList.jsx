@@ -17,7 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
-
+import img from '../../../assets/favicon.png'
 // API Client with Axios
 const api = axios.create({
   baseURL: "http://localhost:3000/",
@@ -60,18 +60,91 @@ const CreateInvoiceForm = ({ onSuccess }) => {
   const [logo, setLogo] = useState(null);
   const logoInputRef = useRef(null);
 
+  const [responseId, setResponseId] = React.useState("");
+  const [responseState, setResponseState] = React.useState([]);
+
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+
+      script.src = src;
+
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleRazorpayScreen = async (amount, onPaymentSuccess) => {
+    try {
+      // Load the Razorpay script dynamically
+      const res = await loadScript(
+        "https://checkout.razorpay.com/v1/checkout.js"
+      );
+
+      // If Razorpay script fails to load, show an alert and return
+      if (!res) {
+        alert("Some error occurred while loading the Razorpay screen");
+        return;
+      }
+
+      // Configure Razorpay payment options
+      const options = {
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID, // Razorpay test key
+        amount: amount*100, // Amount in paise
+        currency: "INR", // Currency INR
+        name: "PROFITEX", // Merchant name
+        description: "Payment to PROFITEX", // Description of payment
+        image: img, // Merchant logo
+        handler: function (response) {
+          // Capture the Razorpay payment ID upon successful payment
+          setResponseId(response.razorpay_payment_id);
+          toast.success("Payment successful!"); // Show success toast
+
+          // Call the callback function to create the invoice
+          if (onPaymentSuccess) {
+            onPaymentSuccess(response); // Pass the response to the callback
+          }
+        },
+        prefill: {
+          name: "Papaya Coders", // User's name
+          email: "papayacoders@gmail.com", // User's email
+        },
+        theme: {
+          color: "#166534", // Customize theme color
+        },
+      };
+
+      // Create a Razorpay payment object with the provided options
+      const paymentObject = new window.Razorpay(options);
+
+      // Open the Razorpay payment window
+      paymentObject.open();
+    } catch (error) {
+      // Handle any errors that occur during the process
+      console.error("Error loading Razorpay payment screen:", error);
+      toast.error("Failed to load Razorpay payment screen");
+    }
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await api.get("http://localhost:3000/products/getall",{withCredentials: true});
+        const response = await api.get(
+          "http://localhost:3000/products/getall",
+          { withCredentials: true }
+        );
         // console.log(response.data.products);
-        if (response.data.products.length>0) {
+        if (response.data.products.length > 0) {
           setProducts(response.data.products);
-        
-        }else if(response.data.products.length==0){
+        } else if (response.data.products.length == 0) {
           toast.error("first add products to your inventory");
-        }
-         else {
+        } else {
           toast.error("Unexpected product data format");
         }
       } catch (error) {
@@ -185,43 +258,16 @@ const CreateInvoiceForm = ({ onSuccess }) => {
     return true;
   };
 
-  // const validateForm = () => {
-  //   if (!customer.name) {
-  //     toast.error('Customer name is required');
-  //     return false;
-  //   }
-
-  //   if (items.length === 0) {
-  //     toast.error('Please add at least one item');
-  //     return false;
-  //   }
-
-  //   const invalidItems = items.some(item => !item.product);
-  //   if (invalidItems) {
-  //     toast.error('Please select a product for all items');
-  //     return false;
-  //   }
-
-  //   const invalidQuantities = items.some(item => {
-  //     const product = products.find(p => p._id === item.product);
-  //     return !product || item.quantity > product.stock;
-  //   });
-  //   if (invalidQuantities) {
-  //     toast.error('Invalid product quantities or insufficient stock');
-  //     return false;
-  //   }
-
-  //   return true;
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Validate the form before proceeding
     if (!validateForm()) {
       return;
     }
-
+  
     try {
+      // Prepare the invoice data
       const invoiceData = {
         customer: {
           name: customer.name,
@@ -237,19 +283,33 @@ const CreateInvoiceForm = ({ onSuccess }) => {
         })),
         subtotal: totalAmount,
         totalAmount: totalAmount,
-        status: "PAID",
+        status: "PAID", // Status is "PAID" because it's only set after successful payment
       };
-
-      await api.post("/invoices/create-invoice", invoiceData,{withCredentials:true});
-      toast.success("Invoice created successfully");
-      onSuccess();
+  
+      // Call Razorpay payment screen and pass the callback to create the invoice after payment
+      await handleRazorpayScreen(totalAmount, async (paymentResponse) => {
+        // After successful payment, create the invoice
+        await api.post("/invoices/create-invoice", invoiceData, {
+          withCredentials: true,
+        });
+  
+        // Show success notification
+        toast.success("Invoice created successfully");
+  
+        // Trigger the success callback
+        onSuccess();
+      });
+  
     } catch (error) {
-      console.error("Error creating invoice", error);
+      // Log the error and show error notification
+      console.error("Error creating invoice:", error);
+  
       const errorMessage =
         error.response?.data?.message || "Failed to create invoice";
       toast.error(errorMessage);
     }
   };
+  
 
   return (
     <form
@@ -579,43 +639,47 @@ const InvoiceList = () => {
               <th className="px-6 py-3 text-left text-xs uppercase tracking-wider text-green-900 dark:!text-white">
                 Status
               </th>
-              <th className="px-6 py-3 text-right text-xs text-green-900 uppercase tracking-wider dark:!text-white">Actions</th>
+              <th className="px-6 py-3 text-right text-xs uppercase tracking-wider text-green-900 dark:!text-white">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {filteredInvoices.map((invoice) => (
-              <tr key={invoice._id} className="hover:bg-gray-50 transition dark:hover:bg-black-500">
-
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:!text-white">
+              <tr
+                key={invoice._id}
+                className="transition hover:bg-gray-50 dark:hover:bg-black-500"
+              >
+                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:!text-white">
                   {invoice.invoiceNumber}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:!text-white">
+                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:!text-white">
                   {invoice.customer.name}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:!text-white">
+                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:!text-white">
                   {new Date(invoice.createdAt).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:!text-white">
-                &#8377;{invoice.totalAmount.toFixed(2)}
+                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:!text-white">
+                  &#8377;{invoice.totalAmount.toFixed(2)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="whitespace-nowrap px-6 py-4">
                   <StatusBadge status={invoice.status} />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    <button 
+                    <button
                       onClick={() => navigate(`/invoice/${invoice._id}`)}
                       className="text-blue-600 hover:text-blue-900"
                     >
                       <EyeIcon className="h-5 w-5" />
                     </button>
-                    <button 
+                    <button
                       onClick={() => downloadInvoice(invoice._id)}
                       className="text-green-600 hover:text-green-900"
                     >
                       <DownloadIcon className="h-5 w-5" />
                     </button>
-                    <button 
+                    <button
                       onClick={() => deleteInvoice(invoice._id)}
                       className="text-red-600 hover:text-red-900"
                     >
@@ -626,7 +690,6 @@ const InvoiceList = () => {
               </tr>
             ))}
           </tbody>
-          
         </table>
 
         {filteredInvoices.length === 0 && (
@@ -701,5 +764,3 @@ const InvoiceList = () => {
 };
 
 export default InvoiceList;
-
-

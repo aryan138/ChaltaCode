@@ -166,6 +166,8 @@ import InputField from "components/fields/InputField";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
 const adminSchema = z.object({
   username: z
     .string()
@@ -177,10 +179,13 @@ const adminSchema = z.object({
       "Username must start with a letter and can only contain letters, numbers, and underscores"
     )
     .refine(
-      (username) => !['admin', 'root', 'system', 'superuser'].includes(username.toLowerCase()),
+      (username) =>
+        !["admin", "root", "system", "superuser"].includes(
+          username.toLowerCase()
+        ),
       "This username is not allowed"
     ),
-  
+
   admin_email: z
     .string()
     .trim() // Ensure leading and trailing spaces are removed
@@ -199,13 +204,13 @@ const adminSchema = z.object({
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
       "Password must include uppercase, lowercase, number, and special character"
-    )
+    ),
 });
-
-
 
 export default function AdminSignUp() {
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
   const navigate = useNavigate();
 
   const {
@@ -276,9 +281,33 @@ export default function AdminSignUp() {
             )}
           </div>
 
-          <div className="mb-4">
+          <div className="relative mb-4">
             <InputField
               label="Password"
+              placeholder="Enter your password"
+              type={passwordVisible ? "text" : "password"}
+              {...register("admin_password")}
+              className="pr-10"
+            />
+
+            <button
+              type="button"
+              onClick={() => setPasswordVisible(!passwordVisible)}
+              className="absolute right-3 top-14 -translate-y-1/2 transform text-gray-600"
+            >
+              {passwordVisible ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+            </button>
+
+            {errors.admin_password && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.admin_password.message}
+              </p>
+            )}
+          </div>
+
+          {/* <div className="mb-4">
+            <InputField
+              label="Confirm Password"
               placeholder="Enter your password"
               type="password"
               {...register("admin_password")}
@@ -288,7 +317,7 @@ export default function AdminSignUp() {
                 {errors.admin_password.message}
               </p>
             )}
-          </div>
+          </div> */}
 
           <button
             type="submit"

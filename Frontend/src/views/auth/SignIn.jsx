@@ -8,6 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FiEye, FiEyeOff } from "react-icons/fi"; 
+
 
 // Zod schemas
 // const userSignInSchema = z.object({
@@ -81,6 +83,8 @@ export default function SignIn() {
   const navigate = useNavigate();
   const [role, setRole] = useState("user");
   const [loading, setLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false); 
+
 
   const userForm = useForm({
     resolver: zodResolver(userSignInSchema),
@@ -202,19 +206,24 @@ export default function SignIn() {
               {...userForm.register("user_email")}
               error={userForm.formState.errors.user_email?.message}
             />
-            <InputField
-              label="Password"
-              placeholder="Enter your password"
-              type="password"
-              {...userForm.register("user_password")}
-              error={userForm.formState.errors.user_password?.message}
-            />
-            <button
-              type="submit"
-              className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"
-            >
-              Sign In
-            </button>
+            <div className="relative mb-4"> {/* Add relative positioning to wrap input and eye button */}
+              <InputField
+                label="Password"
+                placeholder="Enter your password"
+                type={passwordVisible ? "text" : "password"} // Toggle password visibility
+                {...userForm.register("user_password")}
+                error={userForm.formState.errors.user_password?.message}
+                className="pr-10" // Add padding to the right to make space for the eye button
+              />
+              <button
+                type="button"
+                onClick={() => setPasswordVisible(!passwordVisible)} // Toggle password visibility
+                className="absolute right-3 top-14 transform -translate-y-1/2 text-gray-600"
+              >
+                {passwordVisible ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+              </button>
+            </div>
+            <SubmitButton />
           </form>
         ) : (
           <form onSubmit={adminForm.handleSubmit(handleSignInForAdmin)}>
@@ -224,22 +233,38 @@ export default function SignIn() {
               {...adminForm.register("admin_email")}
               error={adminForm.formState.errors.admin_email?.message}
             />
-            <InputField
-              label="Password"
-              placeholder="Enter your password"
-              type="password"
-              {...adminForm.register("admin_password")}
-              error={adminForm.formState.errors.admin_password?.message}
-            />
-            {/* <button
-              type="submit"
-              className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"
-            >
-              Sign In
-            </button> */}
-            <SubmitButton/>
+            <div className="relative mb-4"> {/* Add relative positioning to wrap input and eye button */}
+              <InputField
+                label="Password"
+                placeholder="Enter your password"
+                type={passwordVisible ? "text" : "password"} // Toggle password visibility
+                {...adminForm.register("admin_password")}
+                error={adminForm.formState.errors.admin_password?.message}
+                className="pr-10" // Add padding to the right to make space for the eye button
+              />
+              <button
+                type="button"
+                onClick={() => setPasswordVisible(!passwordVisible)} // Toggle password visibility
+                className="absolute right-3 top-14 transform -translate-y-1/2 text-gray-600"
+              >
+                {passwordVisible ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+              </button>
+            </div>
+            <SubmitButton />
           </form>
         )}
+
+        <div className="mt-4">
+          {/* <span className="text-sm font-medium text-black-700 dark:text-gray-600">
+            Don't have an account?
+          </span> */}
+          <Link
+            to={"/auth/"}
+            className=" text-sm font-medium text-brand-500 hover:text-brand-600 dark:text-white"
+          >
+            Forgot Password ?
+          </Link>
+        </div>
 
         <div className="mt-4">
           <span className="text-sm font-medium text-black-700 dark:text-gray-600">

@@ -15,8 +15,8 @@ const profileUpdateSchema = z.object({
     .min(3, { message: "Admin name must be at least 3 characters" })
     .max(20, { message: "Admin name must be less than 20 characters" })
     .refine(
-      (val) => /^[a-zA-Z0-9 ]+$/.test(val.trim()), // Alphanumeric and spaces only
-      { message: "Admin name can only contain letters, numbers, and spaces" }
+      (val) => /^[a-zA-Z ]+$/.test(val.trim()), 
+      { message: "Admin name can only contain letters." }
     )
     .transform((val) => val.trim().replace(/\s+/g, " ")) // Trim and reduce spaces
     .optional(),
@@ -24,7 +24,7 @@ const profileUpdateSchema = z.object({
   .coerce
   .number()
   .min(1000000000, { message: "Phone number must be at least 10 digits" })
-  .max(9999999999, { message: "Phone number must be less than 15 digits" })
+  .max(9999999999, { message: "Phone number must be less than 10 digits" })
   .optional(),
 
 

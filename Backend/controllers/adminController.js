@@ -668,9 +668,6 @@ const getDailySalesForAdmin = async (req, res) => {
   }
 };
 
-
-
-
 const getAdminWeeklyRevenue = async (req, res) => {
   try {
     const adminId = req.user._id; // Admin ID from req.user

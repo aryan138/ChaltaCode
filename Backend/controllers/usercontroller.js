@@ -526,7 +526,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: '', // replace with your email
-    pass: '', // replace with your email password
+    pass: '' // replace with your email password
   },
 });
 

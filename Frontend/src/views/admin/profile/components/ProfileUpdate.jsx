@@ -14,6 +14,8 @@ const ProfileUpdate = ({ onClose }) => {
     setValue,
   } = useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
   // Centralized toast configuration
   const toastConfig = {
@@ -50,6 +52,20 @@ const ProfileUpdate = ({ onClose }) => {
 
     fetchUserData();
   }, [setValue]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfileImage(file);
+
+      // Show preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -149,6 +165,31 @@ const ProfileUpdate = ({ onClose }) => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          
+        <div>
+            <label className="mb-2 block text-sm font-medium">
+              Profile Picture
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="block w-full text-sm text-gray-500
+                file:mr-4 file:rounded-md file:border-0
+                file:bg-green-800 file:px-4
+                file:py-2 file:text-sm
+                file:font-semibold file:text-white
+                hover:file:bg-green-700"
+            />
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="Profile Preview"
+                className="mt-4 h-32 w-32 rounded-full object-cover"
+              />
+            )}
+          </div>
+          
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-white mb-2">

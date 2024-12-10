@@ -1,7 +1,5 @@
 
-
 // ManualEntryPopUp
-
 
 import React, { useState } from 'react';
 
@@ -48,10 +46,15 @@ const ManualEntryPopup = ({ handleFormSubmit, loading, error, handleClosePopup }
     } else if (!productNameRegex.test(formData.name)) {
       errors.name = "Product Name should start from a alphabet";
     }
+    else if (formData.name.length>20){
+      errors.name = "Product Name cannot be more than 20 character";
+    }
   
     // Validate price: must be positive and greater than 0
     if (!formData.price || formData.price <= 0) {
       errors.price = "Price must be a positive number greater than 0";
+    }else if (!/^\d+(\.\d{1,2})?$/.test(formData.price)) {
+      errors.price = "Price can only have up to 2 decimal places";
     }
   
     // Validate stock: must be a whole number and cannot be negative

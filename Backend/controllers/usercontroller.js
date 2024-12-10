@@ -525,8 +525,8 @@ Date.prototype.getWeek = function () {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: '', // replace with your email
-    pass: '' // replace with your email password
+    user: 'aman1249.be22@chitkara.edu.in', // replace with your email
+    pass: 'AmanSharma123' // replace with your email password
   },
 });
 

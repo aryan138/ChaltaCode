@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 const schema = z.object({
   admin_name: z
     .string()
+    .max(20, "Cannot be more than 20 letters")
     .min(1, "Admin name is required")
     .regex(/.*[^\d].*/, "Admin name cannot be only numbers") // Ensure it contains at least one non-digit character
     .refine((value) => value.trim().length > 0, "Admin name cannot be just spaces") // Check for non-space input
@@ -19,6 +20,7 @@ const schema = z.object({
     .regex(/^\d+$/, "Mobile number must contain only digits"),
   company_name: z
     .string()
+    .max(20, "Cannot be more than 20 letters")
     .min(1, "Company name is required")
     .regex(/.*[^\d].*/, "Company name cannot be only numbers") // Ensure it contains at least one non-digit character
     .refine((value) => value.trim().length > 0, "Company name cannot be just spaces") // Check for non-space input

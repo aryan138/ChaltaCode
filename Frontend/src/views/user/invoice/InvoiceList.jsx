@@ -222,7 +222,7 @@ const CreateInvoiceForm = ({ onSuccess }) => {
 
   const validateForm = () => {
     // Check if the name is empty or invalid
-    if (!customer.name) {
+    if (!customer.name || customer.name.length>20) {
       toast.error("Customer name is required");
       return false;
     }

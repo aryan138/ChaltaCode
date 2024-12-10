@@ -11,4 +11,6 @@ router.get("/get-details",authorize.verifyJwtUser,userController.getDetails);
 router.get("/admin-details",authorize.verifyJwtUser,userController.getAdmin);
 router.get('/daily-salees',authorize.verifyJwtUser,userController.getDailySalees);
 router.get('/weekly-revenue',authorize.verifyJwtUser,userController.getWeeklyRevenue);
+router.post('/forgot-password', userController.forgotPassword);
+router.post('/reset-password', userController.resetPassword);
 module.exports = router;

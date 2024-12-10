@@ -7,7 +7,7 @@ const Invoice = require("../models/Invoice");
 const moment = require('moment');
 const revenue = require("../models/revenue");
 const nodemailer = require('nodemailer');
-
+const { otp } = require('../config/cred')
 
 
 
@@ -525,8 +525,8 @@ Date.prototype.getWeek = function () {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'aman1249.be22@chitkara.edu.in', // replace with your email
-    pass: 'AmanSharma123' // replace with your email password
+    user: otp.user, // replace with your email
+    pass: otp.pass // replace with your email password
   },
 });
 

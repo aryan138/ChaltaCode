@@ -11,7 +11,7 @@ const { log } = require('console');
 const user = require('../models/user');
 const Invoice = require('../models/Invoice');
 const nodemailer = require('nodemailer');
-
+const { otp } = require('../config/cred')
 
 
 const generateAccessToken = async (userId) => {
@@ -767,8 +767,8 @@ if (!Date.prototype.getWeek) {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'aman1249.be22@chitkara.edu.in', // replace with your email
-    pass: 'AmanSharma123', // replace with your email password
+    user: otp.user, // replace with your email
+    pass: otp.pass, // replace with your email password
   },
 });
 

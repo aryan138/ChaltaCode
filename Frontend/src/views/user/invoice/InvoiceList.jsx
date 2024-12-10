@@ -17,7 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
-
+import img from '../../../assets/favicon.png'
 // API Client with Axios
 const api = axios.create({
   baseURL: "http://localhost:3000/",
@@ -95,12 +95,12 @@ const CreateInvoiceForm = ({ onSuccess }) => {
 
       // Configure Razorpay payment options
       const options = {
-        key: "rzp_test_lVhg047kV43SLP", // Razorpay test key
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID, // Razorpay test key
         amount: amount*100, // Amount in paise
         currency: "INR", // Currency INR
         name: "PROFITEX", // Merchant name
         description: "Payment to PROFITEX", // Description of payment
-        image: "https://papayacoders.com/demo.png", // Merchant logo
+        image: img, // Merchant logo
         handler: function (response) {
           // Capture the Razorpay payment ID upon successful payment
           setResponseId(response.razorpay_payment_id);

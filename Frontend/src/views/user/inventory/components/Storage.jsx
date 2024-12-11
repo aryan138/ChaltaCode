@@ -5,7 +5,7 @@ import { BsCloudCheck } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const Storage = () => {
+const Storage = ({userRole}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     minProducts: "",
@@ -26,7 +26,10 @@ const Storage = () => {
   const handleSubmit =async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/warehouse/enter-details',{min_val:formData.minProducts,storage:formData.inventorySize},{withCredentials:true});
+      const endPoint = userRole === "admin" 
+      ? `http://localhost:3000/warehouse/enter-details-admin`
+      : `http://localhost:3000/warehouse/enter-details`;
+      const response = await axios.post(endPoint,{min_val:formData.minProducts,storage:formData.inventorySize},{withCredentials:true});
       if (response.data.success==true){
         toast.success(response.data.message);
       }

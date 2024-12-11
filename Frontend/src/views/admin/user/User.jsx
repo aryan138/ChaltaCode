@@ -45,10 +45,10 @@ function User() {
     return users.length
       ? users.map((user) => ({
           user_id: user._id,
-          name: user.username || "N/A", // Assuming `username` is the correct key for user name
+          name: user.user_fullname || "N/A", // Assuming `username` is the correct key for user name
           designation: user.user_designation || "N/A", // Correct key as per the data
           email: user.user_email || "N/A", // Email key matches your response
-          phone_number: user.user_mobile_number || "N/A", // Adjust if the key exists in your API
+          phone_number: user.user_phone_number || "N/A", // Adjust if the key exists in your API
           status: user.user_status || "Active", // Correct key for user status
         }))
       : [];

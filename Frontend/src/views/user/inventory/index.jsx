@@ -146,7 +146,7 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
     <div className={`container mx-auto py-8 ${editModalOpen ? "modal-open" : ""}`}>
       <main>
         <div className={`mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2`}>
-          <Storage />
+          <Storage userRole={userRole} />
           <Upload onDataUpdate={handleDataUpdate} userRole={userRole} />
         </div>
 

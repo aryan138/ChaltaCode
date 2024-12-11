@@ -1,5 +1,6 @@
 const Product = require("../models/superProduct");
 const user = require("../models/user");
+const warehouse = require("../models/warehouse");
 
 // Create Product (Manual Entry)
 const createProduct = async (req, res) => {
@@ -36,7 +37,7 @@ const createProduct = async (req, res) => {
 const getAllProducts = async (req, res) => {
   const admin = req.user._id;
   try {
-    const products = await Product.find({ admin: admin });
+    const products = await Product.find({ admin: admin }).sort({ updatedAt: -1 });
     res.status(200).json({ products });
   } catch (error) {
     res.status(500).json({ message: "Error fetching products", error });

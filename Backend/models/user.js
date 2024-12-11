@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     user_status: { type: String ,enum:['Active','Inactive']},
     user_phone_number: { type: Number,},
     user_accessToken:{type:String},
+    user_profile_pic:{type:String, default: ""},
     user_admin:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'admin'

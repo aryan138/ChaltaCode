@@ -51,7 +51,7 @@ const WeeklyRevenueChart = ({ data }) => {
     colors: ["#10B981"], // Set a smooth green color for the line and gradient fill
     tooltip: {
       y: {
-        formatter: (value) => `$${value.toFixed(2)}`, // Format tooltip values as currency
+        formatter: (value) => `₹${value.toFixed(2)}`, // Format tooltip values as currency
       },
     },
   };

@@ -11,7 +11,10 @@ const { log } = require('console');
 const user = require('../models/user');
 const Invoice = require('../models/Invoice');
 const nodemailer = require('nodemailer');
-
+const multer = require("multer");
+const path = require("path");
+const fs = require('fs');
+const {otp} = require('../config/cred');
 
 
 const generateAccessToken = async (userId) => {
@@ -767,8 +770,8 @@ if (!Date.prototype.getWeek) {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'aman1249.be22@chitkara.edu.in', // replace with your email
-    pass: 'AmanSharma123', // replace with your email password
+    user: otp.user, // replace with your email
+    pass: otp.pass, // replace with your email password
   },
 });
 
@@ -857,7 +860,101 @@ const resetPassword = async (req, res) => {
     return res.status(500).json({ success: false, message: "An error occurred while updating the password" });
   }
 };
+// Define the storage for the profile picture
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, '../uploads/admin-profile-pics');
+    // Create the directory if it doesn't exist
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const fileExtension = path.extname(file.originalname);
+    const fileName = `admin-profile-${req.user._id}${fileExtension}`;  // Name the file based on user ID
+    cb(null, fileName);
+  },
+});
+
+// Filter to ensure only image files are uploaded
+const fileFilter = (req, file, cb) => {
+  const fileTypes = /jpeg|jpg|png|gif/;
+  const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimeType = fileTypes.test(file.mimetype);
+  if (extname && mimeType) {
+    return cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'));
+  }
+};
+
+// Configure multer for the profile pic upload
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB size limit
+}).single('profilePic');  // 'profilePic' is the field name in the form
+
+// Upload profile picture
+const uploadProfilePic = async (req, res) => {
+  try {
+    // Handle file upload via multer
+    upload(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({
+          success: false,
+          message: err.message,
+        });
+      }
+
+      // Check if file is uploaded
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'No file uploaded.',
+        });
+      }
+
+      // Update the user profile with the uploaded image path
+      const userId = req.user._id;
+      const profilePicPath =` /uploads/admin-profile-pics/${req.file.filename}`;
+
+      // Find the user and update the profile picture path
+      const adminToUpdate = await admin.findById(userId);
+      if (!adminToUpdate) {
+        return res.status(404).json({
+          success: false,
+          message: 'Admin not found',
+        });
+      }
+
+      // Update profile picture in user model
+      adminToUpdate.admin_profile_pic = profilePicPath; // Add this field to your user model if not already present
+      await adminToUpdate.save();
+
+      // Return response with the updated user data
+      return res.status(200).json({
+        success: true,
+        message: 'Profile picture uploaded successfully',
+        data: {
+          profilePic: profilePicPath,  // Send the path of the uploaded image
+        },
+      });
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error uploading profile picture',
+      error: error.message,
+    });
+  }
+};
 
 
 
-module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus, getUserCount,completeProfile,getTotalEarningsForAdmin,getDailySalesForAdmin,getAdminWeeklyRevenue, forgotPassword, resetPassword };
+
+
+
+
+module.exports = { register,createUser, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin,getAllUsersUnderAdmin, updateUserStatus, getUserCount,completeProfile,getTotalEarningsForAdmin,getDailySalesForAdmin,getAdminWeeklyRevenue, forgotPassword, resetPassword,uploadProfilePic };

@@ -10,6 +10,8 @@ router.get('/getorderbyid/:id', orderController.getOrderById);
 router.put('/updateorder',authorize.verifyJwtAdmin, orderController.updateorder);
 router.delete('/deleteorder/:id', orderController.deleteorder);
 router.delete('/clear', orderController.clearOrders);
+router.get('/countOrder-pending-admin',authorize.verifyJwtAdmin, orderController.countOrderForAdmin);
+router.get('/countOrder-pending-user',authorize.verifyJwtUser, orderController.countOrderForUser);
 
 router.get('/accept/:id/:token', orderController.acceptOrder);
 router.get('/reject/:id/:token', orderController.rejectOrder);

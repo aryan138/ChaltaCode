@@ -29,6 +29,7 @@ const Dashboard = () => {
   });
   const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
+  const [pendingOrderCount,setPendingOrderCount] = useState(0);
   useEffect(()=>{
     const handleEarning = async()=>{
       try {
@@ -105,12 +106,29 @@ const Dashboard = () => {
       }
     };
     
+    const handleOrderCountPending = async()=>{
+      try {
+        
+        const response = await axios.get("http://localhost:3000/order/countOrder-pending-admin", {
+          withCredentials: true,
+        });
+        if (response.data.success==true){
+          // console.log(response.data.count)
+          setPendingOrderCount(response.data.count);
+
+        }
+      } catch (error) {
+        setPendingOrderCount(0);
+        console.error("Error fetching users:", error);
+      }
+    }
     handleTotalUsers();
     handleEarning();
     handleWeeklyData();
     handleMonthlyRevenue();
     handlePieChart();
     fetchUsers();
+    handleOrderCountPending();
   },[])
   const generateDummyData = () => {
     return users.length
@@ -146,12 +164,12 @@ const Dashboard = () => {
         /> */}
         <Widget
           icon={<MdDashboard className="h-6 w-6" />}
-          title={"Your Balance"}
-          subtitle={"₹ 900000"}
+          title={"Pending Orders"}
+          subtitle={pendingOrderCount}
         />
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
-          title={"New Tasks"}
+          title={"out of stock products"}
           subtitle={"14"}
         />
         <Widget

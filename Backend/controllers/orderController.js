@@ -184,7 +184,9 @@ const rejectOrder = async (req, res) => {
 const getOrder = async (req, res) => {
   try {
     const id = req.user._id;
-    const getData = await order.find({orderFrom:id});
+    // const getData = await order.find({orderFrom:id});
+    const getData = await order.find({ orderFrom: id }).sort({ updatedAt: -1 });
+
     console.log(getData);
     res.json({
       status: 200,
@@ -199,7 +201,11 @@ const getOrderForAdmin = async (req, res) => {
   try {
     const id = req.user._id;
     // const getData = await order.find({orderTo:id});
-    const getData = await order.find({orderTo:id}).populate('orderFrom');
+    const getData = await order
+  .find({ orderTo: id })
+  .sort({ updatedAt: -1 })
+  .populate('orderFrom');
+
 
     console.log(getData);
     res.json({
@@ -356,7 +362,7 @@ const deleteorder = async (req, res) => {
       data: deleteData,
     });
   } catch (err) {
-    res.status(500).send(err.message);
+    return res.status(500).send(err.message);
   }
 };
 
@@ -364,16 +370,59 @@ const deleteorder = async (req, res) => {
 const clearOrders = async (req, res) => {
   try {
     await order.deleteMany({});
-    res.status(200).json({
+    return res.status(200).json({
       message: "All orders have been cleared",
     });
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       message: "Error clearing orders",
       error: err.message,
     });
   }
 };
+
+const countOrderForAdmin = async(req,res)=>{
+  try {
+    const id = req.user._id;
+    console.log("id"+id);
+    const countOrder = await order.find({ 
+      $and: [
+        { orderTo: id },
+        { status: 'pending' }
+      ]
+    }).countDocuments();
+    
+    if (!countOrder){
+      return res.status(404).json({success:false,
+        message: "Order not found under this admin"}
+      )
+    }
+    return res.status(200).json({success:true,message:"order counted successfully",count:countOrder});
+  } catch (error) {
+    return res.status(500).json({success:false,message:"Error counting order",error});
+  }
+}
+const countOrderForUser = async(req,res)=>{
+  try {
+    const id = req.user._id;
+    const countOrder = await order.find({ 
+      $and: [
+        { orderFrom: id },
+      ]
+    }).countDocuments();
+    
+    if (!countOrder){
+      return res.status(404).json({success:false,
+        message: "Order not found under this user"}
+      )
+    }
+    return res.status(200).json({success:true,message:"order counted successfully",count:countOrder});
+  } catch (error) {
+    return res.status(500).json({success:false,message:"Error counting order",error});
+  }
+}
+
+
 
 
 module.exports = {
@@ -386,4 +435,6 @@ module.exports = {
   acceptOrder,
   rejectOrder,
   clearOrders,
+  countOrderForAdmin,
+  countOrderForUser
 };

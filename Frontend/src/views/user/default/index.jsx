@@ -29,6 +29,7 @@ const Dashboard = () => {
     inventorySize:0
   });
   const [tableData, setTableData] = useState([]);
+  const [orderCount,setOrderCount] = useState(0);
   useEffect(()=>{
     const handleEarnings = async()=>{
       try {
@@ -126,12 +127,29 @@ const Dashboard = () => {
         alert("Error fetching data:", error);
       }
     };
+    const handleOrderCountPending = async()=>{
+      try {
+        
+        const response = await axios.get("http://localhost:3000/order/countOrder-pending-user", {
+          withCredentials: true,
+        });
+        if (response.data.success==true){
+          // console.log(response.data.count)
+          setOrderCount(response.data.count);
+
+        }
+      } catch (error) {
+        setOrderCount(0);
+        console.error("Error fetching users:", error);
+      }
+    }
     handleEarnings();
     handleAdmin();
     handleWeeklyData();
     handleMonthlyRevenue();
     handlePieChart();
     fetchTableData();
+    handleOrderCountPending();
   },[])
   return (
     <div>
@@ -151,7 +169,7 @@ const Dashboard = () => {
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
           title={"Total Orders"}
-          subtitle={"14"}
+          subtitle={orderCount}
         />
         <Widget
           icon={<IoMdHome className="h-6 w-6" />}

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin, createUser, getAllUsersUnderAdmin, updateUserStatus,getUserCount,completeProfile,getTotalEarningsForAdmin,getDailySalesForAdmin,getAdminWeeklyRevenue, forgotPassword, resetPassword } = require('../controllers/adminController');
+const { register, getUsers, updateUser, deleteUser, sendMessage, sendWhatsapp,loginAdmin,logoutAdmin, createUser, getAllUsersUnderAdmin, updateUserStatus,getUserCount,completeProfile,getTotalEarningsForAdmin,getDailySalesForAdmin,getAdminWeeklyRevenue, forgotPassword, resetPassword,uploadProfilePic } = require('../controllers/adminController');
 const authorize = require('../middlewares/authorize')
 router.post('/register', register);
 router.post('/login',loginAdmin);
@@ -17,6 +17,10 @@ router.get('/get-daily-sales',authorize.verifyJwtAdmin,getDailySalesForAdmin);
 router.get('/get-weekly-revenue',authorize.verifyJwtAdmin,getAdminWeeklyRevenue);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+router.post(
+    "/upload-profile-pic",
+    authorize.verifyJwtAdmin,
+    uploadProfilePic);
 
 
 router.post('/send', sendMessage);

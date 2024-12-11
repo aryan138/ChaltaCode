@@ -121,15 +121,60 @@ const ProfileUpdate = ({ onClose }) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    const maxFileSize = 5 * 1024 * 1024; // 5MB
+  
     if (file) {
+      if (!allowedTypes.includes(file.type)) {
+        alert("Only .png, .jpg, and .jpeg formats are allowed!");
+        return;
+      }
+      if (file.size > maxFileSize) {
+        alert("File size must be under 5MB.");
+        return;
+      }
       setProfileImage(file);
-
-      // Show preview
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewImage(reader.result);
       };
       reader.readAsDataURL(file);
+    }
+  };
+  const uploadProfileImage = async () => {
+    if (!profileImage) return;
+  
+    setIsSubmitting(true); // Indicate uploading
+    const formData = new FormData();
+    formData.append("profilePic", profileImage);  // Use "profilePic" as the key here
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/admin/upload-profile-pic", 
+        formData, 
+        {
+        withCredentials: true,  
+        headers: { 
+          "Content-Type": "multipart/form-data" 
+        },
+      });
+  
+      if (response.status === 200) {
+        alert("Profile picture updated successfully.");
+      } else {
+        console.error("Unexpected response:", response);
+        alert("Unexpected error uploading profile picture.");
+      }
+    } catch (error) {
+      if (error.response) {
+        console.error("Error uploading profile picture", error.response.data);
+        alert("Failed to upload profile picture. " + error.response.data.message || error.response.statusText);
+      } else {
+        console.error("Error uploading profile picture", error);
+        alert("Failed to upload profile picture.");
+      }
+    } finally {
+      setIsSubmitting(false); // End upload indication
     }
   };
 
@@ -150,7 +195,11 @@ const ProfileUpdate = ({ onClose }) => {
       );
 
       console.log("data", data);
-
+      // Now, upload the profile image if it's changed
+      await uploadProfileImage();
+  
+      // Display success message and reload the page
+      alert("Profile updated successfully!");
       if (response.data.success) {
         toast.success("Profile updated successfully!", { ...toastConfig });
         onClose();

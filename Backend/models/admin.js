@@ -8,6 +8,7 @@ const adminSchema = new mongoose.Schema({
     admin_email: { type: String, required: true, unique: true },
     admin_password: { type: String, required: true },
     admin_mobile_number: { type: Number , default:null },
+    admin_profile_pic:{type:String, default: ""},
     admin_plan_type: { type: String },
     company_name: { type: String },
     company_address: { type: String },

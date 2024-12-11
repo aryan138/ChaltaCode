@@ -217,7 +217,7 @@ const getInvoices = async (req, res) => {
 
     // Pagination
     const skip = (page - 1) * limit;
-    const invoices = await Invoice.find(query).skip(skip).limit(Number(limit));
+    const invoices = await Invoice.find(query).skip(skip).limit(Number(limit)).sort({updatedAt:-1});
     const totalInvoices = await Invoice.countDocuments(query);
     const totalPages = Math.ceil(totalInvoices / limit);
 

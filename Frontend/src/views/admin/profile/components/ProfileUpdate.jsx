@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { z } from "zod";
+import {optional, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X, CheckCircle, AlertCircle } from "lucide-react";
 import { ToastContainer, toast, Slide } from "react-toastify";
@@ -14,43 +14,87 @@ const profileUpdateSchema = z.object({
     .string()
     .min(3, { message: "Admin name must be at least 3 characters" })
     .max(20, { message: "Admin name must be less than 20 characters" })
-    .refine(
-      (val) => /^[a-zA-Z ]+$/.test(val.trim()), 
-      { message: "Admin name can only contain letters." }
-    )
+    .refine((val) => /^[a-zA-Z ]+$/.test(val.trim()), {
+      message: "Admin name can only contain letters.",
+    })
     .transform((val) => val.trim().replace(/\s+/g, " ")) // Trim and reduce spaces
-    .optional(),
+    .optional(), // Optional field
+
+  admin_email: z
+    .string()
+    .nonempty("Email is required")
+    .email("Please enter a valid email address")
+    .refine((email) => !/^\d/.test(email), "Email cannot start with a number")
+    .refine(
+      (email) => email.trim() === email,
+      "Email cannot have leading or trailing spaces"
+    )
+    
+    .transform((email) => email.toLowerCase()) // Convert email to lowercase
+    .optional(), // Optional field
+
   admin_mobile_number: z
-  .coerce
-  .number()
-  .min(1000000000, { message: "Phone number must be at least 10 digits" })
-  .max(9999999999, { message: "Phone number must be less than 10 digits" })
-  .optional(),
+    .coerce.number()
+    .min(1000000000, { message: "Phone number must be at least 10 digits" })
+    .max(9999999999, { message: "Phone number must be less than 10 digits" })
+    .optional(), // Optional field
+
+    // company_name: z
+    //   .string()
+    //   .max(20, { message: "Company name must be less than 20 characters" })
+    //   .refine(
+    //     (val) => val === "" || /^[a-zA-Z0-9 ]+$/.test(val.trim()), // Allow blank or valid input
+    //     { message: "Company name can only contain letters, numbers, and spaces" }
+    //   )
+    //   .transform((val) => (val ? val.trim().replace(/\s+/g, " ") : val)) // Only transform if not empty
+    //   .optional(), // Optional field
+
+    // company_industry: z
+    //   .string()
+    //   .max(20, { message: "Company industry must be less than 20 characters" })
+    //   .refine((val) => val === "" || /^[a-zA-Z0-9 ]+$/.test(val.trim()), {
+    //     message: "Company Industry can only contain letters, numbers",
+    //   })
+    //   .transform((val) => (val ? val.trim().replace(/\s+/g, " ") : val)) // Only transform if not empty
+    //   .optional(), // Optional field
+
+    // company_address: z
+    //   .string()
+    //   .max(100, { message: "Address must be less than 100 characters" })
+    //   .optional(), // Optional field
 
 
+   company_name: z
+  .string()
+  .max(20, { message: "Company name must be less than 20 characters" })
+  .refine(
+    (val) => val === "" || /^[a-zA-Z0-9 ]+$/.test(val.trim()),
+    { message: "Company name can only contain letters, numbers, and spaces" }
+  )
+  .transform((val) => (val ? val.trim().replace(/\s+/g, " ") : val)) // Trim and reduce spaces only if not empty
+  .optional(), // Optional field
 
-  company_name: z
-    .string()
-    .max(20, { message: "Company name must be less than 20 characters" })
-    .refine(
-      (val) => /^[a-zA-Z0-9 ]+$/.test(val.trim()), // Alphanumeric and spaces only
-      { message: "Company name can only contain letters, numbers, and spaces" }
-    )
-    .transform((val) => val.trim().replace(/\s+/g, " ")) // Trim and reduce spaces
-    .optional(),
-  company_industry: z
-    .string()
-    .max(20, { message: "Company industry must be less than 20 characters" })
-    .refine(
-      (val) => /^[a-zA-Z0-9 ]+$/.test(val.trim()), // Alphanumeric and spaces only
-      { message: "Company Industry can only contain letters, numbers, and spaces" }
-    )
-    .transform((val) => val.trim().replace(/\s+/g, " ")) // Trim and reduce spaces
-    .optional(),
-  company_address: z
-    .string()
-    .max(100, { message: "Address must be less than 100 characters" })
-    .optional(),
+company_industry: z
+  .string()
+  .max(20, { message: "Company industry must be less than 20 characters" })
+  .refine(
+    (val) => val === "" || /^[a-zA-Z0-9 ]+$/.test(val.trim()),
+    { message: "Company Industry can only contain letters, numbers, and spaces" }
+  )
+  .transform((val) => (val ? val.trim().replace(/\s+/g, " ") : val)) // Trim and reduce spaces only if not empty
+  .optional(), // Optional field
+
+company_address: z
+  .string()
+  .max(100, { message: "Address must be less than 100 characters" })
+  .refine(
+    (val) => val === "" || /^[a-zA-Z0-9 ]+$/.test(val.trim()),
+    { message: "Company Industry can only contain letters, numbers, and spaces" }
+  )
+  .transform((val) => val.trim().replace(/\s+/g, " ")) // Trim and reduce spaces
+  .optional(), // Optional field
+
+
 });
 
 const ProfileUpdate = ({ onClose }) => {
@@ -180,11 +224,11 @@ const ProfileUpdate = ({ onClose }) => {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    console.log("before", data);
-    Object.keys(data).forEach((key) => {
-      if (data[key] === "") delete data[key];
-    });
-    console.log("after", data);
+    // console.log("before", data);
+    // Object.keys(data).forEach((key) => {
+    //   if (data[key] === "") delete data[key];
+    // });
+    // console.log("after", data);
 
 
     try {
@@ -214,7 +258,7 @@ const ProfileUpdate = ({ onClose }) => {
       });
     } finally {
       setIsSubmitting(false);
-      // window.location.reload();
+      window.location.reload();
     }
   };
 

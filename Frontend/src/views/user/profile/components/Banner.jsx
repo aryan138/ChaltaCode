@@ -39,6 +39,7 @@ const Banner = () => {
         style={{ backgroundImage: `url(${banner})` }}
       >
         <div className="absolute -bottom-10 flex h-[100px] w-[100px] items-center justify-center rounded-full border-4 border-white bg-blue-400 shadow-lg">
+        {console.log(`http://localhost:3000${userInfo.user_profile_pic}`)}
           <img
             className="h-full w-full rounded-full"
             src={userInfo && userInfo.user_profile_pic ? `http://localhost:3000${userInfo.user_profile_pic}` : "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"}

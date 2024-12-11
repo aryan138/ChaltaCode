@@ -39,6 +39,9 @@ export default function OrderTable(props) {
       
       if (response.status === 200) {
         await fetchOrders();
+        setTimeout(function() {
+          window.location.reload();
+        }, 2000);
         // alert(`Order ${action}ed successfully!`);
         toast.success(`Order ${action}ed successfully!`)
       } else {

@@ -10,7 +10,7 @@ const schema = z.object({
     .string()
     .max(20, "Cannot be more than 20 letters")
     .min(1, "Admin name is required")
-    .regex(/.*[^\d].*/, "Admin name cannot be only numbers") // Ensure it contains at least one non-digit character
+    .regex(/.[^\d]./, "Admin name cannot be only numbers") // Ensure it contains at least one non-digit character
     .refine((value) => value.trim().length > 0, "Admin name cannot be just spaces") // Check for non-space input
     .transform((value) => value.trim().replace(/\s+/g, " ")), // Normalize spaces
   admin_mobile_number: z
@@ -22,21 +22,24 @@ const schema = z.object({
     .string()
     .max(20, "Cannot be more than 20 letters")
     .min(1, "Company name is required")
-    .regex(/.*[^\d].*/, "Company name cannot be only numbers") // Ensure it contains at least one non-digit character
+    .regex(/.[^\d]./, "Company name cannot be only numbers") // Ensure it contains at least one non-digit character
     .refine((value) => value.trim().length > 0, "Company name cannot be just spaces") // Check for non-space input
     .transform((value) => value.trim().replace(/\s+/g, " ")), // Normalize spaces
   company_address: z
     .string()
     .min(1, "Company industry is required")
-    .regex(/.*[^\d].*/, "Company industry cannot be only numbers") // Ensure it contains at least one non-digit character
+    .max(100, "Cannot be more than 100 letters")
+    .regex(/.[^\d]./, "Company industry cannot be only numbers") // Ensure it contains at least one non-digit character
     .refine((value) => value.trim().length > 0, "Company industry cannot be just spaces") // Check for non-space input
     .transform((value) => value.trim().replace(/\s+/g, " ")), // Normalize spaces
   pan_number: z
     .string()
+    .min(1, "PAN Number is required")
     .length(10, "PAN number must be exactly 10 characters")
     .regex(/[A-Z]{5}[0-9]{4}[A-Z]{1}/, "Invalid PAN number format"),
   gst_number: z
     .string()
+    .min(1, "GST Number is required")
     .length(15, "GST number must be exactly 15 characters")
     .regex(/[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9]{1}[A-Z]{1}[0-9]{1}/, "Invalid GST number format"),
 });

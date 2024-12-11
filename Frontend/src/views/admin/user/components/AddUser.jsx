@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { z } from "zod"; // Import zod for schema validation
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const api = axios.create({
   baseURL: 'http://localhost:3001/',
@@ -12,15 +13,34 @@ const api = axios.create({
 
 // Define the Zod schema
 const userSchema = z.object({
-  email: z
-    .string()
-    .nonempty("Email is required")
-    .email("Please enter a valid email address")
-    .refine((email) => !/^\d/.test(email), "Email cannot start with a number"), // Email cannot start with a number
+  // email: z
+  //   .string()
+  //   .nonempty("Email is required")
+  //   .email("Please enter a valid email address")
+  //   .refine((email) => !/^\d/.test(email), "Email cannot start with a number") // Email cannot start with a number
+  //   .refine((email) => email.trim() === email, "Email cannot have leading or trailing spaces") // No leading or trailing spaces
+  //   .transform((email) => email.toLowerCase()),  // Ensure email is stored in lowercase
+  // const userSchema = z.object({
+    email: z
+      .string()
+      .nonempty("Email is required")
+      .email("Please enter a valid email address")
+      .refine((email) => !/^\d/.test(email), "Email cannot start with a number") // Email cannot start with a number
+      .refine((email) => email.trim() === email, "Email cannot have leading or trailing spaces") // No leading or trailing spaces
+      
+      
+      
+      .transform((email) => email.toLowerCase()), // Convert email to lowercase after validations
+  // });
+  
   designation: z
     .string()
     .nonempty("Designation is required")
-    .regex(/^[A-Za-z\s]+$/, "Designation cannot contain numbers"), // Designation cannot contain numbers
+    .regex(/^[A-Za-z\s]+$/, "Designation cannot contain numbers or special characters") // Only alphabets and spaces allowed
+    .min(2, "Designation must have at least 2 characters") // Minimum length requirement
+    .max(50, "Designation cannot exceed 50 characters") // Maximum length requirement
+    .refine((value) => value.trim() === value, "Designation cannot have leading or trailing spaces") // No leading or trailing spaces
+    .transform((value) => value.trim().replace(/\s+/g, " ")), // Normalize spaces
 });
 
 const AddOrder = ({ onClose }) => {
@@ -29,7 +49,9 @@ const AddOrder = ({ onClose }) => {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm();
+  } = useForm({
+    resolver: zodResolver(userSchema), // Use zodResolver to integrate zod validation
+  });
 
   const [darkMode, setDarkMode] = useState(false);
 
@@ -41,14 +63,14 @@ const AddOrder = ({ onClose }) => {
   const onSubmit = async (data) => {
     try {
       // Validate the data using Zod schema
-      const validatedData = userSchema.parse(data);
+      // const validatedData = userSchema.parse(data);
 
       // The token is handled by the browser via cookies (HttpOnly, Secure)
       const response = await api.post(
         "http://localhost:3000/admin/create-user", 
         {
-          user_email: validatedData.email,
-          user_designation: validatedData.designation,
+          user_email: data.email,
+          user_designation:data.designation,
         },
         {
           // No need to manually add the token here, it will be sent automatically
@@ -89,12 +111,7 @@ const AddOrder = ({ onClose }) => {
             type="email"
             placeholder="Enter User's Email"
             className={`w-full rounded-md border p-2 ${darkMode ? "bg-black-900 text-white" : "text-black bg-white"}`}
-            {...register("email", {
-              required: "Email is required",
-              validate: {
-                emailFormat: value => !/^\d/.test(value) || "Email cannot start with a number",
-              },
-            })}
+            {...register("email")}
           />
           {errors.email && (
             <span className="text-sm text-red-500">{errors.email.message}</span>
@@ -108,12 +125,7 @@ const AddOrder = ({ onClose }) => {
             type="text"
             placeholder="Enter User's Designation"
             className={`w-full rounded-md border p-2 ${darkMode ? "bg-black-900 text-white" : "text-black bg-white"}`}
-            {...register("designation", {
-              required: "Designation is required",
-              validate: {
-                noNumbers: value => /^[A-Za-z\s]+$/.test(value) || "Designation cannot contain numbers",
-              },
-            })}
+            {...register("designation")}
           />
           {errors.designation && (
             <span className="text-sm text-red-500">

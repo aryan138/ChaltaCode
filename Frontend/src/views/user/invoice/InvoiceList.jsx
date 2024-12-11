@@ -220,33 +220,81 @@ const CreateInvoiceForm = ({ onSuccess }) => {
     setTotalAmount(newTotalAmount);
   };
 
+  // const validateForm = () => {
+  //   // Check if the name is empty or invalid
+  //   if (!customer.name || customer.name.length>20) {
+  //     toast.error("Customer name is required");
+  //     return false;
+  //   }
+
+  //   // Check if the name contains only letters and spaces
+  //   const nameRegex = /^[a-zA-Z\s]+$/;
+  //   if (!nameRegex.test(customer.name)) {
+  //     toast.error("Customer name must contain only letters");
+  //     return false;
+  //   }
+
+  //   // Check if at least one item is added
+  //   if (items.length === 0) {
+  //     toast.error("Please add at least one item");
+  //     return false;
+  //   }
+
+  //   // Check if all items have a selected product
+  //   const invalidItems = items.some((item) => !item.product);
+  //   if (invalidItems) {
+  //     toast.error("Please select a product for all items");
+  //     return false;
+  //   }
+
+  //   // Check if quantities are valid and within stock limits
+  //   const invalidQuantities = items.some((item) => {
+  //     const product = products.find((p) => p._id === item.product);
+  //     return !product || item.quantity > product.stock;
+  //   });
+  //   if (invalidQuantities) {
+  //     toast.error("Invalid product quantities or insufficient stock");
+  //     return false;
+  //   }
+
+  //   return true;
+  // };
+
   const validateForm = () => {
     // Check if the name is empty or invalid
-    if (!customer.name || customer.name.length>20) {
-      toast.error("Customer name is required");
+    if (!customer.name || customer.name.trim() === "") {
+      toast.error("Customer name is required and cannot be just spaces");
       return false;
     }
-
+  
+    // Trim leading/trailing spaces and replace multiple spaces between words with a single space
+    const trimmedName = customer.name.trim().replace(/\s+/g, " ");
+  
+    if (trimmedName.length > 20) {
+      toast.error("Customer name should be less than 20 characters.");
+      return false;
+    }
+  
     // Check if the name contains only letters and spaces
     const nameRegex = /^[a-zA-Z\s]+$/;
-    if (!nameRegex.test(customer.name)) {
+    if (!nameRegex.test(trimmedName)) {
       toast.error("Customer name must contain only letters");
       return false;
     }
-
+  
     // Check if at least one item is added
     if (items.length === 0) {
       toast.error("Please add at least one item");
       return false;
     }
-
+  
     // Check if all items have a selected product
     const invalidItems = items.some((item) => !item.product);
     if (invalidItems) {
       toast.error("Please select a product for all items");
       return false;
     }
-
+  
     // Check if quantities are valid and within stock limits
     const invalidQuantities = items.some((item) => {
       const product = products.find((p) => p._id === item.product);
@@ -256,10 +304,9 @@ const CreateInvoiceForm = ({ onSuccess }) => {
       toast.error("Invalid product quantities or insufficient stock");
       return false;
     }
-
+  
     return true;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
   

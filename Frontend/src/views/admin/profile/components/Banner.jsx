@@ -37,10 +37,12 @@ const Banner = () => {
         style={{ backgroundImage:` url(${banner})` }}
       >
         <div className="absolute -bottom-12 flex h-[87px] w-[87px] items-center justify-center rounded-full border-[4px] border-white bg-pink-400 dark:!border-black-700">
+          {console.log(`http://localhost:3000${adminInfo.admin_profile_pic}` )}
           <img 
             className="h-full w-full rounded-full" 
+          
             src={adminInfo && adminInfo.admin_profile_pic 
-              ? `http://localhost:3000${adminInfo.admin_profile_pic}` 
+              ? `http://localhost:3000${adminInfo.admin_profile_pic.trim()}` 
               : "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"} 
             alt="Profile" 
           />

@@ -81,23 +81,106 @@ const ProfileUpdate = ({ onClose }) => {
   };
   
 
+  // const validateFields = () => {
+  //   const errors = {};
+
+  //   // Email: cannot start with a number
+  //   const emailRegex = /^[^\d][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  //   if (!formData.user_email || !emailRegex.test(formData.user_email)) {
+  //     errors.user_email = "Email cannot start with a number and must be valid";
+  //   }
+
+  //   // Full Name: cannot be just spaces and cannot contain numbers
+  //   const nameRegex = /\d/; // Regex to detect numbers
+  //   if (!formData.user_fullname.trim()) {
+  //     errors.user_fullname = "Full Name cannot be empty or just spaces";
+  //   } else if (nameRegex.test(formData.user_fullname)) {
+  //     errors.user_fullname = "Full Name cannot contain numbers";
+  //   } else if (formData.user_fullname.length > 15) {
+  //     errors.user_fullname = "Full Name cannot be more than 15 characters";
+  //   }
+
+  //   // Phone Number: should only contain 10 digits
+  //   const phoneRegex = /^\d{10}$/;
+  //   if (
+  //     !formData.user_phone_number ||
+  //     !phoneRegex.test(formData.user_phone_number)
+  //   ) {
+  //     errors.user_phone_number = "Phone Number must be 10 digits";
+  //   }
+
+  //   // Designation: cannot be just spaces and cannot contain numbers
+  //   if (!formData.user_designation.trim()) {
+  //     errors.user_designation = "Designation cannot be empty or just spaces";
+  //   } else if (nameRegex.test(formData.user_designation)) {
+  //     errors.user_designation = "Designation cannot contain numbers";
+  //   }
+
+  //   // Company Name: cannot be just spaces and cannot contain numbers
+  //   if (!formData.user_company_name.trim()) {
+  //     errors.user_company_name = "Company Name cannot be empty or just spaces";
+  //   } else if (nameRegex.test(formData.user_company_name)) {
+  //     errors.user_company_name = "Company Name cannot contain numbers";
+  //   }
+
+  //   setErrors(errors);
+  //   return Object.keys(errors).length === 0;
+  // };
+
   const validateFields = () => {
     const errors = {};
 
     // Email: cannot start with a number
-    const emailRegex = /^[^\d][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!formData.user_email || !emailRegex.test(formData.user_email)) {
-      errors.user_email = "Email cannot start with a number and must be valid";
-    }
+    // const emailRegex = /^[^\d][a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // if (!formData.user_email || !emailRegex.test(formData.user_email)) {
+    //   errors.user_email = "Email cannot start with a number and must be valid";
+    // }
+
+    const emailRegex =
+      /^[^\d][a-zA-Z0-9._%+-]*@(gmail|yahoo|outlook|hotmail|icloud|protonmail|zoho|customdomain|etc)\.(com|edu\.in|org|net|gov|co|info|biz|io|tech|dev|me|ai|us|uk|ca|au|in|eu)$/;
+
+    // Regex to detect special characters (excluding @ and . for email format)
+    const specialCharRegex = /[^a-zA-Z0-9._%+-@]/;
+
+    if (!formData.user_email) {
+      errors.user_email = "Email is required";
+    } else if (/^\d/.test(formData.user_email)) {
+      errors.user_email = "Email cannot start with a number";
+    } else if (formData.user_email.trim() !== formData.user_email) {
+      errors.user_email = "Email cannot have leading or trailing spaces";
+    } else if (specialCharRegex.test(formData.user_email)) {
+      errors.user_email = "Email cannot contain special characters";
+    } 
 
     // Full Name: cannot be just spaces and cannot contain numbers
+    // const nameRegex = /\d/; // Regex to detect numbers
+    // if (!formData.user_fullname.trim()) {
+    //   errors.user_fullname = "Full Name cannot be empty or just spaces";
+    // } else if (nameRegex.test(formData.user_fullname)) {
+    //   errors.user_fullname = "Full Name cannot contain numbers";
+    // } else if (formData.user_fullname.length > 15) {
+    //   errors.user_fullname = "Full Name cannot be more than 15 characters";
+    // }
+
     const nameRegex = /\d/; // Regex to detect numbers
-    if (!formData.user_fullname.trim()) {
+    const specialCharRegex1 = /[^a-zA-Z\s]/; // Regex to detect special characters (only allows letters and spaces)
+
+    // Normalize the full name: trim leading/trailing spaces and replace multiple spaces with one
+    const normalizedFullName = formData.user_fullname
+      .trim()
+      .replace(/\s+/g, " ");
+
+    if (!normalizedFullName) {
       errors.user_fullname = "Full Name cannot be empty or just spaces";
-    } else if (nameRegex.test(formData.user_fullname)) {
+    } else if (nameRegex.test(normalizedFullName)) {
       errors.user_fullname = "Full Name cannot contain numbers";
-    } else if (formData.user_fullname.length > 15) {
+    } else if (specialCharRegex1.test(normalizedFullName)) {
+      errors.user_fullname = "Full Name cannot contain special characters";
+    } else if (normalizedFullName.length > 15) {
       errors.user_fullname = "Full Name cannot be more than 15 characters";
+    } else {
+      // If no errors, update the form data with the normalized name
+      formData.user_fullname = normalizedFullName;
     }
 
     // Phone Number: should only contain 10 digits
@@ -126,7 +209,6 @@ const ProfileUpdate = ({ onClose }) => {
     setErrors(errors);
     return Object.keys(errors).length === 0;
   };
-
   const uploadProfileImage = async () => {
     if (!profileImage) return;
   

@@ -772,6 +772,8 @@ const transporter = nodemailer.createTransport({
   auth: {
     user: otp.user, // replace with your email
     pass: otp.pass, // replace with your email password
+    user: otp.user, // replace with your email
+    pass: otp.pass, // replace with your email password
   },
 });
 

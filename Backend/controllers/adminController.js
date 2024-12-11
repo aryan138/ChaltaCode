@@ -352,6 +352,39 @@ const createUser = async(req,res)=>{
         new: true
     }
     )
+    // const mailOptions = {
+    //   from: 'aman1249.be22@chitkara.edu.in',
+    //   to: user_email,
+    //   subject: 'welcome to profitex',
+    //   text: `your credentials is email: ${user_email} and password: User@1234`,
+    // };
+    const mailOptions = {
+      from: 'aman1249.be22@chitkara.edu.in',
+      to: user_email,
+      subject: 'Welcome to Profitex!',
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px; background-color: #f9f9f9;">
+          <h2 style="color: #0b1437; text-align: center;">Welcome to ProfitX!</h2>
+          <p>Hi there,</p>
+          <p>We're excited to have you join ProfitX, your go-to solution for smart billing and management. Below are your credentials to access your account:</p>
+          <div style="padding: 15px; background-color: #eef5ff; border-radius: 8px; border: 1px solid #ccd9ee; margin: 10px 0;">
+            <p><strong>Email:</strong> ${user_email}</p>
+            <p><strong>Password:</strong> User@1234</p>
+          </div>
+          <p>To keep your account secure, we strongly recommend changing your password after logging in for the first time. You can do this by selecting the <strong>"Forgot Password"</strong> option on the sign-in page and following the instructions.</p>
+          <p>If you have any questions or need support, feel free to reply to this email.</p>
+          <p>Thank you,</p>
+          <p><strong>The ProfitX Team</strong></p>
+          <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #777;">
+            <p>ProfitX © 2024 | All rights reserved.</p>
+            <p>This is an automated email. Please do not reply.</p>
+          </div>
+        </div>
+      `,
+    };
+    
+
+    await transporter.sendMail(mailOptions);
     return res.status(200).json({
       success:true,
       message:"user created successfully"
@@ -814,7 +847,7 @@ const forgotPassword = async (req, res) => {
 
     // Send OTP email
     const mailOptions = {
-      from: 'your-email@gmail.com',
+      from: 'aman1249.be22@chitkara.edu.in',
       to: email,
       subject: 'Password Reset OTP',
       text: `Your OTP for password reset is: ${otp}`,

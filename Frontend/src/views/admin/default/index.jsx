@@ -90,7 +90,7 @@ const Dashboard = () => {
           console.log("galat baat");
         }
       } catch (error) {
-        toast.error(error.message);
+        console.log(error.message);
       }
     }
     const fetchUsers = async () => {
@@ -170,7 +170,7 @@ const Dashboard = () => {
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
           title={"out of stock products"}
-          subtitle={"14"}
+          subtitle={"not available"}
         />
         <Widget
           icon={<IoMdHome className="h-6 w-6" />}

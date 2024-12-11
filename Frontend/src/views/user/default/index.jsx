@@ -96,7 +96,7 @@ const Dashboard = () => {
           console.log("galat baat");
         }
       } catch (error) {
-        toast.error(error.message);
+        console.log(error.message);
       }
     }
     const fetchTableData = async () => {
@@ -164,7 +164,7 @@ const Dashboard = () => {
         <Widget
           icon={<MdDashboard className="h-6 w-6" />}
           title={"Out of Stock Products"}
-          subtitle={"₹ 900000"}
+          subtitle={"not available"}
         />
         <Widget
           icon={<MdBarChart className="h-7 w-7" />}
@@ -197,15 +197,7 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-1 gap-5 rounded-[20px] md:grid-cols-1">
           <PieChartCard totalProduct={inventorySize.totalProduct} inventorySize={inventorySize.inventorySize} />
-        </div>
-
-        {/* Complex Table , Task & Calendar */}
-
-
-
-        {/* Task chart & Calendar */}
-
-        
+        </div> 
       </div>
     </div>
   );

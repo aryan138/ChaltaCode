@@ -202,9 +202,7 @@ const getOrderForAdmin = async (req, res) => {
     const id = req.user._id;
     // const getData = await order.find({orderTo:id});
     const getData = await order
-  .find({ orderTo: id })
-  .sort({ updatedAt: -1 })
-  .populate('orderFrom');
+  .find({ orderTo: id }).populate('orderFrom');
 
 
     console.log(getData);

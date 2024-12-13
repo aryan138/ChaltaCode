@@ -80,7 +80,7 @@ const Banner = () => {
       {/* Company Details */}
       <div className="mt-6 mb-3 flex gap-40 md:!gap-32">
         <div className="flex flex-col items-center justify-center">
-          <p className="text-lg font-bold text-black-700 dark:text-white">{companyName || "Company Name"}</p>
+          <p className="text-lg font-bold text-black-700 dark:text-white">{adminInfo.company_name || "Company Name"}</p>
           <p className="text-sm font-normal text-gray-600">Company Name</p>
         </div>
         <div className="flex flex-col items-center justify-center">

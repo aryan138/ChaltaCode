@@ -10,7 +10,7 @@ const nodemailer = require('nodemailer');
 const multer = require("multer");
 const path = require("path");
 const fs = require('fs');
-const {otp} = require('../config/cred');
+
 
 
 const generateRefreshToken =async (userId)=>{
@@ -527,8 +527,8 @@ Date.prototype.getWeek = function () {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: otp.user, // replace with your email
-    pass:otp.pass // replace with your email password
+    user: process.env.OTP_USER, // replace with your email
+    pass:process.env.OTP_PASS // replace with your email password
   },
 });
 

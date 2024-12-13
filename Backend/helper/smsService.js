@@ -1,8 +1,6 @@
-const { twiliocrd } = require('../config/cred')
-
 const sendAccountCreateGreetSms = () => {
-  console.log(twiliocrd.accountSid)
-  const client = require('twilio')(twiliocrd.accountSid, twiliocrd.authToken);
+  // console.log(twiliocrd.accountSid)
+  const client = require('twilio')(process.env.TIWILIO_ID, process.env.TIWILIO_TOKEN);
   client.messages.create({
     body: "Message is sent to aryan",
     from: "+19789535036",

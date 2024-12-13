@@ -1,7 +1,6 @@
 
 
 const jwt = require('jsonwebtoken');
-const { tokens } = require('../config/cred');
 const User = require('../models/user');
 const { log } = require('console');
 const admin = require('../models/admin');
@@ -26,7 +25,8 @@ const verifyJwtUser = async (req, res, next) => {
         // Verify access token first
         if (accessToken) {
             try {
-                const decodedAccessToken = jwt.verify(accessToken, tokens.ACCESS_TOKEN_SECRET);
+                const decodedAccessToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+                console.log(decodedAccessToken);
                 user = await User.findById(decodedAccessToken?._id).select("-user_password -user_accessToken");
                 console
                 if (!user) {
@@ -80,7 +80,7 @@ const verifyJwtAdmin = async (req, res, next) => {
         // Verify access token first
         if (accessToken) {
             try {
-                const decodedAccessToken = jwt.verify(accessToken, tokens.ACCESS_TOKEN_SECRET);
+                const decodedAccessToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
                 user = await admin.findById(decodedAccessToken?._id).select("-admin_password -accessToken");
                 console
                 if (!user) {
@@ -121,7 +121,10 @@ const verifyToken = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, tokens.ACCESS_TOKEN_SECRET); // Verify the token
+        console.log("hello");
+        console.log(process.env.ACCESS_TOKEN_SECRET);
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET); // Verify the token
+        console.log(decoded);
         req.user = decoded; // Attach user data to the request
         next();
     } catch (err) {

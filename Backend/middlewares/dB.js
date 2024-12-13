@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
-const { moncrd } = require("../config/cred");
-
-const url = `mongodb+srv://${moncrd.user}:${moncrd.pass}@cluster0.oxhj6pg.mongodb.net/ev2`;
 
 const dbConnect = async () => {
   try {
-    await mongoose.connect(url);
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log("Db Connected ");
   } catch (err) {
     console.log(err);

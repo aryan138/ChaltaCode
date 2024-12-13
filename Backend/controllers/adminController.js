@@ -3,18 +3,15 @@ const app = express();
 const admin = require('../models/admin')
 const bcrypt = require('bcryptjs');
 const jwt  = require('jsonwebtoken');
-const {tokens} = require('../config/cred');
 const mail = require('../helper/sendMail')
 const sms = require('../helper/smsService')
 const whatsapp = require('../helper/whatsapp');
-const { log } = require('console');
 const user = require('../models/user');
 const Invoice = require('../models/Invoice');
 const nodemailer = require('nodemailer');
 const multer = require("multer");
 const path = require("path");
 const fs = require('fs');
-const {otp} = require('../config/cred');
 
 
 const generateAccessToken = async (userId) => {
@@ -36,8 +33,8 @@ const generateAccessToken = async (userId) => {
         username: newAdmin.username,
         role: "admin"
       },
-      tokens.ACCESS_TOKEN_SECRET ,
-      { expiresIn: tokens.ACCESS_TOKEN_EXPIRY }
+      process.env.ACCESS_TOKEN_SECRET ,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
     );
 
     console.log("Created token:", accessToken);
@@ -803,8 +800,8 @@ if (!Date.prototype.getWeek) {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: otp.user, // replace with your email
-    pass: otp.pass, // replace with your email password
+    user: process.env.OTP_USER, // replace with your email
+    pass: process.env.OTP_PASS, // replace with your email password
   },
 });
 

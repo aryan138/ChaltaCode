@@ -1,17 +1,15 @@
 const nodemailer = require('nodemailer');
-const { crd } = require('../config/cred');
 
 exports.SendGreetMail = async ({email,name,pno}) => {
   try {
-    console.log(crd);
 
     const mail = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 587,
       secure: false,
       auth: {
-        user: crd.user,
-        pass: crd.pass,
+        user: process.env.CRD_USER,
+        pass: process.env.CRD_PASS,
       },
       tls: {
         rejectUnauthorized: false

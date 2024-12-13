@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const tokens = require('../config/cred');
 const bcrypt = require('bcryptjs');
 const jwt  = require('jsonwebtoken');
 const adminSchema = new mongoose.Schema({
@@ -36,7 +35,7 @@ adminSchema.methods.generateAccessToken =  function(){
         admin_email: this.admin_email,
         username: this.username,
         role: "admin"
-    },tokens.ACCESS_TOKEN_SECRET,{expiresIn:tokens.ACCESS_TOKEN_EXPIRY})
+    },process.env.ACCESS_TOKEN_SECRET,{expiresIn:process.env.ACCESS_TOKEN_EXPIRY})
 }
 adminSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);

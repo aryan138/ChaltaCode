@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const { tokens } = require('../config/cred');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
@@ -29,6 +28,6 @@ userSchema.methods.generateAccessToken =  function(){
         user_email: this.user_email,
         role:'user',
 
-    },tokens.ACCESS_TOKEN_SECRET,{expiresIn:tokens.ACCESS_TOKEN_EXPIRY})
+    },process.env.ACCESS_TOKEN_SECRET,{expiresIn:process.env.ACCESS_TOKEN_EXPIRY})
 }
 module.exports = mongoose.model('user', userSchema);

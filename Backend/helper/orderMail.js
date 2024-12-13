@@ -1,17 +1,16 @@
 const nodemailer = require('nodemailer');
-const { crd } = require('../config/cred');
+
 
 exports.SendMail = async (recipientEmail, subject, htmlContent) => {
   try {
-    console.log(crd);
 
     const mail = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,  
       secure: true, 
       auth: {
-        user: crd.user,
-        pass: crd.pass,
+        user: process.env.CRD_USER,
+        pass: process.env.CRD_PASS,
       },
       tls: {
         rejectUnauthorized: false
@@ -21,7 +20,7 @@ exports.SendMail = async (recipientEmail, subject, htmlContent) => {
     // console.log('Transporter created');
 
     const mailOptions = {
-      from: crd.user,
+      from: process.env.crd.user,
       to: recipientEmail,
       subject: subject,
       html: htmlContent,

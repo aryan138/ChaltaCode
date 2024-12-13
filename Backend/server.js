@@ -18,11 +18,20 @@ const {verifyToken} = require('./middlewares/authorize.js');
 const Razorpay = require("razorpay")
 const PORT = 3000;
 require('dotenv').config();
-
+const allowedOrigins = [
+    'https://profitex-iota.vercel.app',
+    'https://profitex-1jdnonhhj-aryan-pathanias-projects.vercel.app',
+];
 // Middleware to parse JSON requests
 app.use(express.json());
 app.use(cookieParser())
-app.use(cors({origin: 'https://profitex-iota.vercel.app',
+app.use(cors({origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+    } else {
+        callback(new Error('Not allowed by CORS'));
+    }
+},
     credentials: true,}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

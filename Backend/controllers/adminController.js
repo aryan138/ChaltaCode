@@ -116,7 +116,9 @@ const register = async (req, res) => {
 
     const options = {
       httpOnly: true,
+      sameSite:none,
       secure: true,
+      maxAge:3600,
       //isme abh hamari cookie sirf server se hi modifiable hogi frontend par koi ese modify nhi kr skta.
   }
 
@@ -243,8 +245,10 @@ const loginAdmin = async(req,res)=>{
     // console.log(finalAdmin);
     
     const options = {
-      httpOnly: true,
+     httpOnly: true,
+      sameSite:none,
       secure: true,
+      maxAge:3600,
       //isme abh hamari cookie sirf server se hi modifiable hogi frontend par koi ese modify nhi kr skta.
   }
   return res.status(200).cookie("accessToken",accessToken,options)
@@ -280,8 +284,9 @@ const logoutAdmin = async (req,res)=>{
 
   const options = {
       httpOnly: true,
+      sameSite:none,
       secure: true,
-      sameSite: 'lax'
+      maxAge:3600,
   }
 
   return res

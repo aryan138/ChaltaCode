@@ -231,7 +231,9 @@ const register = async (req, res) => {
       
       const options = {
         httpOnly: true,
+        sameSite:none,
         secure: true,
+        maxAge:3600,
         //isme abh hamari cookie sirf server se hi modifiable hogi frontend par koi ese modify nhi kr skta.
     }
     return res.
@@ -267,9 +269,10 @@ const register = async (req, res) => {
     )
 
     const options = {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'lax'
+       httpOnly: true,
+      sameSite:none,
+      secure: true,
+      maxAge:3600,
     }
 
     return res

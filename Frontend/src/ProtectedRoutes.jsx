@@ -10,8 +10,8 @@ const ProtectedRoute = ({ requiredRole }) => {
     useEffect(() => {
         const fetchRole = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/getRole', {
-                    withCredentials: true, // Include cookies
+                const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/getRole`, {
+                    withCredentials: true,
                 });
                 setUserRole(response.data.role);
                 console.log("data:",response.data.role);

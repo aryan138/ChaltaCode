@@ -34,7 +34,7 @@ const AddOrder = ({ onClose }) => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/superproducts/get-products-from-admin",{withCredentials:true});
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/superproducts/get-products-from-admin`,{withCredentials:true});
         console.log("Fetched products:", response);
         if (response.data.products.length<=0){
          setProducts([]);
@@ -59,7 +59,7 @@ const AddOrder = ({ onClose }) => {
       // const token = localStorage.getItem("authToken"); // Assuming the token is stored in localStorage
       console.log(data);
       const response = await axios.post(
-        "http://localhost:3000/order/placeorder",
+        `${process.env.REACT_APP_API_BASE_URL}/order/placeorder`,
         {
           product_id: data.product_id,
           product_quantity: data.product_quantity,

@@ -129,8 +129,8 @@ const Upload = ({ onDataUpdate, userRole }) => {
       // Conditionally set the API URL based on user role
       const apiUrl =
         userRole === "admin"
-          ? "http://localhost:3000/superproducts/upload-excel"
-          : "http://localhost:3000/products/upload-excel";
+          ? `${process.env.REACT_APP_API_BASE_URL}/superproducts/upload-excel`
+          : `${process.env.REACT_APP_API_BASE_URL}/products/upload-excel`;
 
           await axios.post(apiUrl, formattedData, {
             headers: {
@@ -169,8 +169,8 @@ const Upload = ({ onDataUpdate, userRole }) => {
       // Conditionally set the API URL based on user role
       const apiUrl =
         userRole === "admin"
-          ? "http://localhost:3000/superproducts/create"
-          : "http://localhost:3000/products/create";
+          ? `${process.env.REACT_APP_API_BASE_URL}/superproducts/create`
+          : `${process.env.REACT_APP_API_BASE_URL}/products/create`;
 
       const response = await axios.post(apiUrl, formData, {
         withCredentials: true,

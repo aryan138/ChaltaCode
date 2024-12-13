@@ -25,7 +25,7 @@ const ProfileUpdate = ({ onClose }) => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/user/get-details",
+          `${process.env.REACT_APP_API_BASE_URL}/user/get-details`,
           { withCredentials: true }
         );
 
@@ -218,7 +218,7 @@ const ProfileUpdate = ({ onClose }) => {
   
     try {
       const response = await axios.post(
-        "http://localhost:3000/user/upload-profile-pic", 
+        `${process.env.REACT_APP_API_BASE_URL}/user/upload-profile-pic`, 
         formData, 
         {
         withCredentials: true,  
@@ -260,7 +260,7 @@ const ProfileUpdate = ({ onClose }) => {
   
     try {
       // First, update the user details
-      await axios.post("http://localhost:3000/user/update-details", formData, {
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/user/update-details`, formData, {
         withCredentials: true,
       });
   

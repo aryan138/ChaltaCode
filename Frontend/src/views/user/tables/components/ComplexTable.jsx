@@ -90,7 +90,7 @@ export default function OrderTable(props) {
 
   const handleDelete = async (orderId) => {
     try {
-      const response = await axios.delete(`http://localhost:3000/order/deleteorder/${orderId}`, {
+      const response = await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/order/deleteorder/${orderId}`, {
         withCredentials: true,
       });
 
@@ -108,7 +108,7 @@ export default function OrderTable(props) {
 
   const fetchOrders = async () => {
     try {
-      const result = await axios.get('http://localhost:3000/order/getAllOrders');
+      const result = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/order/getAllOrders`);
       setData(result.data.data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -134,7 +134,7 @@ export default function OrderTable(props) {
   const handleModalSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/order/updateorder/${selectedOrder.order_id}`,
+        `${process.env.REACT_APP_API_BASE_URL}/order/updateorder/${selectedOrder.order_id}`,
         {
           item_name: selectedOrder.item_name,
           item_quantity: selectedOrder.item_quantity,

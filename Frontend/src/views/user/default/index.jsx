@@ -33,7 +33,7 @@ const Dashboard = () => {
   useEffect(()=>{
     const handleEarnings = async()=>{
       try {
-        const response = await axios.get('http://localhost:3000/invoices/earnings/total-earnings',{withCredentials:true});
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/invoices/earnings/total-earnings`,{withCredentials:true});
         // console.log("earnings: " + response);
         if (response.data.success==true){
           // console.log("earnings: " + response.data.earnings)
@@ -48,7 +48,7 @@ const Dashboard = () => {
     }
     const handleAdmin = async()=>{
       try {
-        const response = await axios.get('http://localhost:3000/user/admin-details',{
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/admin-details`,{
           withCredentials:true
         });
         // console.log("earnings: " + response);
@@ -64,7 +64,7 @@ const Dashboard = () => {
     }
     const handleWeeklyData =async ()=>{
       try {
-        const response = await axios.get('http://localhost:3000/user/daily-salees',{withCredentials:true});
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/daily-salees`,{withCredentials:true});
         if(response.data.success==true){
           console.log(response.data.data);
           SetWeeklySale(response.data.data);
@@ -76,7 +76,7 @@ const Dashboard = () => {
     }
     const handleMonthlyRevenue = async()=>{
       try {
-        const response = await axios.get("http://localhost:3000/user/weekly-revenue",{withCredentials:true});
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/weekly-revenue`,{withCredentials:true});
         if(response.data.success==true){
           SetWeeklyRevenue(response.data.data);
         }
@@ -87,8 +87,8 @@ const Dashboard = () => {
 
     const handlePieChart = async()=>{
       try {
-        const response1 = await axios.get('http://localhost:3000/products/total-stocks',{withCredentials:true});
-        const response2 = await axios.get('http://localhost:3000/warehouse/get-details',{withCredentials:true});
+        const response1 = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/products/total-stocks`,{withCredentials:true});
+        const response2 = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/warehouse/get-details`,{withCredentials:true});
         console.log(response1,response2);
         if (response1.data.success==true && response2.data.success==true){
           SetInventorySize({totalProduct: Number(response1.data.totalStocks),inventorySize: response2.data.details.storage});
@@ -101,7 +101,7 @@ const Dashboard = () => {
     }
     const fetchTableData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/order/getorder", {
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/order/getorder`, {
           withCredentials: true, // Ensure cookies are sent if needed for authentication
         });
 
@@ -130,7 +130,7 @@ const Dashboard = () => {
     const handleOrderCountPending = async()=>{
       try {
         
-        const response = await axios.get("http://localhost:3000/order/countOrder-pending-user", {
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/order/countOrder-pending-user`, {
           withCredentials: true,
         });
         if (response.data.success==true){

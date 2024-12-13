@@ -14,7 +14,7 @@ const Tables = () => {
   useEffect(() => {
     const fetchTableData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/order/getorder", {
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/order/getorder`, {
           withCredentials: true, // Ensure cookies are sent if needed for authentication
         });
 

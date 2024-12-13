@@ -27,7 +27,7 @@ export const login = async (
       password: password,
     });
     const response = await axios.post(
-      `http://localhost:3000/login`,
+      `${process.env.REACT_APP_API_BASE_URL}/login`,
       data,
       {
         headers: {
@@ -57,7 +57,7 @@ export const signup = async (
       password,
     });
     const response = await axios.post(
-      `http://localhost:3000/signup`,
+      `${process.env.REACT_APP_API_BASE_URL}/signup`,
       data,
       {
         headers: {

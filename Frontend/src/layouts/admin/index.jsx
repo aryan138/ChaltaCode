@@ -21,7 +21,7 @@ export default function Admin(props) {
     const getUserData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/admin/get-details",
+          `${process.env.REACT_APP_API_BASE_URL}/admin/get-details`,
           { withCredentials: true }
         );
         const data = response.data.data;

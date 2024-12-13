@@ -21,7 +21,7 @@ import img from '../../../assets/favicon.png'
 import InvoiceDownloadModal from "./components/InvoiceDownloadModal";
 // API Client with Axios
 const api = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: `${process.env.REACT_APP_API_BASE_URL}/`,
   withCredentials: true,
 });
 
@@ -138,7 +138,7 @@ const CreateInvoiceForm = ({ onSuccess }) => {
     const fetchProducts = async () => {
       try {
         const response = await api.get(
-          "http://localhost:3000/products/getall",
+          `${process.env.REACT_APP_API_BASE_URL}/products/getall`,
           { withCredentials: true }
         );
         // console.log(response.data.products);
@@ -541,7 +541,7 @@ const InvoiceList = () => {
       try {
         setLoading(true);
         const response = await api.get(
-          "http://localhost:3000/invoices/getall",
+          `${process.env.REACT_APP_API_BASE_URL}/invoices/getall`,
           {
             params: {
               page,
@@ -577,7 +577,7 @@ const InvoiceList = () => {
     try {
       // Ensure base URL matches your backend server
       console.log(invoiceId);
-      const response = await axios.get(`http://localhost:3000/invoices/pdf/${invoiceId}`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/invoices/pdf/${invoiceId}`, {
         responseType: "blob", // Important for handling binary data
       });
   

@@ -17,8 +17,8 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
   useEffect(() => {
     const fetchProducts = async () => {
       const endpoint = userRole === "admin" 
-        ? "http://localhost:3000/superproducts/getall"
-        : "http://localhost:3000/products/getall";
+        ? `${process.env.REACT_APP_API_BASE_URL}/superproducts/getall`
+        : `${process.env.REACT_APP_API_BASE_URL}/products/getall`;
 
       try {
         const response = await axios.get(endpoint, {
@@ -76,8 +76,8 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
     }
 
     const endpoint = userRole === "admin" 
-      ? `http://localhost:3000/superproducts/update/${editingProduct.product_id}`
-      : `http://localhost:3000/products/update/${editingProduct.product_id}`;
+      ? `${process.env.REACT_APP_API_BASE_URL}/superproducts/update/${editingProduct.product_id}`
+      : `${process.env.REACT_APP_API_BASE_URL}/products/update/${editingProduct.product_id}`;
 
     try {
       await axios.put(endpoint, editingProduct, {
@@ -109,8 +109,8 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
   // Delete a product
   const handleDelete = async (productId) => {
     const endpoint = userRole === "admin" 
-      ? `http://localhost:3000/superproducts/delete/${productId}`
-      : `http://localhost:3000/products/delete/${productId}`;
+      ? `${process.env.REACT_APP_API_BASE_URL}/superproducts/delete/${productId}`
+      : `${process.env.REACT_APP_API_BASE_URL}/products/delete/${productId}`;
 
     try {
       await axios.delete(endpoint, {

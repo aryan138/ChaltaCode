@@ -29,7 +29,7 @@ export default function OrderTable(props) {
     try {
       console.log(orderId, action);
       const response = await axios.put(
-        `http://localhost:3000/order/updateorder`,{
+        `${process.env.REACT_APP_API_BASE_URL}/order/updateorder`,{
           adminOutput: action,
           orderId: orderId
         },
@@ -55,7 +55,7 @@ export default function OrderTable(props) {
 
   const fetchOrders = async () => {
     try {
-      const result = await axios.get("http://localhost:3000/order/checkOrder");
+      const result = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/order/checkOrder`);
       setData(result.data.data);
     } catch (error) {
       console.error("Error fetching orders:", error);

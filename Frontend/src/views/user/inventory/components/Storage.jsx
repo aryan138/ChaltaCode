@@ -27,8 +27,8 @@ const Storage = ({userRole}) => {
     e.preventDefault();
     try {
       const endPoint = userRole === "admin" 
-      ? `http://localhost:3000/warehouse/enter-details-admin`
-      : `http://localhost:3000/warehouse/enter-details`;
+      ? `${process.env.REACT_APP_API_BASE_URL}/warehouse/enter-details-admin`
+      : `${process.env.REACT_APP_API_BASE_URL}/warehouse/enter-details`;
       const response = await axios.post(endPoint,{min_val:formData.minProducts,storage:formData.inventorySize},{withCredentials:true});
       if (response.data.success==true){
         toast.success(response.data.message);

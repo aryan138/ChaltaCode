@@ -39,7 +39,7 @@ const Table = ({ data = [] }) => {
     try {
       // Call the backend API
       console.log("1")
-      const response = await api.put("http://localhost:3000/admin/update-status", {
+      const response = await api.put(`${process.env.REACT_APP_API_BASE_URL}/admin/update-status`, {
         userId,
         newStatus,
       });

@@ -98,7 +98,7 @@ export default function SignIn() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/user/sign-in",
+        `${process.env.REACT_APP_API_BASE_URL}/user/sign-in`,
         data,
         { withCredentials: true }
       );
@@ -124,7 +124,7 @@ export default function SignIn() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/admin/login",
+        `${process.env.REACT_APP_API_BASE_URL}/admin/login`,
         data,
         { withCredentials: true }
       );
@@ -162,12 +162,12 @@ export default function SignIn() {
       // Check if role is user or admin, and call the respective API endpoint
       if (role === "user") {
         response = await axios.post(
-          "http://localhost:3000/user/forgot-password",
+          `${process.env.REACT_APP_API_BASE_URL}/user/forgot-password`,
           { email: forgotEmail, role: role }
         );
       } else if (role === "admin") {
         response = await axios.post(
-          "http://localhost:3000/admin/forgot-password",
+          `${process.env.REACT_APP_API_BASE_URL}/admin/forgot-password`,
           { email: forgotEmail, role: role }
         );
       }
@@ -215,65 +215,6 @@ export default function SignIn() {
       });
     }
   };
-
-  // const handleResetPasswordSubmit = async (event) => {
-  //   event.preventDefault();
-  //   console.log(newPassword);
-  //   console.log(confirmPassword);
-  //   if (newPassword !== confirmPassword ) {
-  //     toast.error("Passwords do not match.", {
-  //       position: "top-right",
-  //       autoClose: 3000,
-  //     });
-  //     return;
-  //   }
-  //   console.log("Before call");
-  //   console.log("email", forgotEmail);
-  //   console.log("pass", newPassword);
-  //   setLoading(true);
-  //   try {
-  //     // const response = await axios.post(
-  //     //   "http://localhost:3000/user/reset-password",
-  //     //   {
-  //     //     email: forgotEmail,
-  //     //     newPassword: newPassword,
-  //     //   }
-  //     // );
-  //     let response;
-  //     if (role === "user") {
-  //       response = await axios.post(
-  //         "http://localhost:3000/user/reset-password",
-  //         { email: forgotEmail, newPassword: newPassword }
-  //       );
-  //     } else if (role === "admin") {
-  //       response = await axios.post(
-  //         "http://localhost:3000/admin/reset-password",
-  //         { email: forgotEmail, newPassword: newPassword }
-  //       );
-  //     }
-
-  //     if (response.data.success) {
-  //       toast.success("Password reset successful!", {
-  //         position: "top-right",
-  //         autoClose: 3000,
-  //       });
-  //       setPasswordModalOpen(false);
-  //     } else {
-  //       toast.error(response.data.error, {
-  //         position: "top-right",
-  //         autoClose: 3000,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     toast.error(
-  //       error.response?.data?.error ||
-  //         "An error occurred while resetting password",
-  //       { position: "top-right", autoClose: 3000 }
-  //     );
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleResetPasswordSubmit = async (event) => {
     event.preventDefault();
   
@@ -312,12 +253,12 @@ export default function SignIn() {
       // API call based on role
       if (role === "user") {
         response = await axios.post(
-          "http://localhost:3000/user/reset-password",
+          `${process.env.REACT_APP_API_BASE_URL}/user/reset-password`,
           { email: forgotEmail, newPassword: newPassword }
         );
       } else if (role === "admin") {
         response = await axios.post(
-          "http://localhost:3000/admin/reset-password",
+          `${process.env.REACT_APP_API_BASE_URL}/admin/reset-password`,
           { email: forgotEmail, newPassword: newPassword }
         );
       }

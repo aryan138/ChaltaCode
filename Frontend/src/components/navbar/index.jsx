@@ -20,7 +20,7 @@ const Navbar = (props) => {
   const handleLogout = async () => {
     try {
       console.log("want to log out");
-      const response = await axios.get(`http://localhost:3000/${role}/logout`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/${role}/logout`, {
         withCredentials: true,
       });
       if (response.data.success) {
@@ -150,8 +150,8 @@ const Navbar = (props) => {
           button={
             <img
               className="h-10 w-10 rounded-full"
-              src={role=='user'? (userInf && userInf.user_profile_pic ? `http://localhost:3000${userInf.user_profile_pic} `: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"):(userInf && userInf.admin_profile_pic 
-              ? `http://localhost:3000${userInf.admin_profile_pic.trim()}` 
+              src={role=='user'? (userInf && userInf.user_profile_pic ? `${process.env.REACT_APP_API_BASE_URL}${userInf.user_profile_pic} `: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"):(userInf && userInf.admin_profile_pic 
+              ? `${process.env.REACT_APP_API_BASE_URL}${userInf.admin_profile_pic.trim()}` 
               : "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D")}
               alt="Elon Musk"
             />

@@ -5,6 +5,7 @@ module.exports = {
   theme: {
     extend: {
       keyframes: {
+        
         'slide-right': {
           '0%': { transform: 'translateX(-35%)' },
           '100%': { transform: 'translateX(50px)' },
@@ -424,4 +425,6 @@ module.exports = {
     }),
   },
   plugins: [require("tailwindcss-rtl")],
+
+  
 };

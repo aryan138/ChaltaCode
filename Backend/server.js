@@ -25,7 +25,8 @@ const allowedOrigins = [
 // Middleware to parse JSON requests
 app.use(express.json());
 app.use(cookieParser())
-app.use(cors({origin:'https://profitex-iota.vercel.app' ,
+app.use(cors({origin:['https://profitex-iota.vercel.app',
+    'https://profitex-1jdnonhhj-aryan-pathanias-projects.vercel.app'] ,
     credentials: true,}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

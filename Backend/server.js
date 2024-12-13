@@ -22,7 +22,7 @@ require('dotenv').config();
 // Middleware to parse JSON requests
 app.use(express.json());
 app.use(cookieParser())
-app.use(cors({origin: 'http://localhost:3001',
+app.use(cors({origin: 'https://profitex-iota.vercel.app',
     credentials: true,}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

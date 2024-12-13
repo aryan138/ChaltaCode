@@ -25,13 +25,7 @@ const allowedOrigins = [
 // Middleware to parse JSON requests
 app.use(express.json());
 app.use(cookieParser())
-app.use(cors({origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-    } else {
-        callback(new Error('Not allowed by CORS'));
-    }
-},
+app.use(cors({origin:'https://profitex-1jdnonhhj-aryan-pathanias-projects.vercel.app' ,
     credentials: true,}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

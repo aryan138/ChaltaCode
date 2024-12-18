@@ -21,88 +21,6 @@ const generateInvoiceNumber = async () => {
   return `${prefix}-${newSequence.toString().padStart(4, '0')}`;
 };
 
-// Create Invoice
-// const createInvoice = async (req, res) => {
-//   const session = await mongoose.startSession();
-//   session.startTransaction();
-
-//   try {
-//     const { customer, items, subtotal, totalAmount, status = 'DRAFT' } = req.body;
-
-//     // Validate input
-//     if (!customer || !customer.name) {
-//       throw new Error('Customer name is required');
-//     }
-
-//     if (!items || items.length === 0) {
-//       throw new Error('At least one item is required');
-//     }
-
-//     // Process items and validate stock
-//     const processedItems = await Promise.all(items.map(async (item) => {
-//       const product = await Product.findById(item.product);
-      
-//       if (!product) {
-//         throw new Error(`Product not found: ${item.product}`);
-//       }
-
-//       if (product.stock < item.quantity) {
-//         throw new Error(`Insufficient stock for product: ${product.name}`);
-//       }
-
-//       // Reduce product stock
-//       product.stock -= item.quantity;
-//       await product.save({ session });
-
-//       return {
-//         product: product._id,
-//         name: product.name,
-//         quantity: item.quantity,
-//         unitPrice: item.unitPrice || product.price,
-//         totalPrice: item.totalPrice || (item.quantity * (item.unitPrice || product.price))
-//       };
-//     }));
-
-//     // Calculate totals
-//     const calculatedSubtotal = processedItems.reduce((sum, item) => sum + item.totalPrice, 0);
-
-//     // Generate Invoice Number
-//     const invoiceNumber = await generateInvoiceNumber();
-
-//     // Create Invoice
-//     const newInvoice = new Invoice({
-//       invoiceNumber,
-//       customer: {
-//         name: customer.name,
-//         email: customer.email || '',
-//         phone: customer.phone || '',
-//         address: customer.address || ''
-//       },
-//       items: processedItems,
-//       subtotal: subtotal || calculatedSubtotal,
-//       totalAmount: totalAmount || calculatedSubtotal,
-//       status,
-//       shop: req.user.shop,
-//       createdBy: req.user._id
-//     });
-
-//     await newInvoice.save({ session });
-//     await session.commitTransaction();
-
-//     res.status(201).json({
-//       message: 'Invoice created successfully',
-//       invoice: newInvoice
-//     });
-//   } catch (error) {
-//     await session.abortTransaction();
-//     res.status(400).json({ 
-//       message: 'Invoice creation failed', 
-//       error: error.message 
-//     });
-//   } finally {
-//     session.endSession();
-//   }
-// };
 
 const createInvoice = async (req, res) => {
   const session = await mongoose.startSession();
@@ -420,73 +338,35 @@ const addInvoicePayment = async (req, res) => {
   }
 };
 
-// Generate PDF Invoice
+
 // const generateInvoicePDF = async (req, res) => {
 //   try {
-//     console.log("enter the invoice download")
-//     const invoice = await Invoice.findById(req.params.id) // Match `invoiceId` from frontend
-//       .populate('items')
+//     console.log("Entering the invoice download process...");
 
+//     // Fetch the invoice by ID with populated items
+//     const invoice = await Invoice.findById(req.params.id).populate('items');
 //     if (!invoice) {
 //       return res.status(409).json({ message: 'Invoice not found' });
 //     }
-//     console.log(invoice);
+
+//     console.log("Invoice fetched successfully:", invoice);
+
+//     // Initialize PDF document
 //     const doc = new PDFDocument();
 //     const filename = `invoice_${invoice.invoiceNumber}.pdf`;
 
+//     // Set response headers
 //     res.setHeader('Content-Type', 'application/pdf');
 //     res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
 
+//     // Pipe the PDF stream to the response
 //     doc.pipe(res);
 
-//     // PDF Content
-//     doc.fontSize(20).text('INVOICE', { align: 'center' });
-//     doc.moveDown();
+//     // Generate PDF Content
+//     createPDFContent(doc, invoice);
 
-//     // Invoice Details
-//     doc.fontSize(10)
-//        .text(`Invoice Number: ${invoice.invoiceNumber}`)
-//        .text(`Date: ${new Date(invoice.createdAt).toLocaleDateString()}`)
-//        .text(`Status: ${invoice.status}`);
-
-//     // Customer Details
-//     doc.moveDown();
-//     doc.fontSize(12).text('Customer Details', { underline: true });
-//     doc.fontSize(10)
-//        .text(`Name: ${invoice.customer?.name || 'N/A'}`)
-//        .text(`Email: ${invoice.customer?.email || 'N/A'}`)
-//        .text(`Phone: ${invoice.customer?.phone || 'N/A'}`)
-//        .text(`Address: ${invoice.customer?.address || 'N/A'}`);
-
-//     // Items Table
-//     doc.moveDown();
-//     doc.fontSize(12).text('Invoice Items', { underline: true });
-
-//     // Table Header
-//     doc.fontSize(10)
-//        .text('Product', 100, doc.y, { width: 200, align: 'left' })
-//        .text('Quantity', 300, doc.y, { width: 100, align: 'right' })
-//        .text('Unit Price', 400, doc.y, { width: 100, align: 'right' })
-//        .text('Total', 500, doc.y, { width: 100, align: 'right' });
-
-//     doc.moveDown();
-
-//     // Items Rows
-//     invoice.items.forEach(item => {
-//       doc.text(item.product?.name || 'N/A', 100, doc.y, { width: 200, align: 'left' })
-//          .text(item.quantity.toString(), 300, doc.y, { width: 100, align: 'right' })
-//          .text(`$${(item.product?.unitPrice || 0).toFixed(2)}`, 400, doc.y, { width: 100, align: 'right' })
-//          .text(`$${(item.quantity * item.product?.unitPrice || 0).toFixed(2)}`, 500, doc.y, { width: 100, align: 'right' });
-//       doc.moveDown();
-//     });
-
-//     // Totals
-//     doc.moveDown();
-//     doc.fontSize(12)
-//        .text(`Subtotal: $${invoice.subtotal?.toFixed(2) || '0.00'}`, { align: 'right' })
-//        .text(`Total Amount: $${invoice.totalAmount?.toFixed(2) || '0.00'}`, { align: 'right' });
-
-//     doc.end(); // Ensure PDF is finalized
+//     // Finalize the document
+//     doc.end();
 //   } catch (error) {
 //     console.error('Error generating PDF:', error.message);
 //     res.status(500).json({ 
@@ -495,131 +375,347 @@ const addInvoicePayment = async (req, res) => {
 //     });
 //   }
 // };
+
+// // Helper function to structure PDF content
+
+// const createPDFContent = (doc, invoice) => {
+//   // Title Section
+//   doc.fontSize(24).fillColor('#0B1437').text('INVOICE', { align: 'center', underline: true });
+//   doc.moveDown(2);
+
+//   // Invoice Details Section
+//   addSectionHeader(doc, 'Invoice Details', '#1D3557');
+//   doc.fontSize(10).fillColor('#000');
+//   doc.text(`Invoice Number: ${invoice.invoiceNumber}`);
+//   doc.text(`Date: ${new Date(invoice.createdAt).toLocaleDateString()}`);
+//   doc.text(`Status: ${invoice.status}`);
+//   doc.moveDown(1);
+
+//   // Customer Details Section
+//   addSectionHeader(doc, 'Customer Details', '#1D3557');
+//   doc.fontSize(10).fillColor('#000');
+//   doc.text(`Name: ${invoice.customer?.name || 'N/A'}`);
+//   doc.text(`Email: ${invoice.customer?.email || 'N/A'}`);
+//   doc.text(`Phone: ${invoice.customer?.phone || 'N/A'}`);
+//   doc.text(`Address: ${invoice.customer?.address || 'N/A'}`);
+//   doc.moveDown(1);
+
+//   // Invoice Items Section
+//   addSectionHeader(doc, 'Invoice Items', '#1D3557');
+//   addTableHeader(doc);
+//   addTableRows(doc, invoice.items);
+
+//   // Totals Section
+//   addInvoiceTotals(doc, invoice);
+// };
+
+// // Helper function for section headers
+// const addSectionHeader = (doc, title, color) => {
+//   doc.fontSize(14).fillColor(color).text(title, { underline: true, align: 'left' });
+//   doc.moveDown(0.5);
+// };
+
+// // Enhanced table header with a background
+// const addTableHeader = (doc) => {
+//   const headerOptions = { width: 100, align: 'center' };
+
+//   doc.rect(100, doc.y - 5, 500, 20).fill('#F1F1F1'); // Background rectangle
+//   doc.fillColor('#000').fontSize(10)
+//     .text('Product', 100, doc.y, { width: 200, align: 'left' })
+//     .text('Quantity', 300, doc.y, headerOptions)
+//     .text('Unit Price', 400, doc.y, headerOptions)
+//     .text('Total', 500, doc.y, headerOptions);
+//   doc.moveDown();
+//   doc.moveTo(100, doc.y).lineTo(600, doc.y).stroke(); 
+//   doc.moveDown();
+// };
+
+// // Enhanced table rows with alternating row colors
+// const addTableRows = (doc, items) => {
+//   const rowOptions = { width: 100, align: 'center' };
+//   const backgroundColors = ['#FFFFFF', '#F9FAFB'];
+
+//   items.forEach((item, index) => {
+//     const yPosition = doc.y;
+//     doc.rect(100, yPosition - 2, 500, 20).fill(backgroundColors[index % 2]); 
+
+//     doc.fillColor('#000').fontSize(10)
+//       .text(item.name || 'N/A', 100, yPosition, { width: 200, align: 'left' })
+//       .text(item.quantity.toString(), 300, yPosition, rowOptions)
+//       .text(`Rs${(item.unitPrice || 0).toFixed(2)}`, 400, yPosition, rowOptions)
+//       .text(`Rs${(item.quantity * item.unitPrice || 0).toFixed(2)}`, 500, yPosition, rowOptions);
+//     doc.moveDown(1.5);
+//   });
+
+//   doc.moveTo(100, doc.y).lineTo(600, doc.y).stroke(); // Line after last row
+// };
+
+// // Enhanced totals section
+// const addInvoiceTotals = (doc, invoice) => {
+//   doc.moveDown(2);
+//   doc.fontSize(12).fillColor('#000');
+  
+//   const totalY = doc.y;
+  
+//   doc.text('Subtotal:', 400, totalY, { width: 100, align: 'right' })
+//      .text(`Rs${invoice.subtotal?.toFixed(2) || '0.00'}`, 500, totalY, { align: 'right' });
+  
+//   doc.moveDown();
+//   doc.text('Total Amount:', 400, doc.y, { width: 100, align: 'right' })
+//      .fontSize(14).fillColor('#1D3557').text(`Rs${invoice.totalAmount?.toFixed(2) || '0.00'}`, 500, doc.y, { align: 'right' });
+// };
+
+class InvoicePDFGenerator {
+  constructor(invoice) {
+    this.invoice = invoice;
+    this.doc = new PDFDocument({ size: 'A4', margin: 50 });
+
+    // Design Constants
+    this.COLORS = {
+      PRIMARY: '#1D3557',
+      SECONDARY: '#457B9D',
+      GRAY: '#718096',
+      LIGHT_GRAY: '#F8F9FA',
+      BLACK: '#000000',
+      WHITE: '#FFFFFF',
+    };
+
+    this.FONTS = {
+      REGULAR: 'Helvetica',
+      BOLD: 'Helvetica-Bold',
+    };
+  }
+
+  // Main PDF generation method
+  generate(res) {
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${this.invoice.invoiceNumber}.pdf`);
+
+    this.doc.pipe(res);
+
+    this._createHeader();
+    this._createCompanyDetails();
+    this._createCustomerDetails();
+    this._createInvoiceItemsTable();
+    this._createTotalsSection();
+    this._createFooter();
+
+    this.doc.end();
+  }
+
+  // Header Section
+  _createHeader() {
+    const { doc, invoice, COLORS, FONTS } = this;
+
+    doc.font(FONTS.BOLD)
+      .fontSize(20)
+      .fillColor(COLORS.PRIMARY)
+      .text('INVOICE', 50, 50, { align: 'left' });
+
+    doc.font(FONTS.REGULAR)
+      .fontSize(10)
+      .fillColor(COLORS.GRAY)
+      .text(`Invoice Number: ${invoice.invoiceNumber}`, 400, 50, { align: 'right' })
+      .text(`Date: ${this._formatDate(invoice.createdAt)}`, 400, 65, { align: 'right' })
+      .text(`Status: ${invoice.status}`, 400, 80, { align: 'right' });
+
+    doc.moveTo(50, 100).lineTo(550, 100).strokeColor(COLORS.LIGHT_GRAY).lineWidth(1).stroke();
+  }
+
+  // Company Details
+  _createCompanyDetails() {
+    const { doc,invoice, COLORS, FONTS } = this;
+
+    doc.font(FONTS.BOLD)
+      .fontSize(10)
+      .fillColor(COLORS.PRIMARY)
+      .text('FROM:', 50, 120);
+
+    doc.font(FONTS.REGULAR)
+      .fontSize(10)
+      .fillColor(COLORS.BLACK)
+      .text(invoice.createdBy.user_admin.company_name, 50, 135)
+      .text(invoice.createdBy.user_admin.company_address, 50, 150)
+  }
+
+  // Customer Details
+  _createCustomerDetails() {
+    const { doc, invoice, COLORS, FONTS } = this;
+
+    doc.font(FONTS.BOLD)
+      .fontSize(10)
+      .fillColor(COLORS.PRIMARY)
+      .text('BILL TO:', 350, 120);
+
+    doc.font(FONTS.REGULAR)
+      .fontSize(10)
+      .fillColor(COLORS.BLACK)
+      .text(invoice.customer?.name || 'N/A', 350, 135)
+      .text(invoice.customer?.email || 'No Email', 350, 150)
+      .text(invoice.customer?.phone || 'No Phone', 350, 165);
+  }
+
+  // Invoice Items Table
+  _createInvoiceItemsTable() {
+    const { doc, invoice, COLORS, FONTS } = this;
+    const tableTop = 200;
+    const rowHeight = 20;
+
+    // Table Header
+    const headers = ['#', 'Product Name', 'Quantity', 'Unit Price', 'Total'];
+    const columnWidths = [30, 250, 80, 80, 80];
+    this._drawTableRow(headers, columnWidths, tableTop, FONTS.BOLD, COLORS.SECONDARY, COLORS.WHITE);
+
+    // Table Body
+    invoice.items.forEach((item, index) => {
+      const rowData = [
+        `${index + 1}`,
+        item.name,
+        item.quantity.toString(),
+        `Rs ${item.unitPrice.toFixed(2)}`,
+        `Rs ${item.totalPrice.toFixed(2)}`,
+      ];
+      const rowY = tableTop + (index + 1) * rowHeight;
+      this._drawTableRow(rowData, columnWidths, rowY, FONTS.REGULAR, COLORS.BLACK, COLORS.LIGHT_GRAY);
+    });
+  }
+
+  // Helper to Draw a Row
+  _drawTableRow(data, columnWidths, y, font, textColor, bgColor) {
+    const { doc } = this;
+    let x = 50;
+
+    // Background
+    doc.rect(x, y, 500, 20).fillColor(bgColor).fill();
+
+    // Text
+    data.forEach((text, i) => {
+      doc.font(font)
+        .fontSize(9)
+        .fillColor(textColor)
+        .text(text, x + 5, y + 5, { width: columnWidths[i], align: 'left' });
+      x += columnWidths[i];
+    });
+  }
+
+  // Totals Section
+ // Totals Section
+ 
+ _createTotalsSection() {
+  const { doc, invoice, COLORS, FONTS } = this;
+
+  // Define starting X and Y coordinates
+  const startX = 300; // Start X for label
+  let startY = 400;  // Start Y position
+
+  // Row height
+  const rowHeight = 20;
+
+  // Define Totals Content from Invoice Data
+  const totals = [
+      { label: 'Subtotal:', value: `Rs ${invoice.subtotal.toFixed(2)}` },
+      { label: 'Tax (0%):', value: `Rs 0.00` }, // Assuming no tax included
+      { label: 'Discount:', value: `Rs 0.00` }, // Assuming no discount applied
+      { label: 'Shipping:', value: `Rs 0.00` }  // Assuming no shipping cost applied
+  ];
+
+  // Render each total item
+  totals.forEach(({ label, value }) => {
+      // Render label
+      doc.font(FONTS.REGULAR)
+         .fontSize(10)
+         .fillColor(COLORS.GRAY)
+         .text(label, startX, startY, {
+             width: 500,
+             align: 'left',
+         });
+
+      // Render value
+      doc.text(value, startX + 100, startY, {
+          width: 100,
+          align: 'right',
+      });
+
+      // Increment Y position for the next row
+      startY += rowHeight;
+  });
+
+  // Total Amount Highlighted
+  startY += 10; // Add space before the highlighted total
+  doc.fillColor(COLORS.PRIMARY)
+     .rect(startX-20 , startY, 400, 30) // Highlight area for total
+     .fill();
+
+  doc.fillColor('white')
+     .font(FONTS.BOLD)
+     .fontSize(12)
+     .text('Total Amount:', startX, startY + 8, {
+         width: 150,
+         align: 'left',
+     })
+     .text(`Rs ${invoice.totalAmount.toFixed(2)}`, startX + 150, startY + 8, {
+         width: 100,
+         align: 'right',
+     });
+}
+
+
+
+  // Footer Section
+  _createFooter() {
+    const { doc, invoice, COLORS, FONTS } = this;
+
+    doc.font(FONTS.BOLD)
+      .fontSize(10)
+      .fillColor(COLORS.PRIMARY)
+      .text('Payment Status:', 50, 500);
+
+    doc.font(FONTS.REGULAR)
+      .fontSize(10)
+      .fillColor(COLORS.BLACK)
+      .text(invoice.paymentStatus, 150, 500);
+  }
+
+  // Utility: Format Date
+  _formatDate(dateObj) {
+    const date = dateObj instanceof Date ? dateObj : new Date(dateObj);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+}
+
+// Controller for PDF Generation
 const generateInvoicePDF = async (req, res) => {
   try {
-    console.log("Entering the invoice download process...");
-
-    // Fetch the invoice by ID with populated items
-    const invoice = await Invoice.findById(req.params.id).populate('items');
+    // const invoice = await Invoice.findById(req.params.id).populate('items');
+    const invoice = await Invoice.findById(req.params.id)
+  .populate({
+    path: 'items', 
+  })
+  .populate({
+    path: 'createdBy', 
+    model:'user',
+    populate: {
+      path: 'user_admin', 
+      model: 'admin', 
+    },
+  });
+  console.log(invoice);
     if (!invoice) {
-      return res.status(409).json({ message: 'Invoice not found' });
+      return res.status(404).json({ message: 'Invoice not found' });
     }
 
-    console.log("Invoice fetched successfully:", invoice);
-
-    // Initialize PDF document
-    const doc = new PDFDocument();
-    const filename = `invoice_${invoice.invoiceNumber}.pdf`;
-
-    // Set response headers
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
-
-    // Pipe the PDF stream to the response
-    doc.pipe(res);
-
-    // Generate PDF Content
-    createPDFContent(doc, invoice);
-
-    // Finalize the document
-    doc.end();
+    const pdfGenerator = new InvoicePDFGenerator(invoice);
+    pdfGenerator.generate(res);
   } catch (error) {
-    console.error('Error generating PDF:', error.message);
-    res.status(500).json({ 
-      message: 'Error generating PDF', 
-      error: error.message 
-    });
+    console.error('PDF Generation Error:', error);
+    res.status(500).json({ message: 'Error generating PDF', error: error.message });
   }
 };
 
-// Helper function to structure PDF content
-
-const createPDFContent = (doc, invoice) => {
-  // Title Section
-  doc.fontSize(24).fillColor('#0B1437').text('INVOICE', { align: 'center', underline: true });
-  doc.moveDown(2);
-
-  // Invoice Details Section
-  addSectionHeader(doc, 'Invoice Details', '#1D3557');
-  doc.fontSize(10).fillColor('#000');
-  doc.text(`Invoice Number: ${invoice.invoiceNumber}`);
-  doc.text(`Date: ${new Date(invoice.createdAt).toLocaleDateString()}`);
-  doc.text(`Status: ${invoice.status}`);
-  doc.moveDown(1);
-
-  // Customer Details Section
-  addSectionHeader(doc, 'Customer Details', '#1D3557');
-  doc.fontSize(10).fillColor('#000');
-  doc.text(`Name: ${invoice.customer?.name || 'N/A'}`);
-  doc.text(`Email: ${invoice.customer?.email || 'N/A'}`);
-  doc.text(`Phone: ${invoice.customer?.phone || 'N/A'}`);
-  doc.text(`Address: ${invoice.customer?.address || 'N/A'}`);
-  doc.moveDown(1);
-
-  // Invoice Items Section
-  addSectionHeader(doc, 'Invoice Items', '#1D3557');
-  addTableHeader(doc);
-  addTableRows(doc, invoice.items);
-
-  // Totals Section
-  addInvoiceTotals(doc, invoice);
-};
-
-// Helper function for section headers
-const addSectionHeader = (doc, title, color) => {
-  doc.fontSize(14).fillColor(color).text(title, { underline: true, align: 'left' });
-  doc.moveDown(0.5);
-};
-
-// Enhanced table header with a background
-const addTableHeader = (doc) => {
-  const headerOptions = { width: 100, align: 'center' };
-
-  doc.rect(100, doc.y - 5, 500, 20).fill('#F1F1F1'); // Background rectangle
-  doc.fillColor('#000').fontSize(10)
-    .text('Product', 100, doc.y, { width: 200, align: 'left' })
-    .text('Quantity', 300, doc.y, headerOptions)
-    .text('Unit Price', 400, doc.y, headerOptions)
-    .text('Total', 500, doc.y, headerOptions);
-  doc.moveDown();
-  doc.moveTo(100, doc.y).lineTo(600, doc.y).stroke(); 
-  doc.moveDown();
-};
-
-// Enhanced table rows with alternating row colors
-const addTableRows = (doc, items) => {
-  const rowOptions = { width: 100, align: 'center' };
-  const backgroundColors = ['#FFFFFF', '#F9FAFB'];
-
-  items.forEach((item, index) => {
-    const yPosition = doc.y;
-    doc.rect(100, yPosition - 2, 500, 20).fill(backgroundColors[index % 2]); 
-
-    doc.fillColor('#000').fontSize(10)
-      .text(item.name || 'N/A', 100, yPosition, { width: 200, align: 'left' })
-      .text(item.quantity.toString(), 300, yPosition, rowOptions)
-      .text(`Rs${(item.unitPrice || 0).toFixed(2)}`, 400, yPosition, rowOptions)
-      .text(`Rs${(item.quantity * item.unitPrice || 0).toFixed(2)}`, 500, yPosition, rowOptions);
-    doc.moveDown(1.5);
-  });
-
-  doc.moveTo(100, doc.y).lineTo(600, doc.y).stroke(); // Line after last row
-};
-
-// Enhanced totals section
-const addInvoiceTotals = (doc, invoice) => {
-  doc.moveDown(2);
-  doc.fontSize(12).fillColor('#000');
-  
-  const totalY = doc.y;
-  
-  doc.text('Subtotal:', 400, totalY, { width: 100, align: 'right' })
-     .text(`Rs${invoice.subtotal?.toFixed(2) || '0.00'}`, 500, totalY, { align: 'right' });
-  
-  doc.moveDown();
-  doc.text('Total Amount:', 400, doc.y, { width: 100, align: 'right' })
-     .fontSize(14).fillColor('#1D3557').text(`Rs${invoice.totalAmount?.toFixed(2) || '0.00'}`, 500, doc.y, { align: 'right' });
-};
 
 
 const getTotalEarnings = async (req, res) => {

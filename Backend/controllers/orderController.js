@@ -255,7 +255,7 @@ const updateorder = async (req, res) => {
       return res.status(200).json({status: 200,
       message: "Order Updated",
       data: updateData,})
-    console.log("updated order", updateData);
+    // console.log("updated order", updateData);
   }
   const Data = await order.findOne({order_id:orderId});
   
@@ -266,7 +266,7 @@ const updateorder = async (req, res) => {
   }
     const productOrdered_id = Data.productOrdered_id;
     const quantityNeeded = Data.product_quantity;
-    console.log(productOrdered_id);
+    console.log("product id"+productOrdered_id);
     //check if product under superinventory are greater than quantity ordered
     const superInventoryProduct = await SuperProduct.findOne(productOrdered_id);
     if (!superInventoryProduct){
@@ -277,8 +277,9 @@ const updateorder = async (req, res) => {
     
     const quantityHaving = superInventoryProduct.stock;
     const productId = superInventoryProduct.product_id;
-    // console.log(quantityHaving,quantityNeeded);
+    console.log("aryan1"+quantityHaving,quantityNeeded);
     if (quantityHaving<quantityNeeded){
+      console.log("phle nhi dhela chlo mela")
       return res.status(400).json({
         message:"dont have the enough quantity you should reject it"
       })
@@ -289,7 +290,7 @@ const updateorder = async (req, res) => {
     const updatedSuperInventory = await SuperProduct.findOneAndUpdate({product_id:productId},{stock:minusValue1},{new:true})
     // console.log("updatedSuperInventory",updatedSuperInventory);
     const findProductInInventory= await Product.findOne({product_id:productId});
-    console.log(findProductInInventory);
+    console.log("aryan2"+findProductInInventory);
     if (!findProductInInventory){
       const newProductInInventory = await Product.create({
         product_id:productId,
@@ -319,6 +320,7 @@ const updateorder = async (req, res) => {
     }
     const addValue = findProductInInventory.stock+quantityNeeded;
     const updatedInventory = await Product.findOneAndUpdate({product_id:productId},{stock:addValue},{new:true});
+    console.log("aryan3"+updatedInventory.stock);
     if (!updatedInventory){
       return res.status(500).json({message:"error while adding product"})
     }

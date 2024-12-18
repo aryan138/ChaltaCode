@@ -5,13 +5,16 @@ import Upload from "./components/Upload";
 import Storage from "./components/Storage";
 import { Search } from "lucide-react";
 import EditProductModal from "./components/EditProductModal"; // Import the new modal component
+import Skeleton from "react-loading-skeleton"; 
+import "react-loading-skeleton/dist/skeleton.css"; 
 
-const Inventory = ({ userRole }) => {  // Accept userRole as a prop
+const Inventory = ({ userRole }) => {
   const [products, setProducts] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [errors, setErrors] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true); 
 
   // Fetch products from the API based on user role
   useEffect(() => {
@@ -27,6 +30,8 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
         setProducts(response.data.products);
       } catch (error) {
         console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false); 
       }
     };
     fetchProducts();
@@ -164,13 +169,32 @@ const Inventory = ({ userRole }) => {  // Accept userRole as a prop
           />
         </div>
 
-        <div className="mt-5 h-full w-full overflow-auto rounded-lg bg-white dark:bg-black-800">
-          <Table
-            data={filteredProducts}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        </div>
+        {/* Skeleton Loader for 5 columns */}
+        {loading ? (
+          <div className="grid grid-cols-5 gap-4">
+            {[...Array(5)].map((_, index) => (
+              <div key={index} className="flex flex-col items-center space-y-3">
+                <Skeleton height={30} width={100} /> {/* Heading skeleton */}
+                <Skeleton height={20} width={80} />  {/* Product data skeleton */}
+                <Skeleton height={20} width={60} />  {/* Product data skeleton */}
+                <Skeleton height={20} width={60} />  {/* Product data skeleton */}
+                <Skeleton height={20} width={60} />  {/* Product data skeleton */}
+                <Skeleton height={20} width={60} />  {/* Product data skeleton */}
+                <Skeleton height={20} width={60} />  {/* Product data skeleton */}
+                <Skeleton height={20} width={60} />  {/* Product data skeleton */}
+                <Skeleton height={20} width={60} />  {/* Product data skeleton */}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-5 h-full w-full overflow-auto rounded-lg bg-white dark:bg-black-800">
+            <Table
+              data={filteredProducts}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          </div>
+        )}
       </main>
 
       {/* Edit Product Modal */}
